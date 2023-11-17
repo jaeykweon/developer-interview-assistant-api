@@ -29,18 +29,16 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
 
     runtimeOnly("com.h2database:h2:2.1.214")
-    implementation("mysql:mysql-connector-java:8.0.32")
+//    implementation("mysql:mysql-connector-java:8.0.32")
+    implementation("org.postgresql:postgresql:42.6.0")
 
     implementation("org.springframework.security:spring-security-crypto:6.0.2")
     implementation("com.auth0:java-jwt:4.4.0")

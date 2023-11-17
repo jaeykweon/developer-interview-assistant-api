@@ -1,31 +1,38 @@
 package org.idd.dia.domain
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.ManyToOne
-
-@JvmInline
-value class InterviewQuestionVoicePk(
-    val value: Long = 0L
-) {
-    init {
-        require(value >= 0)
-    }
-}
-
-@Entity
 class InterviewQuestionVoice(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val pk: InterviewQuestionVoicePk = InterviewQuestionVoicePk(),
+    private val pk: Pk,
+    private val questionPk: InterviewQuestion.Pk,
+    private val gender: Gender,
+    private val filePath: FilePath,
+    private val subtitle: SubTitle
+) {
+    fun getPk() = this.pk
+    fun getQuestionPk() = this.questionPk
+    fun getGender() = this.gender
+    fun getFilePath() = this.filePath
+    fun getSubtitle() = this.subtitle
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    val question: InterviewQuestion,
+    @JvmInline
+    value class Pk(
+        val value: Long
+    )
 
-    @Column
-    val url: String,
-)
+    enum class Gender {
+        MALE,
+        FEMALE
+    }
+
+    @JvmInline
+    value class FilePath(
+        val value: String
+    )
+
+    /**
+     * 이 음성을 만들 때 사용한 자막
+     */
+    @JvmInline
+    value class SubTitle(
+        val value: String
+    )
+}
