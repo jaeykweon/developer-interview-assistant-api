@@ -1,49 +1,54 @@
 package org.idd.dia.domain
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.OneToOne
+import java.time.LocalDateTime
 
-@JvmInline
-value class InterviewScriptPk(
-    val value: Long = 0L
-) {
-    init {
-        require(value >= 0)
-    }
-}
-
-@JvmInline
-value class InterviewScriptContent(
-    val value: String
-) {
-    init {
-        require(value.isNotBlank())
-    }
-}
-
-@Entity
 class InterviewScript(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val pk: InterviewScriptPk = InterviewScriptPk(),
-
-    @Column(updatable = false, nullable = false)
-    val userPk: DiaUserPk,
-
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    val question: InterviewQuestion,
-
-    @Column(length = 2000)
-    private var content: InterviewScriptContent
+    private val pk: Pk,
+    private val ownerPk: Member.Pk,
+    private val questionPk: InterviewQuestion.Pk,
+    private var content: Content,
+    private val createdTime: LocalDateTime,
+    private var lastModifiedTime: LocalDateTime,
+    private var lastReadTime: LocalDateTime
 ) {
-    fun getContent(requestUserPk: DiaUserPk): InterviewScriptContent {
-        if (requestUserPk != this.userPk) throw IllegalArgumentException()
+    fun getPk() = this.pk
+    fun getOwnerPk() = this.ownerPk
+    fun getQuestionPk() = this.questionPk
+    fun getContent() = this.content
+    fun getCreatedTime() = this.createdTime
+    fun getLastModifiedTime() = this.lastModifiedTime
+    fun getLastReadTime() = this.lastReadTime
 
-        return content
+    private fun authenticate(requestMemberPk: Member.Pk) {
+        require(requestMemberPk == ownerPk) { throw UnAuthorizedException() }
     }
+
+    // todo: 여기서 까지 authenticate를 하는 것이 맞나?
+    fun readContent(requestMemberPk: Member.Pk, readTime: LocalDateTime): InterviewScript {
+        authenticate(requestMemberPk)
+        this.lastReadTime = readTime
+        return this
+    }
+
+    fun updateContent(
+        requestMemberPk: Member.Pk,
+        newContent: Content,
+        updateTime: LocalDateTime
+    ): InterviewScript {
+        authenticate(requestMemberPk)
+        this.content = newContent
+        this.lastModifiedTime = updateTime
+        this.lastReadTime = updateTime
+        return this
+    }
+
+    @JvmInline
+    value class Pk(
+        val value: Long = 0L
+    )
+
+    @JvmInline
+    value class Content(
+        val value: String
+    )
 }
