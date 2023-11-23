@@ -19,23 +19,19 @@ class InterviewScript(
     fun getLastModifiedTime() = this.lastModifiedTime
     fun getLastReadTime() = this.lastReadTime
 
-    private fun authenticate(requestMemberPk: Member.Pk) {
+    fun authenticate(requestMemberPk: Member.Pk) {
         require(requestMemberPk == ownerPk) { throw UnAuthorizedException() }
     }
 
-    // todo: 여기서 까지 authenticate를 하는 것이 맞나?
-    fun readContent(requestMemberPk: Member.Pk, readTime: LocalDateTime): InterviewScript {
-        authenticate(requestMemberPk)
+    fun readContent(readTime: LocalDateTime): InterviewScript {
         this.lastReadTime = readTime
         return this
     }
 
     fun updateContent(
-        requestMemberPk: Member.Pk,
         newContent: Content,
         updateTime: LocalDateTime
     ): InterviewScript {
-        authenticate(requestMemberPk)
         this.content = newContent
         this.lastModifiedTime = updateTime
         this.lastReadTime = updateTime
@@ -50,5 +46,7 @@ class InterviewScript(
     @JvmInline
     value class Content(
         val value: String
-    )
+    ) {
+        init { require(value.length <10000) }
+    }
 }

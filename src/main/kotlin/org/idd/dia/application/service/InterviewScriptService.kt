@@ -19,6 +19,12 @@ class InterviewScriptService(
         request: InterviewScriptCreateRequest,
         requestMemberPk: Member.Pk
     ): InterviewScript {
+        val scriptAlreadyExists = interviewScriptDbPort.isExists(
+            questionPk = request.questionPk,
+            ownerPk = requestMemberPk
+        )
+        if (scriptAlreadyExists) { throw IllegalArgumentException() }
+
         val new = InterviewScript(
             pk = InterviewScript.Pk(),
             ownerPk = requestMemberPk,
@@ -38,8 +44,11 @@ class InterviewScriptService(
     ): InterviewScript {
         val script: InterviewScript =
             interviewScriptDbPort
-                .get(questionPk = questionPk)
-                .readContent(requestMemberPk = requestMemberPk, readTime = readTime)
+                .get(
+                    questionPk = questionPk,
+                    ownerPk = requestMemberPk
+                )
+                .readContent(readTime = readTime)
         return interviewScriptDbPort.save(script)
     }
 
@@ -53,7 +62,6 @@ class InterviewScriptService(
             interviewScriptDbPort
                 .get(pk = scriptPk)
                 .updateContent(
-                    requestMemberPk = requestMemberPk,
                     newContent = request.content,
                     updateTime = updateTime
                 )
