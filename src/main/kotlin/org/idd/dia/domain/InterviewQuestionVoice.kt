@@ -4,12 +4,14 @@ class InterviewQuestionVoice(
     private val pk: Pk,
     private val questionPk: InterviewQuestion.Pk,
     private val gender: Gender,
-    private val filePath: FilePath
+    private val filePath: FilePath,
+    private val subtitle: SubTitle
 ) {
     fun getPk() = this.pk
     fun getQuestionPk() = this.questionPk
     fun getGender() = this.gender
     fun getFilePath() = this.filePath
+    fun getSubtitle() = this.subtitle
 
     @JvmInline
     value class Pk(
@@ -23,6 +25,14 @@ class InterviewQuestionVoice(
 
     @JvmInline
     value class FilePath(
+        val value: String
+    )
+
+    /**
+     * 이 음성을 만들 때 사용한 자막
+     */
+    @JvmInline
+    value class SubTitle(
         val value: String
     )
 }

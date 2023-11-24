@@ -1,4 +1,6 @@
-package org.idd.dia.domain
+package org.idd.dia.application.dto
+
+import org.idd.dia.domain.InterviewScriptReference
 
 /**
  * 해당 질문에 가장 많이 인용된 레퍼런스

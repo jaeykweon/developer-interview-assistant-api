@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping
 class OthersRestController() {
 
     @GetMapping("/health-check")
-    fun healthCheck(): String {
-        return "ok"
+    fun healthCheck(): ApiResponse<String> {
+        return ApiResponse.ok("ok")
     }
 }

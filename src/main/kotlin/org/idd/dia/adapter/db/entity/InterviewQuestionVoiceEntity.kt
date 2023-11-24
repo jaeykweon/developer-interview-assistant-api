@@ -13,7 +13,8 @@ class InterviewQuestionVoiceEntity(
     pk: InterviewQuestionVoice.Pk,
     questionPk: InterviewQuestion.Pk,
     gender: InterviewQuestionVoice.Gender,
-    filePath: InterviewQuestionVoice.FilePath
+    filePath: InterviewQuestionVoice.FilePath,
+    subtitle: InterviewQuestionVoice.SubTitle
 ) : DbEntity(pk = pk.value) {
 
     val questionPk: Long = questionPk.value
@@ -22,4 +23,6 @@ class InterviewQuestionVoiceEntity(
     val gender: InterviewQuestionVoice.Gender = gender
 
     val filePath: String = filePath.value
+
+    val subtitle: String = subtitle.value
 }

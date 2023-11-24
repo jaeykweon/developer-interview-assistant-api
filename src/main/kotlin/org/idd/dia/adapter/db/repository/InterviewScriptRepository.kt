@@ -39,8 +39,8 @@ class InterviewScriptRepository(
     ): InterviewScriptEntity {
         return interviewScriptJpaRepository
             .findByQuestionPkAndOwnerPk(
-                questionPk = questionPk,
-                ownerPk = ownerPk
+                questionPk = questionPk.value,
+                ownerPk = ownerPk.value
             ) ?: throw IllegalArgumentException()
     }
 }
@@ -48,5 +48,5 @@ class InterviewScriptRepository(
 interface InterviewScriptJpaRepository : JpaRepository<InterviewScriptEntity, Long> {
     fun existsByQuestionPkAndOwnerPk(questionPk: Long, ownerPk: Long): Boolean
     fun findByQuestionPk(questionPk: Long): InterviewScriptEntity?
-    fun findByQuestionPkAndOwnerPk(questionPk: InterviewQuestion.Pk, ownerPk: Member.Pk): InterviewScriptEntity?
+    fun findByQuestionPkAndOwnerPk(questionPk: Long, ownerPk: Long): InterviewScriptEntity?
 }

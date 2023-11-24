@@ -1,6 +1,6 @@
 package org.idd.dia.adapter.db
 
-import org.idd.dia.domain.MostQuotedReferencesOfQuestion
+import org.idd.dia.application.dto.MostQuotedReferencesOfQuestion
 import org.idd.dia.application.port.out.InterviewScriptReferenceDbPort
 import org.idd.dia.domain.InterviewQuestion
 import org.idd.dia.domain.InterviewScriptReference

@@ -12,7 +12,8 @@ class InterviewQuestionVoiceMapper {
             pk = InterviewQuestionVoice.Pk(entity.pk),
             questionPk = InterviewQuestion.Pk(entity.questionPk),
             gender = entity.gender,
-            filePath = InterviewQuestionVoice.FilePath(entity.filePath)
+            filePath = InterviewQuestionVoice.FilePath(entity.filePath),
+            subtitle = InterviewQuestionVoice.SubTitle(entity.subtitle)
         )
     }
 
@@ -21,7 +22,8 @@ class InterviewQuestionVoiceMapper {
             pk = domainModel.getPk(),
             questionPk = domainModel.getQuestionPk(),
             gender = domainModel.getGender(),
-            filePath = domainModel.getFilePath()
+            filePath = domainModel.getFilePath(),
+            subtitle = domainModel.getSubtitle()
         )
     }
 }

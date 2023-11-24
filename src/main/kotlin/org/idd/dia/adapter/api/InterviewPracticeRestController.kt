@@ -14,8 +14,9 @@ class InterviewPracticeRestController(
     @GetMapping("/interview/practice/single")
     fun singleInterviewPractice(
         @RequestParam interviewQuestionPkValue: Long
-    ): SingleInterviewPracticeResponse {
+    ): ApiResponse<SingleInterviewPracticeResponse> {
         val interviewQuestionPk = InterviewQuestion.Pk(interviewQuestionPkValue)
-        return interviewPracticeService.getSinglePractice(interviewQuestionPk)
+        val singlePractice = interviewPracticeService.getSinglePractice(interviewQuestionPk)
+        return ApiResponse.ok(singlePractice)
     }
 }
