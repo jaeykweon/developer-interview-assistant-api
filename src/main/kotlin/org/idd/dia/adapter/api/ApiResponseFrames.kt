@@ -4,16 +4,16 @@ import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 
 data class CustomPage<T> (
-    val data: List<T>,
-    val size: Int,
+    val pageData: List<T>,
+    val pageSize: Int,
     val pageNumber: Int,
     val totalPages: Int,
 )
 
 fun <T> Page<T>.toCustomPage(): CustomPage<T> {
     return CustomPage(
-        data = this.content,
-        size = this.size,
+        pageData = this.content,
+        pageSize = this.size,
         pageNumber = this.number,
         totalPages = this.totalPages
     )
