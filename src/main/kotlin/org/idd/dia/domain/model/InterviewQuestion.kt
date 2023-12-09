@@ -1,4 +1,4 @@
-package org.idd.dia.domain
+package org.idd.dia.domain.model
 
 class InterviewQuestion(
     private val pk: Pk,

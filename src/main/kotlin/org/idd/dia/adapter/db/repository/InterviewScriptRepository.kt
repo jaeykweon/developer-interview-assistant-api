@@ -1,9 +1,9 @@
 package org.idd.dia.adapter.db.repository
 
-import org.idd.dia.adapter.db.entity.InterviewScriptEntity
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.entity.InterviewScriptEntity
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository

@@ -4,9 +4,9 @@ import org.idd.dia.application.dto.InterviewScriptCreateRequest
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
 import org.idd.dia.application.port.`in`.InterviewScriptServiceUseCase
 import org.idd.dia.application.port.out.InterviewScriptDbPort
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 

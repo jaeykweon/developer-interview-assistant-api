@@ -1,6 +1,6 @@
 package org.idd.dia.application.dto
 
-import org.idd.dia.domain.InterviewQuestionVoice
+import org.idd.dia.domain.model.InterviewQuestionVoice
 import org.idd.dia.util.mapToSet
 
 data class InterviewQuestionVoicesOfSingleQuestion(

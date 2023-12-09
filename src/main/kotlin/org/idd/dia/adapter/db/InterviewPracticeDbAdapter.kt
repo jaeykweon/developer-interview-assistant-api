@@ -6,7 +6,7 @@ import org.idd.dia.adapter.db.repository.InterviewQuestionRepository
 import org.idd.dia.adapter.db.repository.InterviewQuestionVoiceRepository
 import org.idd.dia.application.dto.SingleInterviewPracticeResponse
 import org.idd.dia.application.port.out.InterviewPracticeDbPort
-import org.idd.dia.domain.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.util.mapToSet
 import org.springframework.stereotype.Component
 

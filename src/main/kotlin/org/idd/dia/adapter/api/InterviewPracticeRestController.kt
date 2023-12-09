@@ -2,7 +2,7 @@ package org.idd.dia.adapter.api
 
 import org.idd.dia.application.dto.SingleInterviewPracticeResponse
 import org.idd.dia.application.port.`in`.InterviewPracticeServiceUseCase
-import org.idd.dia.domain.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestion
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 

@@ -2,7 +2,7 @@ package org.idd.dia.application.service
 
 import org.idd.dia.application.port.`in`.InterviewQuestionServiceUseCase
 import org.idd.dia.application.port.out.InterviewQuestionDbPort
-import org.idd.dia.domain.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestion
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service

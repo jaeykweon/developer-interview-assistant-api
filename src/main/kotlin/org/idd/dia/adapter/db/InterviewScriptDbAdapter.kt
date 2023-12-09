@@ -1,12 +1,12 @@
 package org.idd.dia.adapter.db
 
-import org.idd.dia.adapter.db.entity.InterviewScriptEntity
+import org.idd.dia.domain.entity.InterviewScriptEntity
 import org.idd.dia.adapter.db.mapper.InterviewScriptMapper
 import org.idd.dia.adapter.db.repository.InterviewScriptRepository
 import org.idd.dia.application.port.out.InterviewScriptDbPort
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import org.springframework.stereotype.Component
 
 @Component

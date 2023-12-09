@@ -1,6 +1,6 @@
-package org.idd.dia.adapter.db.entity
+package org.idd.dia.domain.entity
 
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.model.Member
 import javax.persistence.Entity
 import javax.persistence.Table
 
@@ -8,7 +8,8 @@ import javax.persistence.Table
 @Entity
 class MemberEntity(
     pk: Member.Pk,
-    githubId: Member.GithubId
+    githubId: Member.GithubId,
+    type: Member.Type,
 ) : DbEntity(pk = pk.value) {
 
     val githubId: String = githubId.value

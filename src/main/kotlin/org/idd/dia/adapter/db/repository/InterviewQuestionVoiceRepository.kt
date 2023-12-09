@@ -1,7 +1,7 @@
 package org.idd.dia.adapter.db.repository
 
-import org.idd.dia.adapter.db.entity.InterviewQuestionVoiceEntity
-import org.idd.dia.domain.InterviewQuestion
+import org.idd.dia.domain.entity.InterviewQuestionVoiceEntity
+import org.idd.dia.domain.model.InterviewQuestion
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 

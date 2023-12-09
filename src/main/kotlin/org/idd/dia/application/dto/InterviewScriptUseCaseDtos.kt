@@ -1,7 +1,7 @@
 package org.idd.dia.application.dto
 
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
 
 data class InterviewScriptCreateRequest(
     val questionPk: InterviewQuestion.Pk,

@@ -3,9 +3,9 @@ package org.idd.dia.adapter.api
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
 import org.idd.dia.application.port.`in`.InterviewScriptServiceUseCase
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable

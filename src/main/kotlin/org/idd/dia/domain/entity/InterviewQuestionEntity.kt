@@ -1,6 +1,6 @@
-package org.idd.dia.adapter.db.entity
+package org.idd.dia.domain.entity
 
-import org.idd.dia.domain.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestion
 import javax.persistence.Entity
 import javax.persistence.Table
 

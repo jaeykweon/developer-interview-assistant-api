@@ -1,6 +1,7 @@
 package org.idd.dia.adapter.api
 
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Slice
 import org.springframework.http.HttpStatus
 
 data class CustomPage<T> (
@@ -16,6 +17,18 @@ fun <T> Page<T>.toCustomPage(): CustomPage<T> {
         pageSize = this.size,
         pageNumber = this.number,
         totalPages = this.totalPages
+    )
+}
+
+data class CustomScroll<T>(
+    val scrollData: List<T>,
+    val next: Boolean
+)
+
+fun <T> Slice<T>.toCustomScroll(): CustomScroll<T> {
+    return CustomScroll(
+        scrollData = this.content,
+        next = this.hasNext()
     )
 }
 

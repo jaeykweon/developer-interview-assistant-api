@@ -1,5 +1,6 @@
-package org.idd.dia.domain
+package org.idd.dia.domain.model
 
+import org.idd.dia.domain.UnAuthorizedException
 import java.time.LocalDateTime
 
 class InterviewScript(

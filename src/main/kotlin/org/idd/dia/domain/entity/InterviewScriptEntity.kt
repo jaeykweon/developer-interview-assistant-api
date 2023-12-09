@@ -1,8 +1,8 @@
-package org.idd.dia.adapter.db.entity
+package org.idd.dia.domain.entity
 
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity

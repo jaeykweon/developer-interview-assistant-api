@@ -1,9 +1,9 @@
 package org.idd.dia.application.port.out
 
 import org.idd.dia.application.dto.MostQuotedReferencesOfQuestion
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScriptReference
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScriptReference
+import org.idd.dia.domain.model.Member
 
 interface InterviewScriptReferenceDbPort {
     fun getReference(pk: InterviewScriptReference.Pk): InterviewScriptReference

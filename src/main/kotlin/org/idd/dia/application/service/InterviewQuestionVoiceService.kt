@@ -3,7 +3,7 @@ package org.idd.dia.application.service
 import org.idd.dia.application.dto.InterviewQuestionVoicesOfSingleQuestion
 import org.idd.dia.application.port.`in`.InterviewQuestionVoiceServiceUseCase
 import org.idd.dia.application.port.out.InterviewQuestionVoiceDbPort
-import org.idd.dia.domain.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestion
 import org.springframework.stereotype.Service
 
 @Service

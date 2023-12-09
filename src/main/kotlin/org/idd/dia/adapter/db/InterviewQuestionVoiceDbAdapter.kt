@@ -3,8 +3,8 @@ package org.idd.dia.adapter.db
 import org.idd.dia.adapter.db.mapper.InterviewQuestionVoiceMapper
 import org.idd.dia.adapter.db.repository.InterviewQuestionVoiceRepository
 import org.idd.dia.application.port.out.InterviewQuestionVoiceDbPort
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewQuestionVoice
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestionVoice
 import org.idd.dia.util.mapToSet
 import org.springframework.stereotype.Component
 

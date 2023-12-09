@@ -1,7 +1,8 @@
-package org.idd.dia.adapter.db.entity
+package org.idd.dia.domain.entity
 
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewQuestionVoice
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestionVoice
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
@@ -19,8 +20,8 @@ class InterviewQuestionVoiceEntity(
 
     val questionPk: Long = questionPk.value
 
-    @Enumerated(EnumType.STRING)
-    val gender: InterviewQuestionVoice.Gender = gender
+    private val gender: String = gender.name
+    fun getGender() = InterviewQuestionVoice.Gender.from(gender)
 
     val filePath: String = filePath.value
 

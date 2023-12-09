@@ -1,7 +1,7 @@
 package org.idd.dia.adapter.db.repository
 
-import org.idd.dia.adapter.db.entity.InterviewQuestionEntity
-import org.idd.dia.domain.InterviewQuestion
+import org.idd.dia.domain.entity.InterviewQuestionEntity
+import org.idd.dia.domain.model.InterviewQuestion
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

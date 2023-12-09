@@ -1,7 +1,7 @@
 package org.idd.dia.adapter.api
 
 import org.idd.dia.application.port.`in`.InterviewQuestionServiceUseCase
-import org.idd.dia.domain.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestion
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.GetMapping

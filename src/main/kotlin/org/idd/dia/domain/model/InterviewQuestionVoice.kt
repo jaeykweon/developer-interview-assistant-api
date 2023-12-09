@@ -1,4 +1,4 @@
-package org.idd.dia.domain
+package org.idd.dia.domain.model
 
 class InterviewQuestionVoice(
     private val pk: Pk,
@@ -20,7 +20,13 @@ class InterviewQuestionVoice(
 
     enum class Gender {
         MALE,
-        FEMALE
+        FEMALE;
+
+        companion object {
+            fun from(string: String): Gender {
+                return valueOf(string)
+            }
+        }
     }
 
     @JvmInline

@@ -1,7 +1,7 @@
-package org.idd.dia.adapter.db.entity
+package org.idd.dia.domain.entity
 
-import org.idd.dia.domain.InterviewScriptReference
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.model.InterviewScriptReference
+import org.idd.dia.domain.model.Member
 import javax.persistence.Entity
 import javax.persistence.Table
 

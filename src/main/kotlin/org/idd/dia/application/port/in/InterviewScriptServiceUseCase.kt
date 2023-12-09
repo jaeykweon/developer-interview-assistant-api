@@ -2,9 +2,9 @@ package org.idd.dia.application.port.`in`
 
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import java.time.LocalDateTime
 
 interface InterviewScriptServiceUseCase {
