@@ -1,22 +1,39 @@
 package org.idd.dia.domain.model
 
-import java.time.LocalDateTime
-
-class InterviewPracticeHistory(
-    pk: Pk,
-    memberPk: Member.Pk,
-    questionPk: InterviewQuestion.Pk,
-    voicePk: InterviewQuestionVoice.Pk,
-    time: LocalDateTime
-) {
-    val pk: Pk = pk
-    val memberPk: Member.Pk
-    val questionPk: InterviewQuestion.Pk
-    val voicePk: InterviewQuestionVoice.Pk
-    val time: LocalDateTime
-
+class InterviewPracticeHistory {
     @JvmInline
     value class Pk(
-        val value: Long
+        val value: Long,
+    ) {
+        companion object {
+            @JvmStatic
+            fun new(): Pk = Pk(0L)
+
+            @JvmStatic
+            fun max(): Pk = Pk(Long.MAX_VALUE)
+        }
+    }
+
+    enum class Type {
+        /** 개별 질문 연습 */
+        SINGLE,
+
+        /** 여러 질문 연습 */
+        MULTI,
+    }
+
+    /** 연습한 시간(초) */
+    @JvmInline
+    value class ElapsedTime(
+        val value: Int,
+    ) {
+        init {
+            require(value > 0) { "elapsedTime must be more than 0 sec" }
+        }
+    }
+
+    @JvmInline
+    value class FilePath(
+        val value: String,
     )
 }

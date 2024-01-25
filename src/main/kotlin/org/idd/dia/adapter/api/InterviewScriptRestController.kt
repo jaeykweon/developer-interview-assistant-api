@@ -1,8 +1,10 @@
 package org.idd.dia.adapter.api
 
+import org.idd.dia.adapter.config.RequestAuth
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
+import org.idd.dia.application.dto.InterviewScriptResponse
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
-import org.idd.dia.application.port.`in`.InterviewScriptServiceUseCase
+import org.idd.dia.application.port.usecase.InterviewScriptServiceUseCase
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewScript
 import org.idd.dia.domain.model.Member
@@ -16,38 +18,44 @@ import java.time.LocalDateTime
 
 @ApiV0RestController
 class InterviewScriptRestController(
-    private val interviewScriptServiceUseCase: InterviewScriptServiceUseCase
+    private val interviewScriptServiceUseCase: InterviewScriptServiceUseCase,
 ) {
     @PostMapping("/interview/scripts")
     fun create(
+        @RequestAuth memberPk: Member.Pk,
         @RequestBody interviewScriptCreateRequest: InterviewScriptCreateRequest,
-    ): InterviewScript {
-        return interviewScriptServiceUseCase.create(interviewScriptCreateRequest, TODO())
+    ): ApiResponse<InterviewScriptResponse> {
+        val interviewScriptResponse = interviewScriptServiceUseCase.create(interviewScriptCreateRequest, memberPk)
+        return ApiResponse.ok(interviewScriptResponse)
     }
 
     @GetMapping("/interview/scripts")
     fun get(
+        @RequestAuth memberPk: Member.Pk,
         @RequestParam questionPk: Long,
-    ): InterviewScript {
+    ): ApiResponse<InterviewScriptResponse> {
         val time = LocalDateTime.now()
-        return interviewScriptServiceUseCase.read(
+        val interviewScriptResponse =  interviewScriptServiceUseCase.read(
             questionPk = InterviewQuestion.Pk(questionPk),
-            requestMemberPk = TODO(),
+            requestMemberPk = memberPk,
             readTime = time,
         )
+        return ApiResponse.ok(interviewScriptResponse)
     }
 
     @PatchMapping("/interview/scripts/{scriptPk}")
     fun updateContent(
+        @RequestAuth memberPk: Member.Pk,
         @PathVariable scriptPk: Long,
         @RequestBody request: InterviewScriptUpdateRequest,
-    ): InterviewScript {
+    ): ApiResponse<InterviewScriptResponse> {
         val time = LocalDateTime.now()
-        return interviewScriptServiceUseCase.updateContent(
+        val interviewScriptResponse = interviewScriptServiceUseCase.updateContent(
             scriptPk = InterviewScript.Pk(scriptPk),
             request = request,
-            requestMemberPk = Member.Pk(TODO()),
-            updateTime = time
+            requestMemberPk = memberPk,
+            updateTime = time,
         )
+        return ApiResponse.ok(interviewScriptResponse)
     }
 }

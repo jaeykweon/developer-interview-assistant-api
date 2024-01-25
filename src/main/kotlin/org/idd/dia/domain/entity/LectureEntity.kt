@@ -1,18 +1,34 @@
 package org.idd.dia.domain.entity
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.idd.dia.domain.model.Lecture
-import javax.persistence.Entity
-import javax.persistence.Table
 
 @Table(name = "lecture")
 @Entity
 class LectureEntity(
     pk: Lecture.Pk,
     url: Lecture.Url,
-    price: Lecture.Price
-) : DbEntity(pk = pk.value) {
+    price: Lecture.Price,
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk", nullable = false)
+    val pkValue: Long = pk.value
 
-    val url: String = url.value
+    fun getPk() = Lecture.Pk(pkValue)
 
-    val price: Int = price.value
+    @Column(name = "url", nullable = false)
+    val urlValue: String = url.value
+
+    fun getUrl() = Lecture.Url(urlValue)
+
+    @Column(name = "price", nullable = false)
+    val priceValue: Int = price.value
+
+    fun getPrice() = Lecture.Price(priceValue)
 }

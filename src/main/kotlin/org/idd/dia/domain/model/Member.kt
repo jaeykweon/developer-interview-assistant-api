@@ -2,22 +2,31 @@ package org.idd.dia.domain.model
 
 class Member(
     private val pk: Pk,
-    private val githubId: GithubId
+    private val githubId: GithubId,
 ) {
-
     @JvmInline
     value class Pk(
-        val value: Long = 0L
+        val value: Long = 0L,
     )
 
     @JvmInline
     value class GithubId(
-        val value: String
+        val value: String,
+    )
+
+    @JvmInline
+    value class Nickname(
+        val value: String,
+    )
+
+    @JvmInline
+    value class Image(
+        val value: String,
     )
 
     enum class Role {
         FRONT,
         BACK,
-        FULLSTACK
+        FULLSTACK,
     }
 }

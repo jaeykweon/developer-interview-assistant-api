@@ -1,4 +1,4 @@
-package org.idd.dia.application.port.out
+package org.idd.dia.application.port.usingcase
 
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionVoice

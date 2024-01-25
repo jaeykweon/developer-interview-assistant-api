@@ -1,6 +1,9 @@
 package org.idd.dia.api
 
-class InterviewScriptApiTest {
+import io.kotest.core.spec.style.StringSpec
 
-    fun `면접 대본 조회`() {}
-}
+class InterviewScriptApiTest :
+    StringSpec({
+        "면접 대본 조회" {
+        }
+    })

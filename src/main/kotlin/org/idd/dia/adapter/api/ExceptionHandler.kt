@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class ExceptionHandler {
-
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Unauthorized")
     @ExceptionHandler(UnAuthorizedException::class)
     fun handleUnAuthorizedException() {

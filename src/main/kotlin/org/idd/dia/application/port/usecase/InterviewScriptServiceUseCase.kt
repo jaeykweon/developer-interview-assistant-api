@@ -1,6 +1,7 @@
-package org.idd.dia.application.port.`in`
+package org.idd.dia.application.port.usecase
 
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
+import org.idd.dia.application.dto.InterviewScriptResponse
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewScript
@@ -10,17 +11,19 @@ import java.time.LocalDateTime
 interface InterviewScriptServiceUseCase {
     fun create(
         request: InterviewScriptCreateRequest,
-        requestMemberPk: Member.Pk
-    ): InterviewScript
+        requestMemberPk: Member.Pk,
+    ): InterviewScriptResponse
+
     fun read(
         questionPk: InterviewQuestion.Pk,
         requestMemberPk: Member.Pk,
-        readTime: LocalDateTime
-    ): InterviewScript
+        readTime: LocalDateTime,
+    ): InterviewScriptResponse
+
     fun updateContent(
         scriptPk: InterviewScript.Pk,
         request: InterviewScriptUpdateRequest,
         requestMemberPk: Member.Pk,
-        updateTime: LocalDateTime
-    ): InterviewScript
+        updateTime: LocalDateTime,
+    ): InterviewScriptResponse
 }

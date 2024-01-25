@@ -1,16 +1,17 @@
 package org.idd.dia.application.dto
 
-import org.idd.dia.domain.model.InterviewQuestionVoice
-import org.idd.dia.util.mapToSet
+import org.idd.dia.domain.entity.InterviewQuestionVoiceEntity
 
-data class InterviewQuestionVoicesOfSingleQuestion(
-    val values: Set<InterviewQuestionVoice>
+data class InterviewQuestionVoiceResponse(
+    val pk: Long,
+    val questionPk: Long,
+    val gender: String,
+    val filePath: String,
 ) {
-    init {
-        validateSingleQuestion()
-    }
-
-    private fun validateSingleQuestion() {
-        require(values.mapToSet { it.getQuestionPk() }.size == 1)
-    }
+    constructor(voice: InterviewQuestionVoiceEntity) : this(
+        pk = voice.getPk().value,
+        questionPk = voice.question.pkValue,
+        gender = voice.getGender().name,
+        filePath = voice.getFilePath().value,
+    )
 }

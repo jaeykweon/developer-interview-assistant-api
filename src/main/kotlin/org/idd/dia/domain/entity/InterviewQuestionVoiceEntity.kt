@@ -1,29 +1,50 @@
 package org.idd.dia.domain.entity
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
+import org.idd.dia.domain.model.Gender
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionVoice
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.Table
 
 @Table(name = "interview_question_voice")
 @Entity
 class InterviewQuestionVoiceEntity(
     pk: InterviewQuestionVoice.Pk,
+    question: InterviewQuestionEntity,
     questionPk: InterviewQuestion.Pk,
-    gender: InterviewQuestionVoice.Gender,
+    gender: Gender,
     filePath: InterviewQuestionVoice.FilePath,
-    subtitle: InterviewQuestionVoice.SubTitle
-) : DbEntity(pk = pk.value) {
+    subtitle: InterviewQuestionVoice.SubTitle,
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk", nullable = false)
+    val pkValue: Long = pk.value
 
-    val questionPk: Long = questionPk.value
+    fun getPk() = InterviewQuestionVoice.Pk(pkValue)
 
-    private val gender: String = gender.name
-    fun getGender() = InterviewQuestionVoice.Gender.from(gender)
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "pk",nullable = false)
+    val question: InterviewQuestionEntity = question
 
-    val filePath: String = filePath.value
+    @Column(name = "gender", nullable = false)
+    val genderValue: String = gender.name
 
-    val subtitle: String = subtitle.value
+    fun getGender() = Gender.from(genderValue)
+
+    @Column(name = "file_path", nullable = false)
+    val filePathValue: String = filePath.value
+
+    fun getFilePath() = InterviewQuestionVoice.FilePath(filePathValue)
+
+    @Column(name = "subtitle", nullable = false)
+    val subtitleValue: String = subtitle.value
+
+    fun getSubtitle() = InterviewQuestionVoice.SubTitle(subtitleValue)
 }

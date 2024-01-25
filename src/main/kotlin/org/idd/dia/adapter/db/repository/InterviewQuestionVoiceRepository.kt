@@ -1,20 +1,19 @@
 package org.idd.dia.adapter.db.repository
 
+import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.InterviewQuestionVoiceEntity
-import org.idd.dia.domain.model.InterviewQuestion
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 
 @Component
 class InterviewQuestionVoiceRepository(
-    private val interviewQuestionVoiceJpaRepository: InterviewQuestionVoiceJpaRepository
+    private val interviewQuestionVoiceJpaRepository: InterviewQuestionVoiceJpaRepository,
 ) {
-    fun getVoicesOfSingleQuestion(interviewQuestionPk: InterviewQuestion.Pk): Set<InterviewQuestionVoiceEntity> {
-        return interviewQuestionVoiceJpaRepository
-            .findAllByQuestionPk(interviewQuestionPk.value)
-    }
+    fun getVoicesOfSingleQuestion(questionEntity: InterviewQuestionEntity): Set<InterviewQuestionVoiceEntity> =
+        interviewQuestionVoiceJpaRepository
+            .findAllByQuestion(questionEntity)
 }
 
 interface InterviewQuestionVoiceJpaRepository : JpaRepository<InterviewQuestionVoiceEntity, Long> {
-    fun findAllByQuestionPk(interviewQuestionPk: Long): Set<InterviewQuestionVoiceEntity>
+    fun findAllByQuestion(question: InterviewQuestionEntity): Set<InterviewQuestionVoiceEntity>
 }

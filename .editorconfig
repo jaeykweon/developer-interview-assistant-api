@@ -6,7 +6,9 @@ end_of_line=lf
 indent_style=space
 indent_size=4
 insert_final_newline=true
-disabled_rules=import-ordering,comment-spacing,filename
+# disabled_rules=import-ordering,comment-spacing,filename
+ktlint_standard_import-ordering = disabled
 
 [*.{kt,kts}]
+ktlint_standard_filename = disabled
 

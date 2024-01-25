@@ -6,9 +6,10 @@ import io.kotest.core.spec.style.DescribeSpec
 /**
  * @see InterviewScript
  */
-class InterviewScriptTest : DescribeSpec({
+class InterviewScriptTest :
+    DescribeSpec({
 
-    isolationMode = IsolationMode.InstancePerLeaf
+        isolationMode = IsolationMode.InstancePerLeaf
 
 //    describe("InterviewScript: 면접 대본") {
 //        val createdTime = LocalDateTime.now()
@@ -51,4 +52,4 @@ class InterviewScriptTest : DescribeSpec({
 //            }
 //        }
 //    }
-})
+    })

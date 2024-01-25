@@ -3,9 +3,10 @@ package org.idd.dia.domain
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 
-class InterviewScriptReferenceTest : DescribeSpec({
+class InterviewScriptReferenceTest :
+    DescribeSpec({
 
-    isolationMode = IsolationMode.InstancePerLeaf
+        isolationMode = IsolationMode.InstancePerLeaf
 
 //    describe("InterviewScriptReference: 면접 대본 레퍼런스") {
 //        val interviewScriptReference =
@@ -37,4 +38,4 @@ class InterviewScriptReferenceTest : DescribeSpec({
 //            interviewScriptReference.getClickCount().value shouldBe before.value + 1L
 //        }
 //    }
-})
+    })

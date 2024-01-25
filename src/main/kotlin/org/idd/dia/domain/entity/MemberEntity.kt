@@ -1,16 +1,40 @@
 package org.idd.dia.domain.entity
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.idd.dia.domain.model.Member
-import javax.persistence.Entity
-import javax.persistence.Table
 
 @Table(name = "dia_member")
 @Entity
 class MemberEntity(
     pk: Member.Pk,
+    nickname: Member.Nickname,
     githubId: Member.GithubId,
-    type: Member.Type,
-) : DbEntity(pk = pk.value) {
+    image: Member.Image,
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk", nullable = false)
+    val pkValue: Long = pk.value
 
-    val githubId: String = githubId.value
+    fun getPk() = Member.Pk(pkValue)
+
+    @Column(name = "nickname", nullable = false)
+    val nicknameValue: String = nickname.value
+
+    fun getNickname() = Member.Nickname(nicknameValue)
+
+    @Column(name = "image", nullable = false)
+    val imageValue: String = image.value
+
+    fun getImage() = Member.Image(imageValue)
+
+    @Column(name = "githubId", nullable = false)
+    val githubIdValue: String = githubId.value
+
+    fun getGithubId() = Member.GithubId(githubIdValue)
 }

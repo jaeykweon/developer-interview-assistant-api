@@ -4,7 +4,7 @@ import org.idd.dia.domain.entity.InterviewScriptReferenceEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
 class InterviewScriptReferenceRepository(
-    private val interviewScriptReferenceJpaRepository: InterviewScriptReferenceJpaRepository
+    private val interviewScriptReferenceJpaRepository: InterviewScriptReferenceJpaRepository,
 )
 
 interface InterviewScriptReferenceJpaRepository : JpaRepository<InterviewScriptReferenceEntity, Long>

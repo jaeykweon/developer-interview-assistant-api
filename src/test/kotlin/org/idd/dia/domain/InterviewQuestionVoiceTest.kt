@@ -3,9 +3,10 @@ package org.idd.dia.domain
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 
-class InterviewQuestionVoiceTest : DescribeSpec({
+class InterviewQuestionVoiceTest :
+    DescribeSpec({
 
-    isolationMode = IsolationMode.InstancePerLeaf
+        isolationMode = IsolationMode.InstancePerLeaf
 
 //    describe("InterviewQuestionVoice: 면접 질문 음성") {
 //
@@ -26,4 +27,4 @@ class InterviewQuestionVoiceTest : DescribeSpec({
 //            }
 //        }
 //    }
-})
+    })

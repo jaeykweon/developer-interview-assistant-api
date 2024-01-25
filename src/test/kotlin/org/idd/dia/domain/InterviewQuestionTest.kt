@@ -6,9 +6,10 @@ import io.kotest.core.spec.style.DescribeSpec
 /**
  * @see InterviewQuestion
  */
-class InterviewQuestionTest : DescribeSpec({
+class InterviewQuestionTest :
+    DescribeSpec({
 
-    isolationMode = IsolationMode.InstancePerLeaf
+        isolationMode = IsolationMode.InstancePerLeaf
 
 //    describe("InterviewQuestion: 면접 질문") {
 //
@@ -24,4 +25,4 @@ class InterviewQuestionTest : DescribeSpec({
 //            }
 //        }
 //    }
-})
+    })
