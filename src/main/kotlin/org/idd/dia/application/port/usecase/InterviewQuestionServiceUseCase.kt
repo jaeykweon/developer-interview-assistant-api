@@ -4,6 +4,7 @@ import org.idd.dia.application.dto.InterviewQuestionResponse
 import org.idd.dia.application.dto.RegisterInterviewQuestionRequest
 import org.idd.dia.application.dto.SetCategoriesOfInterviewQuestionRequest
 import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
@@ -11,7 +12,7 @@ interface InterviewQuestionServiceUseCase {
     fun register(request: RegisterInterviewQuestionRequest): InterviewQuestion.Pk
 
     fun getQuestionPage(
-        previousPk: InterviewQuestion.Pk?,
+        categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse>
 

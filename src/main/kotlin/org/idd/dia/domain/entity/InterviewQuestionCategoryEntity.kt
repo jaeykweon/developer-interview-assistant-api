@@ -8,11 +8,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewQuestionCategory
 
-@Table(name="interview_question_category")
+@Table(name = "interview_question_category")
 @Entity
 class InterviewQuestionCategoryEntity(
     pk: InterviewQuestionCategory.Pk,
-    korTitle: InterviewQuestionCategory.KorTitle,
+    title: InterviewQuestionCategory.Title,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +21,13 @@ class InterviewQuestionCategoryEntity(
 
     fun getPk() = InterviewQuestionCategory.Pk(pkValue)
 
-    @Column(name = "kor_title", nullable = false)
-    val korTitleValue: String = korTitle.value
+    @Column(name = "eng_title", nullable = false)
+    val engTitleValue: String = title.value
 
-    fun getKorTitle() = InterviewQuestionCategory.KorTitle(korTitleValue)
+    fun getEngTitle() = InterviewQuestionCategory.Title(engTitleValue)
+
+    @Column(name = "kor_title", nullable = false)
+    val korTitleValue: String = title.value
+
+    fun getKorTitle() = InterviewQuestionCategory.Title(korTitleValue)
 }

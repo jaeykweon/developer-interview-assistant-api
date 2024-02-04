@@ -6,12 +6,12 @@ data class InterviewQuestionVoiceResponse(
     val pk: Long,
     val questionPk: Long,
     val gender: String,
-    val filePath: String,
+    val fileUrl: String,
 ) {
     constructor(voice: InterviewQuestionVoiceEntity) : this(
         pk = voice.getPk().value,
         questionPk = voice.question.pkValue,
         gender = voice.getGender().name,
-        filePath = voice.getFilePath().value,
+        fileUrl = voice.getFilePath().value,
     )
 }

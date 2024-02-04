@@ -11,6 +11,7 @@ import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -22,7 +23,6 @@ class InterviewQuestionService(
     private val interviewQuestionCategoryRepository: InterviewQuestionCategoryRepository,
     private val interviewQuestionCategoryMappingRepository: InterviewQuestionCategoryMappingRepository,
 ) : InterviewQuestionServiceUseCase {
-
     override fun register(request: RegisterInterviewQuestionRequest): InterviewQuestion.Pk {
         val categories: Set<InterviewQuestionCategoryEntity> =
             interviewQuestionCategoryRepository
@@ -46,12 +46,11 @@ class InterviewQuestionService(
     }
 
     override fun getQuestionPage(
-        previousPk: InterviewQuestion.Pk?,
+        categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        val cleanedPreviousPk = previousPk ?: InterviewQuestion.Pk.max()
         return interviewQuestionRepository
-            .getPageWithRelations(cleanedPreviousPk, pageable)
+            .getPageWithRelations(categories, pageable)
             .map { InterviewQuestionResponse.from(it) }
     }
 

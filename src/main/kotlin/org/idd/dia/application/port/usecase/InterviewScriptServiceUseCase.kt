@@ -9,10 +9,10 @@ import org.idd.dia.domain.model.Member
 import java.time.LocalDateTime
 
 interface InterviewScriptServiceUseCase {
-    fun create(
+    fun createOrThrowIfExist(
         request: InterviewScriptCreateRequest,
         requestMemberPk: Member.Pk,
-    ): InterviewScriptResponse
+    ): InterviewScript.Pk
 
     fun read(
         questionPk: InterviewQuestion.Pk,
@@ -25,5 +25,10 @@ interface InterviewScriptServiceUseCase {
         request: InterviewScriptUpdateRequest,
         requestMemberPk: Member.Pk,
         updateTime: LocalDateTime,
+    ): InterviewScriptResponse
+
+    fun getScript(
+        scriptPk: InterviewScript.Pk,
+        requestMemberPk: Member.Pk,
     ): InterviewScriptResponse
 }

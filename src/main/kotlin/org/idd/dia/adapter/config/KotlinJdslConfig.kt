@@ -4,7 +4,6 @@ import com.linecorp.kotlinjdsl.querymodel.jpql.select.SelectQuery
 import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.extension.createQuery
 import jakarta.persistence.EntityManager
-import jakarta.persistence.EntityManagerFactory
 import jakarta.persistence.PersistenceContext
 import org.idd.dia.domain.model.CustomScroll
 import org.springframework.context.annotation.Bean

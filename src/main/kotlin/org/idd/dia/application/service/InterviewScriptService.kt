@@ -23,12 +23,11 @@ class InterviewScriptService(
     private val memberRepository: MemberRepository,
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
 ) : InterviewScriptServiceUseCase {
-
-    override fun create(
+    override fun createOrThrowIfExist(
         request: InterviewScriptCreateRequest,
         requestMemberPk: Member.Pk,
-    ): InterviewScriptResponse {
-        val questionEntity = interviewQuestionDbPort.getByPk(request.questionPk)
+    ): InterviewScript.Pk {
+        val questionEntity = interviewQuestionDbPort.getByPk(request.getQuestionPk())
         val ownerEntity = memberRepository.getByPk(requestMemberPk)
         val scriptAlreadyExists =
             interviewScriptDbPort.isExists(
@@ -49,7 +48,15 @@ class InterviewScriptService(
                 lastModifiedTime = LocalDateTime.now(),
             )
         val saved = interviewScriptDbPort.save(newScriptEntity)
-        return InterviewScriptResponse(saved)
+        return saved.getPk()
+    }
+
+    override fun getScript(
+        scriptPk: InterviewScript.Pk,
+        requestMemberPk: Member.Pk,
+    ): InterviewScriptResponse {
+        val scriptEntity = interviewScriptDbPort.getByPk(scriptPk)
+        return InterviewScriptResponse.from(scriptEntity)
     }
 
     override fun read(
@@ -65,7 +72,7 @@ class InterviewScriptService(
                 ownerEntity = ownerEntity,
             )
         scriptEntity.read(readTime)
-        return InterviewScriptResponse(scriptEntity)
+        return InterviewScriptResponse.from(scriptEntity)
     }
 
     override fun updateContent(
@@ -79,6 +86,6 @@ class InterviewScriptService(
             newContent = request.content,
             updateTime = updateTime,
         )
-        return InterviewScriptResponse(entity)
+        return InterviewScriptResponse.from(entity)
     }
 }

@@ -46,7 +46,7 @@ data class ApiResponse<T>(
             )
 
         @JvmStatic
-        fun <T> badRequest(detail: String?): ApiResponse<Nothing> =
+        fun badRequest(detail: String?): ApiResponse<Nothing> =
             ApiResponse(
                 data = null,
                 status = HttpStatus.BAD_REQUEST.value(),
@@ -54,7 +54,7 @@ data class ApiResponse<T>(
             )
 
         @JvmStatic
-        fun <T> unauthorized(detail: String?): ApiResponse<Nothing> =
+        fun unauthorized(detail: String?): ApiResponse<Nothing> =
             ApiResponse(
                 data = null,
                 status = HttpStatus.UNAUTHORIZED.value(),
@@ -62,7 +62,7 @@ data class ApiResponse<T>(
             )
 
         @JvmStatic
-        fun <T> notFound(detail: String?): ApiResponse<Nothing> =
+        fun notFound(detail: String?): ApiResponse<Nothing> =
             ApiResponse(
                 data = null,
                 status = HttpStatus.NOT_FOUND.value(),
@@ -70,7 +70,7 @@ data class ApiResponse<T>(
             )
 
         @JvmStatic
-        fun <T> internalServerError(detail: String?): ApiResponse<Nothing> =
+        fun internalServerError(detail: String?): ApiResponse<Nothing> =
             ApiResponse(
                 data = null,
                 status = HttpStatus.INTERNAL_SERVER_ERROR.value(),

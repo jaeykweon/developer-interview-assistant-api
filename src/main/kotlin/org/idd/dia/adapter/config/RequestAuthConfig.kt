@@ -2,7 +2,6 @@ package org.idd.dia.adapter.config
 
 import org.idd.dia.application.service.AuthService
 import org.idd.dia.domain.UnAuthorizedException
-import org.idd.dia.domain.model.Member
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpHeaders
@@ -30,7 +29,6 @@ annotation class RequestAuth
 class RequestAuthResolver(
     private val authService: AuthService,
 ) : HandlerMethodArgumentResolver {
-
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return parameter.hasParameterAnnotation(RequestAuth::class.java)
     }
@@ -40,11 +38,11 @@ class RequestAuthResolver(
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
-    ): Member.Pk {
+    ): Long {
         val authorization =
             webRequest.getHeader(HttpHeaders.AUTHORIZATION)
                 ?: throw UnAuthorizedException("인증 토큰이 없습니다")
 
-        return authService.getMemberPkByAccessToken(authorization)
+        return authService.getMemberPkByAccessToken(authorization).value
     }
 }

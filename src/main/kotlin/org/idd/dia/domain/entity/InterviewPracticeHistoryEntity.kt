@@ -16,6 +16,7 @@ import java.time.LocalDateTime
 class InterviewPracticeHistoryEntity(
     pk: InterviewPracticeHistory.Pk,
     owner: MemberEntity,
+    question: InterviewQuestionEntity,
     type: InterviewPracticeHistory.Type,
     elapsedTime: InterviewPracticeHistory.ElapsedTime,
     filePath: InterviewPracticeHistory.FilePath,
@@ -31,6 +32,10 @@ class InterviewPracticeHistoryEntity(
     @ManyToOne
     @JoinColumn(referencedColumnName = "pk", nullable = false)
     val owner: MemberEntity = owner
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "pk", nullable = false)
+    val question: InterviewQuestionEntity = question
 
     @Column(name = "type", nullable = false)
     val typeValue = type.name

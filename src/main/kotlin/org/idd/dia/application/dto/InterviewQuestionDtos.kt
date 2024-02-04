@@ -20,8 +20,9 @@ data class RegisterInterviewQuestionRequest(
 
 data class InterviewQuestionResponse(
     val pk: Long,
-    val title: String,
+    val korTitle: String,
     val categories: Set<InterviewQuestionCategoryResponse>,
+    val voices: Set<InterviewQuestionVoiceResponse>,
 ) {
     companion object {
         @JvmStatic
@@ -30,10 +31,15 @@ data class InterviewQuestionResponse(
                 interviewQuestionEntity.categories.mapToSet {
                     InterviewQuestionCategoryResponse(it.category)
                 }
+            val voices =
+                interviewQuestionEntity.voices.mapToSet {
+                    InterviewQuestionVoiceResponse(it)
+                }
             return InterviewQuestionResponse(
                 pk = interviewQuestionEntity.pkValue,
-                title = interviewQuestionEntity.korTitleValue,
+                korTitle = interviewQuestionEntity.korTitleValue,
                 categories = categories,
+                voices = voices,
             )
         }
     }

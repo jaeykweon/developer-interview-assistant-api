@@ -6,9 +6,11 @@ import org.idd.dia.domain.model.InterviewScript
 import java.time.LocalDateTime
 
 data class InterviewScriptCreateRequest(
-    val questionPk: InterviewQuestion.Pk,
+    val questionPkValue: Long,
     val content: InterviewScript.Content,
-)
+) {
+    fun getQuestionPk(): InterviewQuestion.Pk = InterviewQuestion.Pk(questionPkValue)
+}
 
 data class InterviewScriptResponse(
     val pk: Long,
@@ -19,16 +21,6 @@ data class InterviewScriptResponse(
     val lastModifiedTime: LocalDateTime,
     val lastReadTime: LocalDateTime,
 ) {
-    constructor(entity: InterviewScriptEntity) : this(
-        pk = entity.getPk().value,
-        ownerPk = entity.owner.getPk().value,
-        question = InterviewQuestionResponse.from(entity.question),
-        content = entity.getContent().value,
-        createdTime = entity.getCreatedTime(),
-        lastModifiedTime = entity.getLastModifiedTime(),
-        lastReadTime = entity.getLastReadTime(),
-    )
-
     companion object {
         @JvmStatic
         fun from(entity: InterviewScriptEntity): InterviewScriptResponse {

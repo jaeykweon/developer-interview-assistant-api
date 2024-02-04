@@ -7,7 +7,7 @@ class InterviewQuestionCategory {
     )
 
     @JvmInline
-    value class KorTitle(
+    value class Title(
         val value: String,
     )
 }

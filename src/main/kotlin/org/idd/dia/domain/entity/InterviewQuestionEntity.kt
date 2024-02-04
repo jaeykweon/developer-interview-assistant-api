@@ -28,9 +28,9 @@ class InterviewQuestionEntity(
 
     fun getKorTitle() = InterviewQuestion.Title(korTitleValue)
 
-    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     val categories: Set<InterviewQuestionCategoryMappingEntity> = categories
 
-    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     val voices: Set<InterviewQuestionVoiceEntity> = voices
 }

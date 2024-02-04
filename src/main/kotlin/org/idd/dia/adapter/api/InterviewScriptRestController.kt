@@ -16,46 +16,59 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDateTime
 
+/**
+ * 스크립트(대본) 관련 API
+ */
 @ApiV0RestController
 class InterviewScriptRestController(
     private val interviewScriptServiceUseCase: InterviewScriptServiceUseCase,
 ) {
+    /** 스크립트 작성 */
     @PostMapping("/interview/scripts")
-    fun create(
+    fun createScript(
         @RequestAuth memberPk: Member.Pk,
         @RequestBody interviewScriptCreateRequest: InterviewScriptCreateRequest,
     ): ApiResponse<InterviewScriptResponse> {
-        val interviewScriptResponse = interviewScriptServiceUseCase.create(interviewScriptCreateRequest, memberPk)
-        return ApiResponse.ok(interviewScriptResponse)
+        val newPk: InterviewScript.Pk =
+            interviewScriptServiceUseCase.createOrThrowIfExist(
+                interviewScriptCreateRequest,
+                memberPk,
+            )
+        val newScript = interviewScriptServiceUseCase.getScript(newPk, memberPk)
+        return ApiResponse.ok(newScript)
     }
 
+    /** 스크립트 조회 */
     @GetMapping("/interview/scripts")
-    fun get(
+    fun getScript(
         @RequestAuth memberPk: Member.Pk,
         @RequestParam questionPk: Long,
     ): ApiResponse<InterviewScriptResponse> {
         val time = LocalDateTime.now()
-        val interviewScriptResponse =  interviewScriptServiceUseCase.read(
-            questionPk = InterviewQuestion.Pk(questionPk),
-            requestMemberPk = memberPk,
-            readTime = time,
-        )
+        val interviewScriptResponse =
+            interviewScriptServiceUseCase.read(
+                questionPk = InterviewQuestion.Pk(questionPk),
+                requestMemberPk = memberPk,
+                readTime = time,
+            )
         return ApiResponse.ok(interviewScriptResponse)
     }
 
+    /** 스크립트 수정 */
     @PatchMapping("/interview/scripts/{scriptPk}")
-    fun updateContent(
+    fun editScript(
         @RequestAuth memberPk: Member.Pk,
         @PathVariable scriptPk: Long,
         @RequestBody request: InterviewScriptUpdateRequest,
     ): ApiResponse<InterviewScriptResponse> {
         val time = LocalDateTime.now()
-        val interviewScriptResponse = interviewScriptServiceUseCase.updateContent(
-            scriptPk = InterviewScript.Pk(scriptPk),
-            request = request,
-            requestMemberPk = memberPk,
-            updateTime = time,
-        )
+        val interviewScriptResponse =
+            interviewScriptServiceUseCase.updateContent(
+                scriptPk = InterviewScript.Pk(scriptPk),
+                request = request,
+                requestMemberPk = memberPk,
+                updateTime = time,
+            )
         return ApiResponse.ok(interviewScriptResponse)
     }
 }

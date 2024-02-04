@@ -16,7 +16,7 @@ class OauthAccountEntity(
     @Id
     val pk: Long = pk
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     val member: MemberEntity = member
 
     val accessToken: String = accessToken
