@@ -5,7 +5,6 @@ import com.linecorp.kotlinjdsl.dsl.jpql.jpql
 import com.linecorp.kotlinjdsl.querymodel.jpql.entity.Entities.entity
 import com.linecorp.kotlinjdsl.querymodel.jpql.select.SelectQuery
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
-import org.idd.dia.adapter.api.dropNull
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.domain.NotFoundException
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
@@ -14,6 +13,7 @@ import org.idd.dia.domain.entity.mapping.InterviewQuestionCategoryMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
@@ -50,9 +50,9 @@ class InterviewQuestionRepository(
                 )
             }
         }
-        val result = jpaRepository.findPage(pageable, query)
-
-        return result.dropNull()
+//        val result = jpaRepository.findPage(pageable, query) // jdsl 업데이트 되면 사용 가능
+//        return result.dropNull()
+        return PageImpl(jpaRepository.findAll(query))
     }
 
     override fun getByPk(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
