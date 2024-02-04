@@ -23,6 +23,6 @@ data class SingleInterviewPracticeResponse(
 
     private fun voicesMustSameQuestion(): Boolean =
         voices.all { voice ->
-            voice.questionPk == question.pk
+            voice.questionPkValue == question.pkValue
         }
 }

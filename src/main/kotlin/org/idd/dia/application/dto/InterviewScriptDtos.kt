@@ -7,38 +7,41 @@ import java.time.LocalDateTime
 
 data class InterviewScriptCreateRequest(
     val questionPkValue: Long,
-    val content: InterviewScript.Content,
+    val contentValue: String,
 ) {
     fun getQuestionPk(): InterviewQuestion.Pk = InterviewQuestion.Pk(questionPkValue)
+
+    fun getContent(): InterviewScript.Content = InterviewScript.Content(contentValue)
 }
 
 data class InterviewScriptResponse(
-    val pk: Long,
-    val ownerPk: Long,
+    val pkValue: Long,
+    val ownerPkValue: Long,
     val question: InterviewQuestionResponse,
-    val content: String,
-    val createdTime: LocalDateTime,
-    val lastModifiedTime: LocalDateTime,
-    val lastReadTime: LocalDateTime,
+    val contentValue: String,
+    val createdTimeValue: LocalDateTime,
+    val lastModifiedTimeValue: LocalDateTime,
+    val lastReadTimeValue: LocalDateTime,
 ) {
     companion object {
         @JvmStatic
         fun from(entity: InterviewScriptEntity): InterviewScriptResponse {
             val question = InterviewQuestionResponse.from(entity.question)
             return InterviewScriptResponse(
-                pk = entity.getPk().value,
-                ownerPk = entity.owner.pkValue,
+                pkValue = entity.getPk().value,
+                ownerPkValue = entity.owner.pkValue,
                 question = question,
-                content = entity.getContent().value,
-                createdTime = entity.getCreatedTime(),
-                lastModifiedTime = entity.getLastModifiedTime(),
-                lastReadTime = entity.getLastReadTime(),
+                contentValue = entity.getContent().value,
+                createdTimeValue = entity.getCreatedTime(),
+                lastModifiedTimeValue = entity.getLastModifiedTime(),
+                lastReadTimeValue = entity.getLastReadTime(),
             )
         }
     }
 }
 
 data class InterviewScriptUpdateRequest(
-    val questionPk: InterviewQuestion.Pk,
-    val content: InterviewScript.Content,
-)
+    val contentValue: String,
+) {
+    fun getContent() = InterviewScript.Content(contentValue)
+}

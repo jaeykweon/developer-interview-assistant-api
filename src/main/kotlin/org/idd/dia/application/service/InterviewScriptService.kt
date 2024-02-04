@@ -42,7 +42,7 @@ class InterviewScriptService(
                 pk = InterviewScript.Pk(),
                 owner = ownerEntity,
                 question = questionEntity,
-                content = request.content,
+                content = request.getContent(),
                 createdTime = LocalDateTime.now(),
                 lastReadTime = LocalDateTime.now(),
                 lastModifiedTime = LocalDateTime.now(),
@@ -83,7 +83,7 @@ class InterviewScriptService(
     ): InterviewScriptResponse {
         val entity = interviewScriptDbPort.getByPk(scriptPk)
         entity.updateContent(
-            newContent = request.content,
+            newContent = request.getContent(),
             updateTime = updateTime,
         )
         return InterviewScriptResponse.from(entity)

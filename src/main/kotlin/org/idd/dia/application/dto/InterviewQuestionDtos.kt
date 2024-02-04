@@ -19,8 +19,8 @@ data class RegisterInterviewQuestionRequest(
 }
 
 data class InterviewQuestionResponse(
-    val pk: Long,
-    val korTitle: String,
+    val pkValue: Long,
+    val korTitleValue: String,
     val categories: Set<InterviewQuestionCategoryResponse>,
     val voices: Set<InterviewQuestionVoiceResponse>,
 ) {
@@ -36,8 +36,8 @@ data class InterviewQuestionResponse(
                     InterviewQuestionVoiceResponse(it)
                 }
             return InterviewQuestionResponse(
-                pk = interviewQuestionEntity.pkValue,
-                korTitle = interviewQuestionEntity.korTitleValue,
+                pkValue = interviewQuestionEntity.pkValue,
+                korTitleValue = interviewQuestionEntity.korTitleValue,
                 categories = categories,
                 voices = voices,
             )

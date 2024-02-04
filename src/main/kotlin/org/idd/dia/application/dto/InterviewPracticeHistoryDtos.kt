@@ -21,17 +21,17 @@ data class RecordInterviewPracticeRequest(
 }
 
 data class InterviewPracticeHistoryResponse(
-    val pk: Long,
-    val type: String,
-    val elapsedTime: Int,
-    val filePath: String,
-    val createdTime: LocalDateTime,
+    val pkValue: Long,
+    val typeValue: String,
+    val elapsedTimeValue: Int,
+    val fileUrlValue: String,
+    val createdTimeValue: LocalDateTime,
 ) {
     constructor(entity: InterviewPracticeHistoryEntity) : this(
-        pk = entity.pkValue,
-        type = entity.typeValue,
-        elapsedTime = entity.elapsedTimeValue,
-        filePath = entity.filePath,
-        createdTime = entity.getCreatedTime(),
+        pkValue = entity.pkValue,
+        typeValue = entity.typeValue,
+        elapsedTimeValue = entity.elapsedTimeValue,
+        fileUrlValue = entity.filePath,
+        createdTimeValue = entity.getCreatedTime(),
     )
 }
