@@ -14,6 +14,11 @@ class InterviewPracticeHistory {
         }
     }
 
+    @JvmInline
+    value class Content(
+        val value: String,
+    )
+
     enum class Type {
         /** 개별 질문 연습 */
         SINGLE,

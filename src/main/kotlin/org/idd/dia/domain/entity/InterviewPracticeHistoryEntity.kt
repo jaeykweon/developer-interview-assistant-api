@@ -17,9 +17,10 @@ class InterviewPracticeHistoryEntity(
     pk: InterviewPracticeHistory.Pk,
     owner: MemberEntity,
     question: InterviewQuestionEntity,
+    content: InterviewPracticeHistory.Content,
     type: InterviewPracticeHistory.Type,
     elapsedTime: InterviewPracticeHistory.ElapsedTime,
-    filePath: InterviewPracticeHistory.FilePath,
+    filePath: InterviewPracticeHistory.FilePath?,
     createdTime: LocalDateTime,
 ) {
     @Id
@@ -37,6 +38,11 @@ class InterviewPracticeHistoryEntity(
     @JoinColumn(referencedColumnName = "pk", nullable = false)
     val question: InterviewQuestionEntity = question
 
+    @Column(name = "content", nullable = false)
+    val content: String = content.value
+
+    fun getContent() = InterviewPracticeHistory.Content(content)
+
     @Column(name = "type", nullable = false)
     val typeValue = type.name
 
@@ -47,10 +53,10 @@ class InterviewPracticeHistoryEntity(
 
     fun getElapsedTime() = InterviewPracticeHistory.ElapsedTime(elapsedTimeValue)
 
-    @Column(name = "file_path", nullable = false)
-    val filePath: String = filePath.value
+    @Column(name = "file_path", nullable = true)
+    val filePath: String? = filePath?.value
 
-    fun getFilePath() = InterviewPracticeHistory.FilePath(filePath)
+    fun getFilePath() = filePath?.run { InterviewPracticeHistory.FilePath(this) }
 
     @Column(name = "created_time", nullable = false)
     private val createdTime: LocalDateTime = createdTime

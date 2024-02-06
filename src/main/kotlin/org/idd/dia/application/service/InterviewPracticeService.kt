@@ -32,9 +32,10 @@ class InterviewPracticeService(
                 pk = InterviewPracticeHistory.Pk.new(),
                 owner = memberEntity,
                 question = questionEntity,
+                content = request.getContent(),
                 type = request.getType(),
                 elapsedTime = request.getElapsedTime(),
-                filePath = request.getFilePath(),
+                filePath = request.getFilePathOrNull(),
                 createdTime = LocalDateTime.now(),
             )
         val saved = interviewPracticeHistoryDbPort.save(newRecordEntity)
