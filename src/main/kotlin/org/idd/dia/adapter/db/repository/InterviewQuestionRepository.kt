@@ -30,7 +30,7 @@ class InterviewQuestionRepository(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionEntity> {
-        val query: Jpql.() -> SelectQuery<InterviewQuestionEntity> = {
+        val pksQuery: Jpql.() -> SelectQuery<Long> = {
             val categoryClause =
                 if (categories.isEmpty()) {
                     null
@@ -39,20 +39,36 @@ class InterviewQuestionRepository(
                 }
             jpql {
                 select(
+                    path(InterviewQuestionEntity::pkValue),
+                ).from(
+                    entity(InterviewQuestionEntity::class),
+                    innerJoin(InterviewQuestionEntity::categories),
+                    innerJoin(InterviewQuestionCategoryMappingEntity::category),
+                    innerJoin(InterviewQuestionEntity::voices),
+                ).whereAnd(
+                    categoryClause,
+                )
+            }
+        }
+        val pksResult = jpaRepository.findPage(pageable, pksQuery)
+
+        val query: Jpql.() -> SelectQuery<InterviewQuestionEntity> = {
+            jpql {
+                select(
                     entity(InterviewQuestionEntity::class),
                 ).from(
                     entity(InterviewQuestionEntity::class),
                     fetchJoin(InterviewQuestionEntity::categories),
                     fetchJoin(InterviewQuestionCategoryMappingEntity::category),
                     fetchJoin(InterviewQuestionEntity::voices),
-                ).whereAnd(
-                    categoryClause,
+                ).where(
+                    path(InterviewQuestionEntity::pkValue).`in`(pksResult),
                 )
             }
         }
-//        val result = jpaRepository.findPage(pageable, query) // jdsl 업데이트 되면 사용 가능
-//        return result.dropNull()
-        return PageImpl(jpaRepository.findAll(query))
+
+        val content = jpaRepository.findAll(query).filterNotNull()
+        return PageImpl(content, pageable, pksResult.totalElements)
     }
 
     override fun getByPk(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
