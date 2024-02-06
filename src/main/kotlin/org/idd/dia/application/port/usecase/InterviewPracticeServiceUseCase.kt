@@ -28,6 +28,6 @@ interface InterviewPracticeServiceUseCase {
     fun deleteInterviewPracticeHistory(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
-    )
+    ): InterviewPracticeHistory.Pk
     /** 실전 면접 연습하기 */
 }

@@ -5,6 +5,7 @@ import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpql
 import org.idd.dia.adapter.config.KotlinJdslHandler
 import org.idd.dia.application.port.usingcase.InterviewPracticeHistoryDbPort
 import org.idd.dia.domain.NotFoundException
+import org.idd.dia.domain.UnAuthorizedException
 import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
 import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.CustomScroll
@@ -43,13 +44,31 @@ class InterviewPracticeHistoryRepository(
         return kotlinJdslHandler.executeScrollQuery(query)
     }
 
-    override fun getByPk(pk: InterviewPracticeHistory.Pk): InterviewPracticeHistoryEntity {
-        return interviewPracticeHistoryJpaRepository.findByIdOrNull(pk.value)
-            ?: throw NotFoundException("InterviewPracticeHistory not found. pk: $pk")
+    override fun getSingleEntity(
+        pk: InterviewPracticeHistory.Pk,
+        ownerEntity: MemberEntity,
+    ): InterviewPracticeHistoryEntity {
+        val target =
+            interviewPracticeHistoryJpaRepository.findByIdOrNull(pk.value)
+                ?: throw NotFoundException("InterviewPracticeHistory not found. pk: $pk")
+        if (target.owner != ownerEntity) {
+            throw UnAuthorizedException("InterviewPracticeHistory not found. pk: $pk, owner: ${ownerEntity.getPk()}")
+        }
+        return target
     }
 
-    override fun deleteByPk(pk: InterviewPracticeHistory.Pk) {
-        interviewPracticeHistoryJpaRepository.deleteById(pk.value)
+    override fun deleteSingleEntity(
+        pk: InterviewPracticeHistory.Pk,
+        ownerEntity: MemberEntity,
+    ): InterviewPracticeHistory.Pk {
+        val target =
+            interviewPracticeHistoryJpaRepository.findByIdOrNull(pk.value)
+                ?: throw NotFoundException("InterviewPracticeHistory not found. pk: $pk")
+        if (target.owner != ownerEntity) {
+            throw UnAuthorizedException("InterviewPracticeHistory not found. pk: $pk, owner: ${ownerEntity.getPk()}")
+        }
+        interviewPracticeHistoryJpaRepository.delete(target)
+        return target.getPk()
     }
 }
 

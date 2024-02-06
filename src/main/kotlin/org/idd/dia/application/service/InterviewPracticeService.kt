@@ -60,15 +60,16 @@ class InterviewPracticeService(
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
     ): InterviewPracticeHistoryResponse {
         val memberEntity = memberRepository.getByPk(pk = memberPk)
-        val entity = interviewPracticeHistoryDbPort.getByPk(interviewPracticeHistoryPk)
+        val entity: InterviewPracticeHistoryEntity =
+            interviewPracticeHistoryDbPort.getSingleEntity(interviewPracticeHistoryPk, memberEntity)
         return InterviewPracticeHistoryResponse(entity)
     }
 
     override fun deleteInterviewPracticeHistory(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
-    ) {
+    ): InterviewPracticeHistory.Pk {
         val memberEntity = memberRepository.getByPk(pk = memberPk)
-        interviewPracticeHistoryDbPort.deleteByPk(interviewPracticeHistoryPk)
+        return interviewPracticeHistoryDbPort.deleteSingleEntity(interviewPracticeHistoryPk, memberEntity)
     }
 }

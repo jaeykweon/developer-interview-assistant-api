@@ -60,10 +60,11 @@ class InterviewPracticeRestController(
         @RequestAuth memberPk: Member.Pk,
         @PathVariable practiceHistoryPkValue: Long,
     ): ApiResponse<Long> {
-        interviewPracticeService.deleteInterviewPracticeHistory(
-            memberPk,
-            InterviewPracticeHistory.Pk(practiceHistoryPkValue),
-        )
-        return ApiResponse.ok(practiceHistoryPkValue)
+        val deletedPk =
+            interviewPracticeService.deleteInterviewPracticeHistory(
+                memberPk,
+                InterviewPracticeHistory.Pk(practiceHistoryPkValue),
+            )
+        return ApiResponse.ok(deletedPk.value)
     }
 }

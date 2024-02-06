@@ -13,7 +13,13 @@ interface InterviewPracticeHistoryDbPort {
         pk: InterviewPracticeHistory.Pk,
     ): CustomScroll<InterviewPracticeHistoryEntity>
 
-    fun getByPk(pk: InterviewPracticeHistory.Pk): InterviewPracticeHistoryEntity
+    fun getSingleEntity(
+        pk: InterviewPracticeHistory.Pk,
+        ownerEntity: MemberEntity,
+    ): InterviewPracticeHistoryEntity
 
-    fun deleteByPk(pk: InterviewPracticeHistory.Pk)
+    fun deleteSingleEntity(
+        pk: InterviewPracticeHistory.Pk,
+        ownerEntity: MemberEntity,
+    ): InterviewPracticeHistory.Pk
 }
