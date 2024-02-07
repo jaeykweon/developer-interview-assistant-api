@@ -31,10 +31,10 @@ data class InterviewScriptResponse(
                 pkValue = entity.getPk().value,
                 ownerPkValue = entity.owner.pkValue,
                 question = question,
-                contentValue = entity.getContent().value,
-                createdTimeValue = entity.getCreatedTime(),
-                lastModifiedTimeValue = entity.getLastModifiedTime(),
-                lastReadTimeValue = entity.getLastReadTime(),
+                contentValue = entity.contentValue,
+                createdTimeValue = entity.createdTime,
+                lastModifiedTimeValue = entity.lastModifiedTime,
+                lastReadTimeValue = entity.lastReadTime,
             )
         }
     }

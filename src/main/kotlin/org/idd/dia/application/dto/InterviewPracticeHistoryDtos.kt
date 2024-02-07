@@ -34,9 +34,9 @@ data class InterviewPracticeHistoryResponse(
     constructor(entity: InterviewPracticeHistoryEntity) : this(
         pkValue = entity.pkValue,
         typeValue = entity.typeValue,
-        contentValue = entity.content,
+        contentValue = entity.contentValue,
         elapsedTimeValue = entity.elapsedTimeValue,
         fileUrlValue = entity.filePath,
-        createdTimeValue = entity.getCreatedTime(),
+        createdTimeValue = entity.createdTime,
     )
 }

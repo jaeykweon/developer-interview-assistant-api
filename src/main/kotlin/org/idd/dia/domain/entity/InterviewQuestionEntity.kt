@@ -26,8 +26,6 @@ class InterviewQuestionEntity(
     @Column(name = "kor_title", nullable = false)
     val korTitleValue = korTitle.value
 
-    fun getKorTitle() = InterviewQuestion.Title(korTitleValue)
-
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     val categories: Set<InterviewQuestionCategoryMappingEntity> = categories
 

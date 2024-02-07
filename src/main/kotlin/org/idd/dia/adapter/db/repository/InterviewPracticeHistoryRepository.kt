@@ -33,13 +33,12 @@ class InterviewPracticeHistoryRepository(
                     entity(InterviewPracticeHistoryEntity::class),
                 ).from(
                     entity(InterviewPracticeHistoryEntity::class),
+                ).whereAnd(
+                    path(InterviewPracticeHistoryEntity::owner).eq(memberEntity),
+                    path(InterviewPracticeHistoryEntity::pkValue).le(pk.value),
+                ).orderBy(
+                    path(InterviewPracticeHistoryEntity::pkValue).desc(),
                 )
-                    .whereAnd(
-                        path(InterviewPracticeHistoryEntity::owner).eq(memberEntity),
-                        path(InterviewPracticeHistoryEntity::pkValue).le(pk.value),
-                    ).orderBy(
-                        path(InterviewPracticeHistoryEntity::pkValue).desc(),
-                    )
             }
         return kotlinJdslHandler.executeScrollQuery(query)
     }

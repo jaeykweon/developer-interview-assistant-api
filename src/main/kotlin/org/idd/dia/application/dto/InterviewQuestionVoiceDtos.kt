@@ -11,7 +11,7 @@ data class InterviewQuestionVoiceResponse(
     constructor(voice: InterviewQuestionVoiceEntity) : this(
         pkValue = voice.getPk().value,
         questionPkValue = voice.question.pkValue,
-        genderValue = voice.getGender().name,
-        fileUrlValue = voice.getFilePath().value,
+        genderValue = voice.genderValue,
+        fileUrlValue = voice.fileUrlValue,
     )
 }

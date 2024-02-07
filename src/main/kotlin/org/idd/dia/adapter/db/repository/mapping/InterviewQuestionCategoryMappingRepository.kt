@@ -19,7 +19,7 @@ class InterviewQuestionCategoryMappingRepository(
             interviewQuestionCategoryEntities
                 .map {
                     InterviewQuestionCategoryMappingEntity(
-                        pk = 0,
+                        pkValue = 0,
                         question = interviewQuestionEntity,
                         category = it,
                     )

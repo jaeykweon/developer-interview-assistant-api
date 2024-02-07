@@ -24,10 +24,6 @@ class InterviewQuestionCategoryEntity(
     @Column(name = "eng_title", nullable = false)
     val engTitleValue: String = title.value
 
-    fun getEngTitle() = InterviewQuestionCategory.Title(engTitleValue)
-
     @Column(name = "kor_title", nullable = false)
     val korTitleValue: String = title.value
-
-    fun getKorTitle() = InterviewQuestionCategory.Title(korTitleValue)
 }

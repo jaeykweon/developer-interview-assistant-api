@@ -26,15 +26,9 @@ class MemberEntity(
     @Column(name = "nickname", nullable = false)
     val nicknameValue: String = nickname.value
 
-    fun getNickname() = Member.Nickname(nicknameValue)
-
     @Column(name = "image", nullable = false)
     val imageValue: String = image.value
 
-    fun getImage() = Member.Image(imageValue)
-
     @Column(name = "githubId", nullable = false)
     val githubIdValue: String = githubId.value
-
-    fun getGithubId() = Member.GithubId(githubIdValue)
 }

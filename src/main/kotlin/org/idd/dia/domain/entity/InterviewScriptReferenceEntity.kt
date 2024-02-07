@@ -32,10 +32,6 @@ class InterviewScriptReferenceEntity(
     @Column(name = "url", nullable = false)
     val urlValue: String = url.value
 
-    fun getUrl() = InterviewScriptReference.Url(urlValue)
-
     @Column(name = "click_count", nullable = false)
     val clickCountValue: Long = clickCount.value
-
-    fun getClickCount() = InterviewScriptReference.ClickCount(clickCountValue)
 }

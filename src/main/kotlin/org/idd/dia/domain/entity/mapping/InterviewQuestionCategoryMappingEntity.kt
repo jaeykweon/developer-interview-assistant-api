@@ -1,5 +1,6 @@
 package org.idd.dia.domain.entity.mapping
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -16,7 +17,8 @@ import org.idd.dia.domain.entity.InterviewQuestionEntity
 class InterviewQuestionCategoryMappingEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val pk: Long,
+    @Column(name = "pk", nullable = false)
+    val pkValue: Long,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "interview_question_pk", nullable = false)
     val question: InterviewQuestionEntity,

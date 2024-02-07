@@ -39,27 +39,17 @@ class InterviewPracticeHistoryEntity(
     val question: InterviewQuestionEntity = question
 
     @Column(name = "content", nullable = false)
-    val content: String = content.value
-
-    fun getContent() = InterviewPracticeHistory.Content(content)
+    val contentValue: String = content.value
 
     @Column(name = "type", nullable = false)
     val typeValue = type.name
 
-    fun getType() = InterviewPracticeHistory.Type.valueOf(typeValue)
-
     @Column(name = "elapsed_time", nullable = false)
     val elapsedTimeValue = elapsedTime.value
-
-    fun getElapsedTime() = InterviewPracticeHistory.ElapsedTime(elapsedTimeValue)
 
     @Column(name = "file_path", nullable = true)
     val filePath: String? = filePath?.value
 
-    fun getFilePath() = filePath?.run { InterviewPracticeHistory.FilePath(this) }
-
     @Column(name = "created_time", nullable = false)
-    private val createdTime: LocalDateTime = createdTime
-
-    fun getCreatedTime() = createdTime
+    val createdTime: LocalDateTime = createdTime
 }

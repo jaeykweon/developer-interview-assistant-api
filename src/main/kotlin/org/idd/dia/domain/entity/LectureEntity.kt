@@ -25,10 +25,6 @@ class LectureEntity(
     @Column(name = "url", nullable = false)
     val urlValue: String = url.value
 
-    fun getUrl() = Lecture.Url(urlValue)
-
     @Column(name = "price", nullable = false)
     val priceValue: Int = price.value
-
-    fun getPrice() = Lecture.Price(priceValue)
 }

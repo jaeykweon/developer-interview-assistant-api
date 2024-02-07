@@ -7,8 +7,8 @@ data class InterviewQuestionCategoryResponse(
     val titleValue: String,
 ) {
     constructor(entity: InterviewQuestionCategoryEntity) : this(
-        pkValue = entity.getPk().value,
-        titleValue = entity.getKorTitle().value,
+        pkValue = entity.pkValue,
+        titleValue = entity.korTitleValue,
     )
 }
 

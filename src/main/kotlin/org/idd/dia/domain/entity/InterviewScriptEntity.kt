@@ -42,22 +42,16 @@ class InterviewScriptEntity(
     var contentValue: String = content.value
         private set
 
-    fun getContent() = InterviewScript.Content(contentValue)
-
     @Column(name = "created_time", nullable = false)
-    private val createdTime: LocalDateTime = createdTime
-
-    fun getCreatedTime() = createdTime
+    val createdTime: LocalDateTime = createdTime
 
     @Column(nullable = false)
-    private var lastModifiedTime: LocalDateTime = lastModifiedTime
-
-    fun getLastModifiedTime() = lastModifiedTime
+    var lastModifiedTime: LocalDateTime = lastModifiedTime
+        private set
 
     @Column(nullable = false)
-    private var lastReadTime: LocalDateTime = lastReadTime
-
-    fun getLastReadTime() = lastReadTime
+    var lastReadTime: LocalDateTime = lastReadTime
+        private set
 
     fun read(time: LocalDateTime) {
         this.lastReadTime = time
