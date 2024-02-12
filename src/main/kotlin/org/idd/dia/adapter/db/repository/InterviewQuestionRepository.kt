@@ -62,7 +62,7 @@ class InterviewQuestionRepository(
                     fetchJoin(InterviewQuestionCategoryMappingEntity::category),
                     fetchJoin(InterviewQuestionEntity::voices),
                 ).where(
-                    path(InterviewQuestionEntity::pkValue).`in`(pksResult),
+                    path(InterviewQuestionEntity::pkValue).`in`(pksResult.content),
                 )
             }
         }

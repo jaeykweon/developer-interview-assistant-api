@@ -18,8 +18,8 @@ data class MostQuotedReferencesOfQuestion(
     }
 
     private fun validateSameQuestion() {
-        val questionIds = values.map { it.getQuestionPk() }.toSet()
-        require(questionIds.size == 1)
+//        val questionIds = values.map { it }.toSet()
+//        require(questionIds.size == 1)
     }
 
     fun getValues() = this.values

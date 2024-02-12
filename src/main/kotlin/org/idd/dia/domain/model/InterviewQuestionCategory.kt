@@ -1,6 +1,6 @@
 package org.idd.dia.domain.model
 
-class InterviewQuestionCategory {
+interface InterviewQuestionCategory {
     @JvmInline
     value class Pk(
         val value: Long,

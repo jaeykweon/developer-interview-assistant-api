@@ -1,10 +1,6 @@
 package org.idd.dia.domain.model
 
-class Lecture(
-    private val pk: Pk,
-    private val url: Url,
-    private val price: Price,
-) {
+interface Lecture {
     @JvmInline
     value class Pk(
         val value: Long,

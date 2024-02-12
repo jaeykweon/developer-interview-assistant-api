@@ -14,8 +14,8 @@ class MemberEntity(
     pk: Member.Pk,
     nickname: Member.Nickname,
     githubId: Member.GithubId,
-    image: Member.Image,
-) {
+    imageUrl: Member.ImageUrl,
+) : Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -26,9 +26,9 @@ class MemberEntity(
     @Column(name = "nickname", nullable = false)
     val nicknameValue: String = nickname.value
 
-    @Column(name = "image", nullable = false)
-    val imageValue: String = image.value
+    @Column(name = "image_url", nullable = false)
+    val imageUrlValue: String = imageUrl.value
 
-    @Column(name = "githubId", nullable = false)
+    @Column(name = "github_id", nullable = false)
     val githubIdValue: String = githubId.value
 }

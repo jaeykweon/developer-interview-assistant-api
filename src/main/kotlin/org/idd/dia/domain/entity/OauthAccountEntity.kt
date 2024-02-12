@@ -1,5 +1,6 @@
 package org.idd.dia.domain.entity
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
@@ -19,5 +20,6 @@ class OauthAccountEntity(
     @OneToOne(fetch = FetchType.LAZY)
     val member: MemberEntity = member
 
+    @Column(name = "access_token")
     val accessToken: String = accessToken
 }

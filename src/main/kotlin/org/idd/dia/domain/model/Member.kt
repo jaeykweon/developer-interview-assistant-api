@@ -1,9 +1,6 @@
 package org.idd.dia.domain.model
 
-class Member(
-    private val pk: Pk,
-    private val githubId: GithubId,
-) {
+interface Member {
     @JvmInline
     value class Pk(
         val value: Long = 0L,
@@ -20,7 +17,7 @@ class Member(
     )
 
     @JvmInline
-    value class Image(
+    value class ImageUrl(
         val value: String,
     )
 

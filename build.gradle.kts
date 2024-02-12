@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val asciidoctorExt: Configuration by configurations.creating
+
 plugins {
     val kotlinVersion = "1.9.22"
 
@@ -10,6 +12,7 @@ plugins {
     kotlin("plugin.jpa") version kotlinVersion
 
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
 }
 
 group = "org.idd"
@@ -31,6 +34,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
@@ -53,9 +57,14 @@ dependencies {
     implementation("com.linecorp.kotlin-jdsl:jpql-render:$jdslVersion")
     implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-support:$jdslVersion")
     implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-javax-support:$jdslVersion")
+
+    testImplementation("org.springframework.restdocs:spring-restdocs-restassured")
+    asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
 }
 
 tasks {
+    val snippetsDir = file("build/generated-snippets")
+
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
@@ -64,7 +73,18 @@ tasks {
     }
 
     withType<Test> {
+        outputs.dir(snippetsDir)
         useJUnitPlatform()
+    }
+
+    configurations {
+        asciidoctorExt
+    }
+
+    asciidoctor {
+        configurations(asciidoctorExt.name)
+        inputs.dir(snippetsDir)
+        dependsOn(test)
     }
 }
 
