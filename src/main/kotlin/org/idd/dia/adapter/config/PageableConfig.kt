@@ -10,7 +10,12 @@ class PageableConfig {
     @Bean
     fun customize(): PageableHandlerMethodArgumentResolverCustomizer {
         return PageableHandlerMethodArgumentResolverCustomizer { resolver: PageableHandlerMethodArgumentResolver ->
-            resolver.setMaxPageSize(20) // pageable max size
+            resolver.setMaxPageSize(MAX_PAGE_SIZE) // pageable max size
         }
+    }
+
+    companion object {
+        const val DEFAULT_PAGE_SIZE = 20
+        const val MAX_PAGE_SIZE = 21
     }
 }

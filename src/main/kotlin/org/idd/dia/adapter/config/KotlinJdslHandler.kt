@@ -5,37 +5,27 @@ import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.extension.createQuery
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
+import org.idd.dia.adapter.config.PageableConfig.Companion.DEFAULT_PAGE_SIZE
 import org.idd.dia.domain.model.CustomScroll
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 
-@Configuration
-class KotlinJdslConfig {
-    @Bean
-    fun jpqlRenderContext(): JpqlRenderContext {
-        return JpqlRenderContext()
-    }
-
-    companion object {
-        const val MAX_RESULT_SIZE = 21
-    }
-}
-
+/**
+ * handler 네이밍이 맞나 이게
+ */
 @Component
 class KotlinJdslHandler(
     @PersistenceContext
     private val entityManager: EntityManager,
-    private val jpqlRenderContext: JpqlRenderContext,
 ) {
+    private val jpqlRenderContext = JpqlRenderContext()
+
     fun <T : Any> executeScrollQuery(query: SelectQuery<T>): CustomScroll<T> {
         val maybeOneMoreResult =
             entityManager
                 .createQuery(query, jpqlRenderContext)
-                .setMaxResults(KotlinJdslConfig.MAX_RESULT_SIZE)
                 .resultList
 
-        val next = maybeOneMoreResult.size > KotlinJdslConfig.MAX_RESULT_SIZE
+        val next = maybeOneMoreResult.size > DEFAULT_PAGE_SIZE
         return CustomScroll(
             scrollData = maybeOneMoreResult.dropLast(1),
             next = next,

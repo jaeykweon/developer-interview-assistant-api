@@ -38,7 +38,7 @@ class InterviewQuestionRepository(
                     path(InterviewQuestionCategoryEntity::engTitleValue).`in`(categories.map { it.value })
                 }
             jpql {
-                select(
+                selectDistinct(
                     path(InterviewQuestionEntity::pkValue),
                 ).from(
                     entity(InterviewQuestionEntity::class),
@@ -47,6 +47,8 @@ class InterviewQuestionRepository(
                     innerJoin(InterviewQuestionEntity::voices),
                 ).whereAnd(
                     categoryClause,
+                ).orderBy(
+                    path(InterviewQuestionEntity::pkValue).desc(),
                 )
             }
         }
