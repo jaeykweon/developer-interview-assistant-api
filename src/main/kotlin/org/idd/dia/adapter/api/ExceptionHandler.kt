@@ -1,6 +1,7 @@
 package org.idd.dia.adapter.api
 
 import org.idd.dia.domain.BadRequestException
+import org.idd.dia.domain.ConflictException
 import org.idd.dia.domain.ForbiddenException
 import org.idd.dia.domain.InternalServerErrorException
 import org.idd.dia.domain.NotFoundException
@@ -44,6 +45,13 @@ class ExceptionHandler {
     fun handleForbiddenException(e: Exception): ApiResponse<Nothing> {
         logger.error("Forbidden Exception Occurred", e)
         return ApiResponse.notFound("Forbidden")
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConflictException::class)
+    fun handleConflictException(e: Exception): ApiResponse<Nothing> {
+        logger.error("Conflict Exception Occurred", e)
+        return ApiResponse.badRequest("Conflict")
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
