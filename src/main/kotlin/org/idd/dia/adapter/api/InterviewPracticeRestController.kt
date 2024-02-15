@@ -19,7 +19,7 @@ class InterviewPracticeRestController(
     private val interviewPracticeService: InterviewPracticeServiceUseCase,
 ) {
     /** 연습 기록 저장 */
-    @PostMapping("/interview/practice/history")
+    @PostMapping("/interview/practice/histories")
     fun recordPracticeHistory(
         @RequestAuth memberPk: Member.Pk,
         @RequestBody request: RecordInterviewPracticeRequest,

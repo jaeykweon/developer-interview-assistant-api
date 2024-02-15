@@ -26,8 +26,16 @@ class KotlinJdslHandler(
                 .resultList
 
         val next = maybeOneMoreResult.size > DEFAULT_PAGE_SIZE
+
+        val realResult =
+            if (next) {
+                maybeOneMoreResult.dropLast(1)
+            } else {
+                maybeOneMoreResult
+            }
+
         return CustomScroll(
-            scrollData = maybeOneMoreResult.dropLast(1),
+            scrollData = realResult,
             next = next,
         )
     }
