@@ -24,7 +24,7 @@ class InterviewQuestionService(
     private val interviewQuestionCategoryMappingRepository: InterviewQuestionCategoryMappingRepository,
 ) : InterviewQuestionServiceUseCase {
     override fun register(request: RegisterInterviewQuestionRequest): InterviewQuestion.Pk {
-        val categories: Set<InterviewQuestionCategoryEntity> =
+        val categoryEntities: Set<InterviewQuestionCategoryEntity> =
             interviewQuestionCategoryRepository
                 .getAllByPks(request.getCategoryPks())
         val questionEntity =
@@ -39,7 +39,7 @@ class InterviewQuestionService(
 
         interviewQuestionCategoryMappingRepository.overwriteQuestionCategories(
             interviewQuestionEntity = questionEntity,
-            interviewQuestionCategoryEntities = categories,
+            interviewQuestionCategoryEntities = categoryEntities,
         )
 
         return questionEntity.getPk()
@@ -49,13 +49,17 @@ class InterviewQuestionService(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        return interviewQuestionRepository
-            .getPageWithRelations(categories, pageable)
-            .map { InterviewQuestionResponse.from(it) }
+        val pageDataWithRelations =
+            interviewQuestionRepository.getPageWithRelations(categories, pageable)
+
+        return pageDataWithRelations
+            .map { questionEntity ->
+                InterviewQuestionResponse.from(questionEntity)
+            }
     }
 
     override fun getQuestion(questionPk: InterviewQuestion.Pk): InterviewQuestionResponse {
-        val questionEntity = interviewQuestionRepository.getByPk(pk = questionPk)
+        val questionEntity = interviewQuestionRepository.getWithRelations(pk = questionPk)
         return InterviewQuestionResponse.from(questionEntity)
     }
 
@@ -63,7 +67,7 @@ class InterviewQuestionService(
         questionPk: InterviewQuestion.Pk,
         setCategoriesOfInterviewQuestionRequest: SetCategoriesOfInterviewQuestionRequest,
     ) {
-        val questionEntity = interviewQuestionRepository.getByPk(pk = questionPk)
+        val questionEntity = interviewQuestionRepository.getWithRelations(pk = questionPk)
         val categoryEntities = interviewQuestionCategoryRepository.getAllByPks(setCategoriesOfInterviewQuestionRequest.getCategoryPks())
 
         interviewQuestionCategoryMappingRepository.overwriteQuestionCategories(

@@ -1,31 +1,82 @@
-------Insert Member Data------
+-- CREATE SEQUENCE interview_practice_history_pk_seq;
+--
+-- ALTER TABLE interview_practice_history
+-- ALTER COLUMN pk SET DEFAULT NEXTVAL('interview_practice_history_pk_seq');
+
+------Member Data------
 INSERT INTO dia_member
     (pk, nickname, image_url, github_id)
-VALUES (1, 'jay','https://avatars.githubusercontent.com/u/30148662?v=4', 'jaeykweon');
+VALUES (1001, 'jay','https://avatars.githubusercontent.com/u/30148662?v=4', 'jaeykweon');
 
 INSERT INTO oauth_accounts
     (pk, member_pk, access_token)
-VALUES (1, 1,'1');
+VALUES (1001, 1001,'1');
 
-------Insert Interview Question Data------
-INSERT INTO interview_question_category
-    (pk, kor_title, eng_title)
-VALUES (1, '백엔드', 'backend');
-
-INSERT INTO interview_question_category
-    (pk, kor_title, eng_title)
-VALUES (2, '프론트엔드', 'frontend');
+------면접 질문 Interview Question Data------
+INSERT INTO interview_question
+    (pk, kor_title)
+VALUES (1001, '공통 문제 제목');
 
 INSERT INTO interview_question
     (pk, kor_title)
-VALUES (1, 'HTTP와 HTTPS에 대해 설명해보세요');
+VALUES (1002, '백엔드 문제 제목');
 
+INSERT INTO interview_question
+(pk, kor_title)
+VALUES (1003, '프론트엔드 문제 제목');
+
+------면접 질문 카테고리 Interview Question Category Data------
+INSERT INTO interview_question_category
+    (pk, kor_title, eng_title)
+VALUES (1001, '백엔드', 'backend');
+
+INSERT INTO interview_question_category
+    (pk, kor_title, eng_title)
+VALUES (1002, '프론트엔드', 'frontend');
+
+------면접 질문 - 카테고리 매핑 Interview Question Category Mapping Data------
 INSERT INTO interview_question_category_mapping
     (pk, interview_question_category_pk, interview_question_pk)
-VALUES (1, 1, 1);
+VALUES (1001, 1001, 1001);
 
+INSERT INTO interview_question_category_mapping
+(pk, interview_question_category_pk, interview_question_pk)
+VALUES (1002, 1002, 1001);
+
+INSERT INTO interview_question_category_mapping
+(pk, interview_question_category_pk, interview_question_pk)
+VALUES (1003, 1001, 1002);
+
+INSERT INTO interview_question_category_mapping
+(pk, interview_question_category_pk, interview_question_pk)
+VALUES (1004, 1002, 1003);
+
+-------면접 질문 음성 / Interview Question Voice Data-------
 INSERT INTO interview_question_voice
     (pk, file_path, gender, question_pk, subtitle)
-VALUES (1, 'http와%20https.mp3', 'MALE', 1, 'HTTP와 HTTPS에 대해 설명해보세요');
+VALUES (1001, '공통 문제 음성 파일.mp3', 'MALE', 1001, '공통 문제 음성 자막');
 
+INSERT INTO interview_question_voice
+(pk, file_path, gender, question_pk, subtitle)
+VALUES (1002, '백엔드 문제 음성 파일.mp3', 'MALE', 1002, '백엔드 문제 음성 자막');
+
+INSERT INTO interview_question_voice
+(pk, file_path, gender, question_pk, subtitle)
+VALUES (1003, '프론트엔드 문제 음성 파일.mp3', 'MALE', 1003, '프론트엔드 문제 음성 자막');
+
+-------면접 대본 / Interview Script Data-------
+INSERT INTO interview_script
+    (pk, owner_pk, question_pk, content, created_time, last_modified_time, last_read_time)
+VALUES
+    (1001, 1001, 1001, 'HTTP는 HyperText Transfer Protocol의 약자로, 웹 서버와 클라이언트 간에 데이터를 주고받기 위한 통신 규약입니다. HTTPS는 HTTP에 데이터 암호화가 추가된 것으로, 보안이 강화된 프로토콜입니다.', '2021-08-01 00:00:00', '2021-08-01 00:00:00', '2021-08-01 00:00:00');
+
+------Interview Practice History Data------
+INSERT INTO interview_practice_history
+    (pk, owner_pk, question_pk, content, type, elapsed_time, file_path, created_time)
+VALUES
+    (1001, 1001, 1001, 'HTTP는 HyperText Transfer Protocol의 약자로, 웹 서버와 클라이언트 간에 데이터를 주고받기 위한 통신 규약입니다. HTTPS는 HTTP에 데이터 암호화가 추가된 것으로, 보안이 강화된 프로토콜입니다.', 'SINGLE', 60, null, '2021-08-02 00:00:00');
+
+-- SELECT setval('interview_question_pk_seq', (SELECT MAX(id) FROM interview_practice_history));
+
+-- ALTER SEQUENCE interview_practice_history_pk_seq START WITH (SELECT MAX(pk) + 1 FROM interview_practice_history);
 

@@ -7,9 +7,10 @@ import org.idd.dia.application.port.usingcase.InterviewPracticeHistoryDbPort
 import org.idd.dia.domain.NotFoundException
 import org.idd.dia.domain.UnAuthorizedException
 import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
+import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
-import org.idd.dia.domain.model.CustomScroll
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
@@ -23,10 +24,11 @@ class InterviewPracticeHistoryRepository(
         return interviewPracticeHistoryJpaRepository.save(entity)
     }
 
-    override fun getScrollAfterPk(
+    override fun getScroll(
         memberEntity: MemberEntity,
-        pk: InterviewPracticeHistory.Pk,
-    ): CustomScroll<InterviewPracticeHistoryEntity> {
+        previousPk: InterviewPracticeHistory.Pk?,
+        interviewQuestionEntity: InterviewQuestionEntity?,
+    ): Slice<InterviewPracticeHistoryEntity> {
         val query =
             jpql {
                 select(
@@ -35,7 +37,12 @@ class InterviewPracticeHistoryRepository(
                     entity(InterviewPracticeHistoryEntity::class),
                 ).whereAnd(
                     path(InterviewPracticeHistoryEntity::owner).eq(memberEntity),
-                    path(InterviewPracticeHistoryEntity::pkValue).le(pk.value),
+                    previousPk?.let {
+                        path(InterviewPracticeHistoryEntity::pkValue).le(previousPk.value)
+                    },
+                    interviewQuestionEntity?.let {
+                        path(InterviewPracticeHistoryEntity::question).eq(it)
+                    },
                 ).orderBy(
                     path(InterviewPracticeHistoryEntity::pkValue).desc(),
                 )

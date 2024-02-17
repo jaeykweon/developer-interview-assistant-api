@@ -8,9 +8,13 @@ import org.idd.dia.application.port.usecase.InterviewPracticeServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewPracticeHistoryDbPort
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
-import org.idd.dia.domain.model.CustomScroll
+import org.idd.dia.domain.entity.InterviewQuestionEntity
+import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
+import org.idd.dia.util.mapToSet
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -21,12 +25,12 @@ class InterviewPracticeService(
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
     private val memberRepository: MemberRepository,
 ) : InterviewPracticeServiceUseCase {
-    override fun recordInterviewPractice(
+    override fun registerInterviewPractice(
         memberPk: Member.Pk,
         request: RecordInterviewPracticeRequest,
     ): InterviewPracticeHistory.Pk {
         val memberEntity = memberRepository.getByPk(pk = memberPk)
-        val questionEntity = interviewQuestionDbPort.getByPk(pk = request.getInterviewQuestionPk())
+        val questionEntity = interviewQuestionDbPort.getWithOutRelations(pk = request.getInterviewQuestionPk())
         val newRecordEntity =
             InterviewPracticeHistoryEntity(
                 pk = InterviewPracticeHistory.Pk.new(),
@@ -44,15 +48,23 @@ class InterviewPracticeService(
 
     override fun getInterviewPracticeHistories(
         memberPk: Member.Pk,
-        previousPk: InterviewPracticeHistory.Pk,
-    ): CustomScroll<InterviewPracticeHistoryResponse> {
-        val memberEntity = memberRepository.getByPk(pk = memberPk)
-        val entityScroll: CustomScroll<InterviewPracticeHistoryEntity> =
-            interviewPracticeHistoryDbPort.getScrollAfterPk(
+        previousPk: InterviewPracticeHistory.Pk?,
+        interviewQuestionPk: InterviewQuestion.Pk?,
+    ): Slice<InterviewPracticeHistoryResponse> {
+        val memberEntity: MemberEntity = memberRepository.getByPk(pk = memberPk)
+        val questionEntity: InterviewQuestionEntity? = interviewQuestionPk?.let { interviewQuestionDbPort.getWithRelations(it) }
+
+        val entitySlice: Slice<InterviewPracticeHistoryEntity> =
+            interviewPracticeHistoryDbPort.getScroll(
                 memberEntity = memberEntity,
-                pk = previousPk,
+                previousPk = previousPk,
+                interviewQuestionEntity = questionEntity,
             )
-        return entityScroll.map { InterviewPracticeHistoryResponse(it) }
+
+        val questionPks: Set<InterviewQuestion.Pk> = entitySlice.content.mapToSet { it.question.getPk() }
+        interviewQuestionDbPort.getWithRelations(questionPks)
+
+        return entitySlice.map { InterviewPracticeHistoryResponse.from(it) }
     }
 
     override fun getInterviewPracticeHistory(
@@ -62,7 +74,9 @@ class InterviewPracticeService(
         val memberEntity = memberRepository.getByPk(pk = memberPk)
         val entity: InterviewPracticeHistoryEntity =
             interviewPracticeHistoryDbPort.getSingleEntity(interviewPracticeHistoryPk, memberEntity)
-        return InterviewPracticeHistoryResponse(entity)
+
+        interviewQuestionDbPort.getWithRelations(setOf(entity.getQuestionPk()))
+        return InterviewPracticeHistoryResponse.from(entity)
     }
 
     override fun deleteInterviewPracticeHistory(

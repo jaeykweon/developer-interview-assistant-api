@@ -60,6 +60,9 @@ dependencies {
 
     testImplementation("org.springframework.restdocs:spring-restdocs-restassured")
     asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 tasks {

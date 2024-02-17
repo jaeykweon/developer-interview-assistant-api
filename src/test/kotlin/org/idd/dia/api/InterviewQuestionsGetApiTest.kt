@@ -11,14 +11,9 @@ import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
-class InterviewQuestionsGetApiTest : ApiTestCommon() {
-    val responseFields: List<FieldDescriptor> =
+class InterviewQuestionsGetApiTest : ApiTest() {
+    private final val dataFields =
         listOf(
-            fieldWithPath("status").type(NUMBER).description("응답 상태"),
-            fieldWithPath("detail").type(NUMBER).optional().description("디테일"),
-            fieldWithPath("data.pageSize").type(NUMBER).description("페이지 사이즈"),
-            fieldWithPath("data.pageNumber").type(NUMBER).description("페이지 번호"),
-            fieldWithPath("data.totalPages").type(NUMBER).description("전체 페이지"),
             fieldWithPath("data.pageData.[].pkValue").type(NUMBER).description("면접 질문 pkValue"),
             fieldWithPath("data.pageData.[].korTitleValue").type(STRING).description("면접 질문 제목 (한국어)"),
             fieldWithPath("data.pageData.[].categories.[].pkValue").type(NUMBER).description("카테고리 pkValue"),
@@ -29,6 +24,8 @@ class InterviewQuestionsGetApiTest : ApiTestCommon() {
             fieldWithPath("data.pageData.[].voices.[].fileUrlValue").type(STRING).description("면접 질문 음성 file url 값"),
         )
 
+    val responseFields: List<FieldDescriptor> = commonResponseFields + pageResponseFields + dataFields
+
     @DisplayName("면접 질문 목록 조회")
     @Test
     fun success() {
@@ -37,7 +34,7 @@ class InterviewQuestionsGetApiTest : ApiTestCommon() {
                 .log().all()
                 .filter(
                     document(
-                        "interview-questions",
+                        "get-interview-questions",
                         responseFields(responseFields),
                     ),
                 )

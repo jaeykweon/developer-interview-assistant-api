@@ -6,7 +6,8 @@ import com.linecorp.kotlinjdsl.support.spring.data.jpa.extension.createQuery
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.idd.dia.adapter.config.PageableConfig.Companion.DEFAULT_PAGE_SIZE
-import org.idd.dia.domain.model.CustomScroll
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.SliceImpl
 import org.springframework.stereotype.Component
 
 /**
@@ -19,7 +20,7 @@ class KotlinJdslHandler(
 ) {
     private val jpqlRenderContext = JpqlRenderContext()
 
-    fun <T : Any> executeScrollQuery(query: SelectQuery<T>): CustomScroll<T> {
+    fun <T : Any> executeScrollQuery(query: SelectQuery<T>): SliceImpl<T> {
         val maybeOneMoreResult =
             entityManager
                 .createQuery(query, jpqlRenderContext)
@@ -34,9 +35,6 @@ class KotlinJdslHandler(
                 maybeOneMoreResult
             }
 
-        return CustomScroll(
-            scrollData = realResult,
-            next = next,
-        )
+        return SliceImpl(realResult, Pageable.unpaged(), next)
     }
 }

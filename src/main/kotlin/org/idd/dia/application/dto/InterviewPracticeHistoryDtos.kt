@@ -16,7 +16,7 @@ data class RecordInterviewPracticeRequest(
 
     fun getContent(): InterviewPracticeHistory.Content = InterviewPracticeHistory.Content(contentValue)
 
-    fun getType(): InterviewPracticeHistory.Type = InterviewPracticeHistory.Type.valueOf(typeValue)
+    fun getType(): InterviewPracticeHistory.Type = InterviewPracticeHistory.Type.valueOf(typeValue.uppercase())
 
     fun getElapsedTime(): InterviewPracticeHistory.ElapsedTime = InterviewPracticeHistory.ElapsedTime(elapsedTimeValue)
 
@@ -25,18 +25,26 @@ data class RecordInterviewPracticeRequest(
 
 data class InterviewPracticeHistoryResponse(
     val pkValue: Long,
+    val question: InterviewQuestionResponse,
     val typeValue: String,
     val contentValue: String,
     val elapsedTimeValue: Int,
     val fileUrlValue: String?,
     val createdTimeValue: LocalDateTime,
 ) {
-    constructor(entity: InterviewPracticeHistoryEntity) : this(
-        pkValue = entity.pkValue,
-        typeValue = entity.typeValue,
-        contentValue = entity.contentValue,
-        elapsedTimeValue = entity.elapsedTimeValue,
-        fileUrlValue = entity.filePath,
-        createdTimeValue = entity.createdTime,
-    )
+    companion object {
+        @JvmStatic
+        fun from(entity: InterviewPracticeHistoryEntity): InterviewPracticeHistoryResponse {
+            val questionResponse = InterviewQuestionResponse.from(entity.question)
+            return InterviewPracticeHistoryResponse(
+                pkValue = entity.pkValue,
+                question = questionResponse,
+                typeValue = entity.typeValue,
+                contentValue = entity.contentValue,
+                elapsedTimeValue = entity.elapsedTimeValue,
+                fileUrlValue = entity.filePath,
+                createdTimeValue = entity.createdTime,
+            )
+        }
+    }
 }

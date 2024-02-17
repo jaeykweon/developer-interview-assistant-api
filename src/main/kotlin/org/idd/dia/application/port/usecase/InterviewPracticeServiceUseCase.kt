@@ -2,13 +2,14 @@ package org.idd.dia.application.port.usecase
 
 import org.idd.dia.application.dto.InterviewPracticeHistoryResponse
 import org.idd.dia.application.dto.RecordInterviewPracticeRequest
-import org.idd.dia.domain.model.CustomScroll
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
+import org.springframework.data.domain.Slice
 
 interface InterviewPracticeServiceUseCase {
     /** 면접 연습 기록하기 */
-    fun recordInterviewPractice(
+    fun registerInterviewPractice(
         memberPk: Member.Pk,
         request: RecordInterviewPracticeRequest,
     ): InterviewPracticeHistory.Pk
@@ -16,8 +17,9 @@ interface InterviewPracticeServiceUseCase {
     /** 면접 연습 기록 조회하기 */
     fun getInterviewPracticeHistories(
         memberPk: Member.Pk,
-        previousPk: InterviewPracticeHistory.Pk,
-    ): CustomScroll<InterviewPracticeHistoryResponse>
+        previousPk: InterviewPracticeHistory.Pk?,
+        interviewQuestionPk: InterviewQuestion.Pk?,
+    ): Slice<InterviewPracticeHistoryResponse>
 
     fun getInterviewPracticeHistory(
         memberPk: Member.Pk,

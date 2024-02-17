@@ -6,7 +6,9 @@ import org.idd.dia.application.dto.RecordInterviewPracticeRequest
 import org.idd.dia.application.port.usecase.InterviewPracticeServiceUseCase
 import org.idd.dia.domain.model.CustomScroll
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
+import org.springframework.data.domain.Slice
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,7 +26,7 @@ class InterviewPracticeRestController(
         @RequestAuth memberPk: Member.Pk,
         @RequestBody request: RecordInterviewPracticeRequest,
     ): ApiResponse<Long> {
-        val savedPk = interviewPracticeService.recordInterviewPractice(memberPk, request)
+        val savedPk = interviewPracticeService.registerInterviewPractice(memberPk, request)
         return ApiResponse.ok(savedPk.value)
     }
 
@@ -33,12 +35,18 @@ class InterviewPracticeRestController(
     fun getPracticeHistories(
         @RequestAuth memberPk: Member.Pk,
         @RequestParam previousPkValue: Long? = null,
+        @RequestParam questionPkValue: Long? = null,
     ): ApiResponse<CustomScroll<InterviewPracticeHistoryResponse>> {
-        val previousPk =
+        val previousPk: InterviewPracticeHistory.Pk? =
             previousPkValue?.let { InterviewPracticeHistory.Pk(previousPkValue) }
-                ?: InterviewPracticeHistory.Pk.max()
+        val questionPk: InterviewQuestion.Pk? =
+            questionPkValue?.let { InterviewQuestion.Pk(questionPkValue) }
+
+        val sliceData: Slice<InterviewPracticeHistoryResponse> =
+            interviewPracticeService.getInterviewPracticeHistories(memberPk, previousPk, questionPk)
+
         return ApiResponse.ok(
-            interviewPracticeService.getInterviewPracticeHistories(memberPk, previousPk),
+            sliceData.toCustomScroll(),
         )
     }
 

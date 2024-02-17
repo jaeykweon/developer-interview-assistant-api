@@ -9,7 +9,11 @@ import org.springframework.data.domain.Pageable
 interface InterviewQuestionDbPort {
     fun save(questionEntity: InterviewQuestionEntity): InterviewQuestionEntity
 
-    fun getByPk(pk: InterviewQuestion.Pk): InterviewQuestionEntity
+    fun getWithOutRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity
+
+    fun getWithRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity
+
+    fun getWithRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity>
 
     fun getPageWithRelations(
         categories: Set<InterviewQuestionCategory.Title>,

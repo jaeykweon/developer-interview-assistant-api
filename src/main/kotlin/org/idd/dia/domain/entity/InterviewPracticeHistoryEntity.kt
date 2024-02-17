@@ -38,6 +38,8 @@ class InterviewPracticeHistoryEntity(
     @JoinColumn(referencedColumnName = "pk", nullable = false)
     val question: InterviewQuestionEntity = question
 
+    fun getQuestionPk() = question.getPk()
+
     @Column(name = "content", nullable = false)
     val contentValue: String = content.value
 

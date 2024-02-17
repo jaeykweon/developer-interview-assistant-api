@@ -1,17 +1,19 @@
 package org.idd.dia.application.port.usingcase
 
 import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
+import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
-import org.idd.dia.domain.model.CustomScroll
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.springframework.data.domain.Slice
 
 interface InterviewPracticeHistoryDbPort {
     fun save(entity: InterviewPracticeHistoryEntity): InterviewPracticeHistoryEntity
 
-    fun getScrollAfterPk(
+    fun getScroll(
         memberEntity: MemberEntity,
-        pk: InterviewPracticeHistory.Pk,
-    ): CustomScroll<InterviewPracticeHistoryEntity>
+        previousPk: InterviewPracticeHistory.Pk?,
+        interviewQuestionEntity: InterviewQuestionEntity?,
+    ): Slice<InterviewPracticeHistoryEntity>
 
     fun getSingleEntity(
         pk: InterviewPracticeHistory.Pk,

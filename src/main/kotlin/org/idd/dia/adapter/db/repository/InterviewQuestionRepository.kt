@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -30,7 +31,7 @@ class InterviewQuestionRepository(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionEntity> {
-        val pksQuery: Jpql.() -> SelectQuery<Long> = {
+        val pkPageQuery: Jpql.() -> SelectQuery<Long> = {
             val categoryClause =
                 if (categories.isEmpty()) {
                     null
@@ -52,28 +53,18 @@ class InterviewQuestionRepository(
                 )
             }
         }
-        val pksResult = jpaRepository.findPage(pageable, pksQuery)
+        val pkPageResult = jpaRepository.findPage(pageable, pkPageQuery)
+        val pks = pkPageResult.content.filterNotNull().map { InterviewQuestion.Pk(it) }
 
-        val query: Jpql.() -> SelectQuery<InterviewQuestionEntity> = {
-            jpql {
-                select(
-                    entity(InterviewQuestionEntity::class),
-                ).from(
-                    entity(InterviewQuestionEntity::class),
-                    fetchJoin(InterviewQuestionEntity::categories),
-                    fetchJoin(InterviewQuestionCategoryMappingEntity::category),
-                    fetchJoin(InterviewQuestionEntity::voices),
-                ).where(
-                    path(InterviewQuestionEntity::pkValue).`in`(pksResult.content),
-                )
-            }
-        }
-
-        val content = jpaRepository.findAll(query).filterNotNull()
-        return PageImpl(content, pageable, pksResult.totalElements)
+        return PageImpl(this.getWithRelations(pks), pageable, pkPageResult.totalElements)
     }
 
-    override fun getByPk(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
+    override fun getWithOutRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
+        return jpaRepository.findByIdOrNull(pk.value)
+            ?: throw NotFoundException("InterviewQuestionEntity with pk: $pk not found")
+    }
+
+    override fun getWithRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
         val query: Jpql.() -> SelectQuery<InterviewQuestionEntity> = {
             jpql {
                 select(
@@ -90,6 +81,24 @@ class InterviewQuestionRepository(
         }
         return jpaRepository.findAll(query).firstOrNull()
             ?: throw NotFoundException("InterviewQuestionEntity with pk: $pk not found")
+    }
+
+    override fun getWithRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity> {
+        val query: Jpql.() -> SelectQuery<InterviewQuestionEntity> = {
+            jpql {
+                select(
+                    entity(InterviewQuestionEntity::class),
+                ).from(
+                    entity(InterviewQuestionEntity::class),
+                    fetchJoin(InterviewQuestionEntity::categories),
+                    fetchJoin(InterviewQuestionCategoryMappingEntity::category),
+                    fetchJoin(InterviewQuestionEntity::voices),
+                ).where(
+                    path(InterviewQuestionEntity::pkValue).`in`(pks.map { it.value }),
+                )
+            }
+        }
+        return jpaRepository.findAll(query).filterNotNull()
     }
 }
 
