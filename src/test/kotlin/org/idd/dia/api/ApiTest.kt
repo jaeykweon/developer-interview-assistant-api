@@ -80,7 +80,7 @@ abstract class ApiTest {
         apiTestDataHandler!!.truncate()
     }
 
-    protected fun RequestSpecification.defaultAuthorization(): RequestSpecification  {
+    protected fun RequestSpecification.defaultAuthorization(): RequestSpecification {
         return this.authorization("1")
     }
 

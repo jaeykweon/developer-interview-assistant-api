@@ -42,12 +42,12 @@ class InterviewScriptRestController(
     @GetMapping("/interview/scripts")
     fun getScript(
         @RequestAuth memberPk: Member.Pk,
-        @RequestParam questionPk: Long,
+        @RequestParam questionPkValue: Long,
     ): ApiResponse<InterviewScriptResponse> {
         val time = LocalDateTime.now()
         val interviewScriptResponse =
             interviewScriptServiceUseCase.read(
-                questionPk = InterviewQuestion.Pk(questionPk),
+                questionPk = InterviewQuestion.Pk(questionPkValue),
                 requestMemberPk = memberPk,
                 readTime = time,
             )
@@ -55,16 +55,16 @@ class InterviewScriptRestController(
     }
 
     /** 스크립트 수정 */
-    @PatchMapping("/interview/scripts/{scriptPk}")
+    @PatchMapping("/interview/scripts/{scriptPkValue}")
     fun editScript(
         @RequestAuth memberPk: Member.Pk,
-        @PathVariable scriptPk: Long,
+        @PathVariable scriptPkValue: Long,
         @RequestBody request: InterviewScriptUpdateRequest,
     ): ApiResponse<InterviewScriptResponse> {
         val time = LocalDateTime.now()
         val interviewScriptResponse =
             interviewScriptServiceUseCase.updateContent(
-                scriptPk = InterviewScript.Pk(scriptPk),
+                scriptPk = InterviewScript.Pk(scriptPkValue),
                 request = request,
                 requestMemberPk = memberPk,
                 updateTime = time,
