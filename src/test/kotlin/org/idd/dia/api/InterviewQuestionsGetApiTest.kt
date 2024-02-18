@@ -11,6 +11,10 @@ import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
+/**
+ * @see org.idd.dia.adapter.api.InterviewQuestionRestController.getQuestions
+ */
+@DisplayName("면접 질문 목록 조회 API")
 class InterviewQuestionsGetApiTest : ApiTest() {
     private final val dataFields =
         listOf(
@@ -26,7 +30,7 @@ class InterviewQuestionsGetApiTest : ApiTest() {
 
     val responseFields: List<FieldDescriptor> = commonResponseFields + pageResponseFields + dataFields
 
-    @DisplayName("면접 질문 목록 조회")
+    @DisplayName("성공 케이스")
     @Test
     fun success() {
         val response =

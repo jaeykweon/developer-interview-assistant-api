@@ -17,6 +17,7 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
 /**
  * @see org.idd.dia.adapter.api.InterviewPracticeRestController.recordPracticeHistory
  */
+@DisplayName("면접 연습 히스토리 등록 API")
 class InterviewPracticeHistoryRecordApiTest : ApiTest() {
     private val request =
         RecordInterviewPracticeRequest(
@@ -42,7 +43,7 @@ class InterviewPracticeHistoryRecordApiTest : ApiTest() {
     val responseFields: List<FieldDescriptor> =
         commonResponseFields + responseDataFields
 
-    @DisplayName("면접 연습 히스토리 등록")
+    @DisplayName("성공 케이스")
     @Test
     fun success() {
         val response =

@@ -13,10 +13,14 @@ import org.springframework.restdocs.request.RequestDocumentation.parameterWithNa
 import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
+/**
+ * @see org.idd.dia.adapter.api.InterviewQuestionRestController.getQuestion
+ */
+@DisplayName("면접 질문 단 건 조회 API")
 class InterviewQuestionGetApiTest : ApiTest() {
     val responseFields = commonResponseFields + getResponseFields("data.")
 
-    @DisplayName("면접 질문 단 건 조회")
+    @DisplayName("성공 케이스")
     @Test
     fun success() {
         val response =

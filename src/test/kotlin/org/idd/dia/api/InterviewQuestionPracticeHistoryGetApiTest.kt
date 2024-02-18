@@ -13,6 +13,10 @@ import org.springframework.restdocs.request.RequestDocumentation.parameterWithNa
 import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
+/**
+ * @see org.idd.dia.adapter.api.InterviewPracticeRestController.getPracticeHistory
+ */
+@DisplayName("면접 연습 히스토리 단 건 조회 API")
 class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
     private final val dataFields =
         listOf(
@@ -29,7 +33,7 @@ class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
             dataFields +
             InterviewQuestionGetApiTest.getResponseFields("data.question.")
 
-    @DisplayName("면접 연습 히스토리 단 건 조회")
+    @DisplayName("성공 케이스")
     @Test
     fun success() {
         val response =
