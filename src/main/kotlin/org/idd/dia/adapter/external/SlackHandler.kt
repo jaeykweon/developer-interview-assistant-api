@@ -37,7 +37,9 @@ class ProdSlackHandler(
         try {
             webRequest as ServletWebRequest
 
-            val title: String = error.message ?: "에러 메세지가 없습니다"
+            val errorClass: Class<out Exception> = error::class.java
+            val errorMessage: String = error.message ?: "에러 메세지가 없습니다"
+            val title: String = "<${errorClass.simpleName}> $errorMessage"
             val content: String = error.extractStackTraceToStringWithLineBreak()
             val requestMethod: String = webRequest.request.method
             val requestUrl: StringBuffer = webRequest.request.requestURL
