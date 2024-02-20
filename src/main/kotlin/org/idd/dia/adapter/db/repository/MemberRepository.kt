@@ -1,6 +1,6 @@
 package org.idd.dia.adapter.db.repository
 
-import org.idd.dia.domain.BadRequestException
+import org.idd.dia.domain.NotFoundException
 import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.Member
 import org.springframework.data.jpa.repository.JpaRepository
@@ -15,7 +15,7 @@ class MemberRepository(
 
     fun getByPk(pk: Member.Pk): MemberEntity =
         memberJpaRepository.findByIdOrNull(pk.value)
-            ?: throw BadRequestException("해당 회원 정보가 없습니다")
+            ?: throw NotFoundException("해당 회원 정보가 없습니다")
 }
 
 interface MemberJpaRepository : JpaRepository<MemberEntity, Long>

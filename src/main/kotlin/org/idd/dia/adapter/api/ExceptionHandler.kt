@@ -29,8 +29,7 @@ class ExceptionHandler(
         webRequest: WebRequest,
         e: BadRequestException,
     ): ApiResponse<Nothing> {
-        slackHandler.sendErrorMessage(webRequest, e)
-        logger.error("Bad Request", e)
+        logger.info("Bad Request", e)
         return ApiResponse.badRequest("Bad Request")
     }
 
@@ -40,8 +39,7 @@ class ExceptionHandler(
         webRequest: WebRequest,
         e: UnAuthorizedException,
     ): ApiResponse<Nothing> {
-        slackHandler.sendErrorMessage(webRequest, e)
-        logger.error("Unauthorized", e)
+        logger.info("Unauthorized", e)
         return ApiResponse.notFound("Unauthorized")
     }
 
@@ -51,8 +49,7 @@ class ExceptionHandler(
         webRequest: WebRequest,
         e: NotFoundException,
     ): ApiResponse<Nothing> {
-        slackHandler.sendErrorMessage(webRequest, e)
-        logger.error("Not Found")
+        logger.info("Not Found")
         return ApiResponse.notFound("Not Found")
     }
 
@@ -62,8 +59,7 @@ class ExceptionHandler(
         webRequest: WebRequest,
         e: ForbiddenException,
     ): ApiResponse<Nothing> {
-        slackHandler.sendErrorMessage(webRequest, e)
-        logger.error("Forbidden Exception Occurred", e)
+        logger.info("Forbidden Exception Occurred", e)
         return ApiResponse.notFound("Forbidden")
     }
 
@@ -73,8 +69,7 @@ class ExceptionHandler(
         webRequest: WebRequest,
         e: ConflictException,
     ): ApiResponse<Nothing> {
-        slackHandler.sendErrorMessage(webRequest, e)
-        logger.error("Conflict Exception Occurred", e)
+        logger.info("Conflict Exception Occurred", e)
         return ApiResponse.badRequest("Conflict")
     }
 

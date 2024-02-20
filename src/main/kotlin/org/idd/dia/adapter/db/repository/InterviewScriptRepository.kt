@@ -1,6 +1,7 @@
 package org.idd.dia.adapter.db.repository
 
 import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
+import org.idd.dia.domain.NotFoundException
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.InterviewScriptEntity
 import org.idd.dia.domain.entity.MemberEntity
@@ -30,11 +31,12 @@ class InterviewScriptRepository(
 
     override fun getByPk(pk: InterviewScript.Pk): InterviewScriptEntity {
         return interviewScriptJpaRepository.findByIdOrNull(pk.value)
-            ?: throw IllegalArgumentException()
+            ?: throw NotFoundException("스크립트가 존재하지 않습니다 (pk: ${pk.value})")
     }
 
     override fun getByQuestionPk(questionEntity: InterviewQuestionEntity): InterviewScriptEntity {
-        return interviewScriptJpaRepository.findByQuestion(questionEntity) ?: throw IllegalArgumentException()
+        return interviewScriptJpaRepository.findByQuestion(questionEntity)
+            ?: throw NotFoundException("스크립트가 존재하지 않습니다 (questionPk: ${questionEntity.pkValue})")
     }
 
     override fun getByPkAndOwnerPk(
@@ -45,7 +47,9 @@ class InterviewScriptRepository(
             .findByQuestionAndOwner(
                 question = questionEntity,
                 owner = ownerEntity,
-            ) ?: throw IllegalArgumentException()
+            ) ?: throw NotFoundException(
+            "스크립트가 존재하지 않습니다 (questionPk: ${questionEntity.pkValue}, ownerPk: ${ownerEntity.pkValue})",
+        )
     }
 }
 
