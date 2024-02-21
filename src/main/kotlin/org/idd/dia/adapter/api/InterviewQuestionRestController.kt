@@ -10,9 +10,10 @@ import org.idd.dia.domain.model.Member
 import org.idd.dia.util.isNull
 import org.idd.dia.util.mapToSet
 import org.springframework.data.domain.Pageable
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 
 /**
@@ -67,14 +68,25 @@ class InterviewQuestionRestController(
         return ApiResponse.ok(interviewQuestion)
     }
 
-    @PutMapping("/interview/questions/{questionPkValue}/bookmark")
+    @PostMapping("/interview/questions/{questionPkValue}/bookmark")
     fun setQuestionBookmark(
         @PathVariable questionPkValue: Long,
         @RequestAuth memberPk: Member.Pk,
-        bookmark: Boolean,
-    ): ApiResponse<InterviewQuestionResponse> {
+    ): ApiResponse<Long> {
         val questionPk = InterviewQuestion.Pk(questionPkValue)
-        interviewQuestionServiceUseCase.toggleQuestionBookmarkAndReturnStatus(memberPk, questionPk, bookmark)
-        return ApiResponse.ok(null)
+        return ApiResponse.ok(
+            interviewQuestionServiceUseCase.bookmarkQuestion(memberPk, questionPk),
+        )
+    }
+
+    @DeleteMapping("/interview/questions/{questionPkValue}/bookmark")
+    fun deleteQuestionBookmark(
+        @PathVariable questionPkValue: Long,
+        @RequestAuth memberPk: Member.Pk,
+    ): ApiResponse<Long> {
+        val questionPk = InterviewQuestion.Pk(questionPkValue)
+        return ApiResponse.ok(
+            interviewQuestionServiceUseCase.deleteQuestionBookmark(memberPk, questionPk),
+        )
     }
 }

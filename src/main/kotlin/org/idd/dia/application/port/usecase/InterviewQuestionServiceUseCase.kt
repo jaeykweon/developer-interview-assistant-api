@@ -22,12 +22,6 @@ interface InterviewQuestionServiceUseCase {
         setCategoriesOfInterviewQuestionRequest: SetCategoriesOfInterviewQuestionRequest,
     )
 
-    fun toggleQuestionBookmarkAndReturnStatus(
-        memberPk: Member.Pk,
-        questionPk: InterviewQuestion.Pk,
-        bookmark: Boolean,
-    ): Boolean
-
     fun getQuestionPageOfGuest(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
@@ -38,4 +32,14 @@ interface InterviewQuestionServiceUseCase {
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse>
+
+    fun bookmarkQuestion(
+        memberPk: Member.Pk,
+        questionPk: InterviewQuestion.Pk,
+    ): Long
+
+    fun deleteQuestionBookmark(
+        memberPk: Member.Pk,
+        questionPk: InterviewQuestion.Pk,
+    ): Long
 }

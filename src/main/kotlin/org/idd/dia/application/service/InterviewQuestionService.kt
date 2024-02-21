@@ -125,26 +125,29 @@ class InterviewQuestionService(
         )
     }
 
-    // response status라고 적지 않으면 성공해서 true인지, 아니면 북마크가 되어서 true인건지 알 수 없음
-    override fun toggleQuestionBookmarkAndReturnStatus(
+    override fun bookmarkQuestion(
         memberPk: Member.Pk,
         questionPk: InterviewQuestion.Pk,
-        bookmark: Boolean,
-    ): Boolean {
+    ): Long {
         val questionEntity = interviewQuestionRepository.getWithOutRelations(pk = questionPk)
         val memberEntity = memberRepository.getByPk(pk = memberPk)
 
-        if (bookmark) {
-            interviewQuestionBookmarkMappingRepository.addBookmark(
-                memberEntity = memberEntity,
-                questionEntity = questionEntity,
-            )
-            return true
-        }
-        interviewQuestionBookmarkMappingRepository.removeBookmark(
+        return interviewQuestionBookmarkMappingRepository.addBookmark(
             memberEntity = memberEntity,
             questionEntity = questionEntity,
         )
-        return false
+    }
+
+    override fun deleteQuestionBookmark(
+        memberPk: Member.Pk,
+        questionPk: InterviewQuestion.Pk,
+    ): Long {
+        val questionEntity = interviewQuestionRepository.getWithOutRelations(pk = questionPk)
+        val memberEntity = memberRepository.getByPk(pk = memberPk)
+
+        return interviewQuestionBookmarkMappingRepository.removeBookmark(
+            memberEntity = memberEntity,
+            questionEntity = questionEntity,
+        )
     }
 }
