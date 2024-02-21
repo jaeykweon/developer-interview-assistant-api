@@ -18,7 +18,7 @@ fun Iterable<InterviewQuestionBookmarkMappingEntity>.isBookmarked(interviewQuest
 }
 
 @Entity
-@Table
+@Table(name = "interview_question_bookmark_mapping")
 class InterviewQuestionBookmarkMappingEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
