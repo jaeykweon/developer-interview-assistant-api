@@ -26,7 +26,7 @@ data class InterviewScriptResponse(
     companion object {
         @JvmStatic
         fun from(entity: InterviewScriptEntity): InterviewScriptResponse {
-            val question = InterviewQuestionResponse.from(entity.question)
+            val question = InterviewQuestionResponse.withoutCheckingBookmark(entity.question)
             return InterviewScriptResponse(
                 pkValue = entity.getPk().value,
                 ownerPkValue = entity.owner.pkValue,

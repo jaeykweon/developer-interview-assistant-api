@@ -15,7 +15,7 @@ class PageableConfig {
     }
 
     companion object {
-        const val DEFAULT_PAGE_SIZE = 10
-        const val MAX_PAGE_SIZE = 11
+        const val DEFAULT_PAGE_SIZE = 20
+        const val MAX_PAGE_SIZE = 21
     }
 }

@@ -35,10 +35,26 @@ data class InterviewPracticeHistoryResponse(
     companion object {
         @JvmStatic
         fun from(entity: InterviewPracticeHistoryEntity): InterviewPracticeHistoryResponse {
-            val questionResponse = InterviewQuestionResponse.from(entity.question)
+            val questionResponse = InterviewQuestionResponse.withoutCheckingBookmark(entity.question)
             return InterviewPracticeHistoryResponse(
                 pkValue = entity.pkValue,
                 question = questionResponse,
+                typeValue = entity.typeValue,
+                contentValue = entity.contentValue,
+                elapsedTimeValue = entity.elapsedTimeValue,
+                fileUrlValue = entity.filePath,
+                createdTimeValue = entity.createdTime,
+            )
+        }
+
+        @JvmStatic
+        fun of(
+            entity: InterviewPracticeHistoryEntity,
+            interviewQuestionResponse: InterviewQuestionResponse,
+        ): InterviewPracticeHistoryResponse {
+            return InterviewPracticeHistoryResponse(
+                pkValue = entity.pkValue,
+                question = interviewQuestionResponse,
                 typeValue = entity.typeValue,
                 contentValue = entity.contentValue,
                 elapsedTimeValue = entity.elapsedTimeValue,

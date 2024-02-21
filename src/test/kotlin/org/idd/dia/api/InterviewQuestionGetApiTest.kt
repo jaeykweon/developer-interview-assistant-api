@@ -51,6 +51,7 @@ class InterviewQuestionGetApiTest : ApiTest() {
                 fieldWithPath("${prefix}voices.[].questionPkValue").type(NUMBER).description("면접 질문 pk 값"),
                 fieldWithPath("${prefix}voices.[].genderValue").type(STRING).description("면접 질문 음성 성별 값"),
                 fieldWithPath("${prefix}voices.[].fileUrlValue").type(STRING).description("면접 질문 음성 file url 값"),
+                fieldWithPath("${prefix}bookmark").type(Boolean).description("북마크 여부"),
             )
         }
     }

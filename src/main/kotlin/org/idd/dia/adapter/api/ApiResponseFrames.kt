@@ -36,7 +36,7 @@ data class ApiResponse<T>(
     companion object {
         @JvmStatic
         fun <T> ok(
-            data: T,
+            data: T?,
             detail: String? = null,
         ): ApiResponse<T> =
             ApiResponse(

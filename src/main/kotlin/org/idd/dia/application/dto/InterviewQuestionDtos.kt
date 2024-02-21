@@ -1,6 +1,8 @@
 package org.idd.dia.application.dto
 
 import org.idd.dia.domain.entity.InterviewQuestionEntity
+import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
+import org.idd.dia.domain.entity.mapping.isBookmarked
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.idd.dia.util.mapToSet
@@ -21,18 +23,19 @@ data class RegisterInterviewQuestionRequest(
 data class InterviewQuestionResponse(
     val pkValue: Long,
     val korTitleValue: String,
-    val categories: Set<InterviewQuestionCategoryResponse>,
-    val voices: Set<InterviewQuestionVoiceResponse>,
+    val categories: Iterable<InterviewQuestionCategoryResponse>,
+    val voices: Iterable<InterviewQuestionVoiceResponse>,
+    val bookmark: Boolean,
 ) {
     companion object {
         @JvmStatic
-        fun from(interviewQuestionEntity: InterviewQuestionEntity): InterviewQuestionResponse {
-            val categories: Set<InterviewQuestionCategoryResponse> =
-                interviewQuestionEntity.categories.mapToSet {
+        fun withoutCheckingBookmark(interviewQuestionEntity: InterviewQuestionEntity): InterviewQuestionResponse {
+            val categories: List<InterviewQuestionCategoryResponse> =
+                interviewQuestionEntity.categories.map {
                     InterviewQuestionCategoryResponse(it.category)
                 }
             val voices =
-                interviewQuestionEntity.voices.mapToSet {
+                interviewQuestionEntity.voices.map {
                     InterviewQuestionVoiceResponse(it)
                 }
             return InterviewQuestionResponse(
@@ -40,6 +43,30 @@ data class InterviewQuestionResponse(
                 korTitleValue = interviewQuestionEntity.korTitleValue,
                 categories = categories,
                 voices = voices,
+                bookmark = false,
+            )
+        }
+
+        @JvmStatic
+        fun withCheckingBookmark(
+            interviewQuestionEntity: InterviewQuestionEntity,
+            interviewQuestionBookmarkMappingsEntity: Iterable<InterviewQuestionBookmarkMappingEntity>,
+        ): InterviewQuestionResponse {
+            val categories: Iterable<InterviewQuestionCategoryResponse> =
+                interviewQuestionEntity.categories.map {
+                    InterviewQuestionCategoryResponse(it.category)
+                }
+            val voices =
+                interviewQuestionEntity.voices.map {
+                    InterviewQuestionVoiceResponse(it)
+                }
+            val bookmarked = interviewQuestionBookmarkMappingsEntity.isBookmarked(interviewQuestionEntity)
+            return InterviewQuestionResponse(
+                pkValue = interviewQuestionEntity.pkValue,
+                korTitleValue = interviewQuestionEntity.korTitleValue,
+                categories = categories,
+                voices = voices,
+                bookmark = bookmarked,
             )
         }
     }

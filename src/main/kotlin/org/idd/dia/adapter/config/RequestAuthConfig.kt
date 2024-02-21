@@ -1,7 +1,8 @@
 package org.idd.dia.adapter.config
 
 import org.idd.dia.application.service.AuthService
-import org.idd.dia.domain.UnAuthorizedException
+import org.idd.dia.domain.BadRequestException
+import org.idd.dia.util.isNull
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpHeaders
@@ -23,7 +24,7 @@ class RequestAuthArgumentResolverConfig(
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class RequestAuth
+annotation class RequestAuth(val required: Boolean = true)
 
 @Component
 class RequestAuthResolver(
@@ -38,11 +39,16 @@ class RequestAuthResolver(
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
-    ): Long {
-        val authorization =
-            webRequest.getHeader(HttpHeaders.AUTHORIZATION)
-                ?: throw UnAuthorizedException("인증 토큰이 없습니다")
+    ): Long? {
+        val requestAuth = parameter.getParameterAnnotation(RequestAuth::class.java)!!
+        val authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION)
 
+        if (authorization.isNull()) {
+            if (requestAuth.required) {
+                throw BadRequestException("Authorization header is required")
+            }
+            return null
+        }
         return authService.getMemberPkByAccessToken(authorization).value
     }
 }

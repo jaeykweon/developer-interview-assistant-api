@@ -84,6 +84,8 @@ class InterviewQuestionRepository(
     }
 
     override fun getWithRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity> {
+        if (pks.none()) return emptyList()
+
         val query: Jpql.() -> SelectQuery<InterviewQuestionEntity> = {
             jpql {
                 select(
