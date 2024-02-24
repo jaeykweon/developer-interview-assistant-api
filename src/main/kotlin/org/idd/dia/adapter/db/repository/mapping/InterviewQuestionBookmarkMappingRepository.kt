@@ -1,10 +1,21 @@
 package org.idd.dia.adapter.db.repository.mapping
 
+import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
+import com.linecorp.kotlinjdsl.dsl.jpql.jpql
+import com.linecorp.kotlinjdsl.querymodel.jpql.select.SelectQuery
+import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
+import org.idd.dia.adapter.api.dropNull
+import org.idd.dia.application.port.usingcase.mapping.InterviewQuestionBookmarkMappingRepository
 import org.idd.dia.domain.ConflictException
 import org.idd.dia.domain.NotFoundException
+import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
+import org.idd.dia.domain.entity.mapping.InterviewQuestionCategoryMappingEntity
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
@@ -12,23 +23,72 @@ import java.time.LocalDateTime
 @Repository
 class InterviewQuestionBookmarkMappingRepository(
     private val interviewQuestionBookmarkMappingJpaRepository: InterviewQuestionBookmarkMappingJpaRepository,
-) {
-    fun getMappingsOfQuestion(
+) : InterviewQuestionBookmarkMappingRepository {
+    override fun getMappings(
         ownerEntity: MemberEntity,
         questionEntity: InterviewQuestionEntity,
-    ): Iterable<InterviewQuestionBookmarkMappingEntity> {
-        return getMappingsOfQuestions(ownerEntity, listOf(questionEntity))
+    ): List<InterviewQuestionBookmarkMappingEntity> {
+        return getMappings(ownerEntity, listOf(questionEntity))
     }
 
-    fun getMappingsOfQuestions(
+    override fun getMappings(
         ownerEntity: MemberEntity,
         interviewQuestionEntities: List<InterviewQuestionEntity>,
-    ): Iterable<InterviewQuestionBookmarkMappingEntity> {
+    ): List<InterviewQuestionBookmarkMappingEntity> {
         return interviewQuestionBookmarkMappingJpaRepository
             .findAllByOwnerAndQuestionIn(ownerEntity, interviewQuestionEntities)
     }
 
-    fun addBookmark(
+    override fun getMappingsWithQuestion(
+        ownerEntity: MemberEntity,
+        categoryEntities: Iterable<InterviewQuestionCategoryEntity>,
+        pageable: Pageable,
+    ): Page<InterviewQuestionBookmarkMappingEntity> {
+        val pkValuePageQuery: Jpql.() -> SelectQuery<Long> = {
+            jpql {
+                select(
+                    path(InterviewQuestionBookmarkMappingEntity::pkValue),
+                ).from(
+                    entity(InterviewQuestionBookmarkMappingEntity::class),
+                    innerJoin(InterviewQuestionBookmarkMappingEntity::question),
+                    innerJoin(InterviewQuestionEntity::categories),
+                ).whereAnd(
+                    path(InterviewQuestionBookmarkMappingEntity::owner).eq(ownerEntity),
+                    path(InterviewQuestionCategoryMappingEntity::category).`in`(categoryEntities),
+                ).orderBy(
+                    path(InterviewQuestionBookmarkMappingEntity::pkValue).desc(),
+                )
+            }
+        }
+
+        val pkValuePage =
+            interviewQuestionBookmarkMappingJpaRepository
+                .findPage(pageable, pkValuePageQuery)
+                .dropNull()
+
+        val entitiesWithQuestion: List<InterviewQuestionBookmarkMappingEntity> =
+            this.getMappingsWithQuestion(pkValuePage.content.map { it })
+
+        return PageImpl(entitiesWithQuestion, pageable, pkValuePage.totalElements)
+    }
+
+    override fun getMappingsWithQuestion(pks: Iterable<Long>): List<InterviewQuestionBookmarkMappingEntity> {
+        val query: Jpql.() -> SelectQuery<InterviewQuestionBookmarkMappingEntity> = {
+            jpql {
+                select(
+                    entity(InterviewQuestionBookmarkMappingEntity::class),
+                ).from(
+                    entity(InterviewQuestionBookmarkMappingEntity::class),
+                    fetchJoin(InterviewQuestionBookmarkMappingEntity::question),
+                ).where(
+                    path(InterviewQuestionBookmarkMappingEntity::pkValue).`in`(pks),
+                )
+            }
+        }
+        return interviewQuestionBookmarkMappingJpaRepository.findAll(query).filterNotNull()
+    }
+
+    override fun addBookmark(
         memberEntity: MemberEntity,
         questionEntity: InterviewQuestionEntity,
     ): Long {
@@ -44,7 +104,7 @@ class InterviewQuestionBookmarkMappingRepository(
         ).pkValue
     }
 
-    fun removeBookmark(
+    override fun removeBookmark(
         memberEntity: MemberEntity,
         questionEntity: InterviewQuestionEntity,
     ): Long {
@@ -65,7 +125,14 @@ class InterviewQuestionBookmarkMappingRepository(
     }
 }
 
-interface InterviewQuestionBookmarkMappingJpaRepository : JpaRepository<InterviewQuestionBookmarkMappingEntity, Long> {
+interface InterviewQuestionBookmarkMappingJpaRepository :
+    JpaRepository<InterviewQuestionBookmarkMappingEntity, Long>,
+    KotlinJdslJpqlExecutor {
+    fun findByOwner(
+        owner: MemberEntity,
+        pageable: Pageable,
+    ): Page<InterviewQuestionBookmarkMappingEntity>
+
     fun findByOwnerAndQuestion(
         owner: MemberEntity,
         question: InterviewQuestionEntity,
@@ -74,7 +141,7 @@ interface InterviewQuestionBookmarkMappingJpaRepository : JpaRepository<Intervie
     fun findAllByOwnerAndQuestionIn(
         owner: MemberEntity,
         questions: List<InterviewQuestionEntity>,
-    ): Set<InterviewQuestionBookmarkMappingEntity>
+    ): List<InterviewQuestionBookmarkMappingEntity>
 
     fun existsByQuestionAndOwner(
         question: InterviewQuestionEntity,

@@ -31,9 +31,8 @@ class InterviewPracticeService(
     ): InterviewPracticeHistory.Pk {
         val memberEntity = memberRepository.getByPk(pk = memberPk)
         val questionEntity = interviewQuestionDbPort.getWithOutRelations(pk = request.getInterviewQuestionPk())
-        val newRecordEntity =
-            InterviewPracticeHistoryEntity(
-                pk = InterviewPracticeHistory.Pk.new(),
+        val newHistoryEntity =
+            InterviewPracticeHistoryEntity.new(
                 owner = memberEntity,
                 question = questionEntity,
                 content = request.getContent(),
@@ -42,7 +41,7 @@ class InterviewPracticeService(
                 filePath = request.getFilePathOrNull(),
                 createdTime = LocalDateTime.now(),
             )
-        val saved = interviewPracticeHistoryDbPort.save(newRecordEntity)
+        val saved = interviewPracticeHistoryDbPort.save(newHistoryEntity)
         return saved.getPk()
     }
 
@@ -52,7 +51,8 @@ class InterviewPracticeService(
         interviewQuestionPk: InterviewQuestion.Pk?,
     ): Slice<InterviewPracticeHistoryResponse> {
         val memberEntity: MemberEntity = memberRepository.getByPk(pk = memberPk)
-        val questionEntity: InterviewQuestionEntity? = interviewQuestionPk?.let { interviewQuestionDbPort.getWithRelations(it) }
+        val questionEntity: InterviewQuestionEntity? =
+            interviewQuestionPk?.let { interviewQuestionDbPort.getEntityWithRelations(it) }
 
         val entitySlice: Slice<InterviewPracticeHistoryEntity> =
             interviewPracticeHistoryDbPort.getScroll(
@@ -62,7 +62,7 @@ class InterviewPracticeService(
             )
 
         val questionPks: Set<InterviewQuestion.Pk> = entitySlice.content.mapToSet { it.question.getPk() }
-        interviewQuestionDbPort.getWithRelations(questionPks)
+        interviewQuestionDbPort.getEntitiesWithRelations(questionPks)
 
         return entitySlice.map { InterviewPracticeHistoryResponse.from(it) }
     }
@@ -75,7 +75,7 @@ class InterviewPracticeService(
         val entity: InterviewPracticeHistoryEntity =
             interviewPracticeHistoryDbPort.getSingleEntity(interviewPracticeHistoryPk, memberEntity)
 
-        interviewQuestionDbPort.getWithRelations(setOf(entity.getQuestionPk()))
+        interviewQuestionDbPort.getEntitiesWithRelations(setOf(entity.getQuestionPk()))
         return InterviewPracticeHistoryResponse.from(entity)
     }
 

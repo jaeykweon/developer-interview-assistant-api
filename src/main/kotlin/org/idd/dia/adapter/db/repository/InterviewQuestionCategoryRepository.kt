@@ -10,10 +10,17 @@ import org.springframework.stereotype.Repository
 class InterviewQuestionCategoryRepository(
     private val interviewQuestionCategoryJpaRepository: InterviewQuestionCategoryJpaRepository,
 ) {
-    fun getAllByPks(pks: Set<InterviewQuestionCategory.Pk>): Set<InterviewQuestionCategoryEntity> {
+    fun getEntities(pks: Set<InterviewQuestionCategory.Pk>): Set<InterviewQuestionCategoryEntity> {
         val pkValues = pks.mapToSet { it.value }
         return interviewQuestionCategoryJpaRepository.findAllById(pkValues).toSet()
     }
+
+    fun getEntities(titles: Iterable<InterviewQuestionCategory.Title>): Iterable<InterviewQuestionCategoryEntity> {
+        val titleValues = titles.mapToSet { it.value }
+        return interviewQuestionCategoryJpaRepository.findAllByEngTitleValueIn(titleValues).toSet()
+    }
 }
 
-interface InterviewQuestionCategoryJpaRepository : JpaRepository<InterviewQuestionCategoryEntity, Long>
+interface InterviewQuestionCategoryJpaRepository : JpaRepository<InterviewQuestionCategoryEntity, Long> {
+    fun findAllByEngTitleValueIn(engTitleValues: Set<String>): List<InterviewQuestionCategoryEntity>
+}

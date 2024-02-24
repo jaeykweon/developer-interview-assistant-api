@@ -9,6 +9,10 @@ import jakarta.persistence.Table
 import org.idd.dia.domain.entity.mapping.InterviewQuestionCategoryMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
 
+fun Iterable<InterviewQuestionEntity>.findPkMatches(pk: InterviewQuestion.Pk): InterviewQuestionEntity? {
+    return this.find { it.getPk() == pk }
+}
+
 @Table(name = "interview_question")
 @Entity
 class InterviewQuestionEntity(

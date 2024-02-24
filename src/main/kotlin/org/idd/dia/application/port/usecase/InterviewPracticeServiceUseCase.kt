@@ -14,13 +14,14 @@ interface InterviewPracticeServiceUseCase {
         request: RecordInterviewPracticeRequest,
     ): InterviewPracticeHistory.Pk
 
-    /** 면접 연습 기록 조회하기 */
+    /** 면접 연습 기록 목록 조회하기 */
     fun getInterviewPracticeHistories(
         memberPk: Member.Pk,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionPk: InterviewQuestion.Pk?,
     ): Slice<InterviewPracticeHistoryResponse>
 
+    /** 면접 연습 기록 단 건 조회하기 */
     fun getInterviewPracticeHistory(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
@@ -31,5 +32,6 @@ interface InterviewPracticeServiceUseCase {
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
     ): InterviewPracticeHistory.Pk
+
     /** 실전 면접 연습하기 */
 }

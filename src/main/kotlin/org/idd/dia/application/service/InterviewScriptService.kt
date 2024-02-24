@@ -27,7 +27,7 @@ class InterviewScriptService(
         request: InterviewScriptCreateRequest,
         requestMemberPk: Member.Pk,
     ): InterviewScript.Pk {
-        val questionEntity = interviewQuestionDbPort.getWithRelations(request.getQuestionPk())
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(request.getQuestionPk())
         val ownerEntity = memberRepository.getByPk(requestMemberPk)
         val scriptAlreadyExists =
             interviewScriptDbPort.isExists(
@@ -64,7 +64,7 @@ class InterviewScriptService(
         requestMemberPk: Member.Pk,
         readTime: LocalDateTime,
     ): InterviewScriptResponse {
-        val questionEntity = interviewQuestionDbPort.getWithRelations(questionPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(questionPk)
         val ownerEntity = memberRepository.getByPk(requestMemberPk)
         val scriptEntity =
             interviewScriptDbPort.getByPkAndOwnerPk(

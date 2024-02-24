@@ -47,6 +47,9 @@ data class InterviewQuestionResponse(
             )
         }
 
+        /**
+         * InterviewQuestionBookmarkMappingEntity는 해당 테이블만 있으면 됌 (fetch join 해올 필요 없음)
+         */
         @JvmStatic
         fun withCheckingBookmark(
             interviewQuestionEntity: InterviewQuestionEntity,

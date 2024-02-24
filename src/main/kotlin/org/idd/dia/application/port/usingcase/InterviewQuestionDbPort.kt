@@ -11,9 +11,9 @@ interface InterviewQuestionDbPort {
 
     fun getWithOutRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity
 
-    fun getWithRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity
+    fun getEntityWithRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity
 
-    fun getWithRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity>
+    fun getEntitiesWithRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity>
 
     fun getPageWithRelations(
         categories: Set<InterviewQuestionCategory.Title>,

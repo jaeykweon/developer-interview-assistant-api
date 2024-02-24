@@ -12,10 +12,12 @@ import org.idd.dia.application.dto.SetCategoriesOfInterviewQuestionRequest
 import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
+import org.idd.dia.domain.entity.findPkMatches
 import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.idd.dia.domain.model.Member
+import org.idd.dia.util.isNotNull
 import org.idd.dia.util.isNull
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -33,7 +35,7 @@ class InterviewQuestionService(
     override fun register(request: RegisterInterviewQuestionRequest): InterviewQuestion.Pk {
         val categoryEntities: Set<InterviewQuestionCategoryEntity> =
             interviewQuestionCategoryRepository
-                .getAllByPks(request.getCategoryPks())
+                .getEntities(request.getCategoryPks())
         val questionEntity =
             interviewQuestionRepository.save(
                 InterviewQuestionEntity(
@@ -52,34 +54,41 @@ class InterviewQuestionService(
         return questionEntity.getPk()
     }
 
-    override fun getQuestionPageOfGuest(
+    override fun getQuestions(
+        memberPk: Member.Pk?,
         categories: Set<InterviewQuestionCategory.Title>,
+        bookmark: Boolean?,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        val pageDataWithRelations =
-            interviewQuestionRepository.getPageWithRelations(
+        if (memberPk.isNotNull()) {
+            return this.getQuestionsOfMember(
+                memberPk,
                 categories,
                 pageable,
             )
-        return pageDataWithRelations.map { questionEntity ->
-            InterviewQuestionResponse.withoutCheckingBookmark(
-                questionEntity,
+        }
+        if (memberPk.isNotNull() && bookmark.isNotNull()) {
+            return this.getBookmarkedQuestionsOfMember(
+                memberPk,
+                categories,
+                pageable,
             )
         }
+        return this.getQuestionPageOfGuest(categories, pageable)
     }
 
-    override fun getQuestionPageOfMember(
+    private fun getQuestionsOfMember(
         memberPk: Member.Pk,
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
+        val memberEntity = memberRepository.getByPk(pk = memberPk)
+
         val pageDataWithRelations: Page<InterviewQuestionEntity> =
             interviewQuestionRepository.getPageWithRelations(categories, pageable)
 
-        val memberEntity = memberRepository.getByPk(pk = memberPk)
-
         val interviewQuestionBookmarkMappingsEntity: Iterable<InterviewQuestionBookmarkMappingEntity> =
-            interviewQuestionBookmarkMappingRepository.getMappingsOfQuestions(
+            interviewQuestionBookmarkMappingRepository.getMappings(
                 memberEntity,
                 pageDataWithRelations.content,
             )
@@ -91,11 +100,58 @@ class InterviewQuestionService(
         }
     }
 
+    private fun getBookmarkedQuestionsOfMember(
+        memberPk: Member.Pk,
+        categories: Set<InterviewQuestionCategory.Title>,
+        pageable: Pageable,
+    ): Page<InterviewQuestionResponse> {
+        val memberEntity = memberRepository.getByPk(pk = memberPk)
+        val categoryEntities = interviewQuestionCategoryRepository.getEntities(categories)
+
+        val interviewQuestionBookmarkMappingEntityPage: Page<InterviewQuestionBookmarkMappingEntity> =
+            interviewQuestionBookmarkMappingRepository.getMappingsWithQuestion(
+                ownerEntity = memberEntity,
+                categoryEntities = categoryEntities,
+                pageable = pageable,
+            )
+
+        val questionEntities =
+            interviewQuestionRepository.getQuestions(
+                pks = interviewQuestionBookmarkMappingEntityPage.map { it.getQuestionPk() },
+            )
+
+        return interviewQuestionBookmarkMappingEntityPage.map { mapping ->
+            val questionEntity = questionEntities.findPkMatches(mapping.getQuestionPk())!!
+            InterviewQuestionResponse.withCheckingBookmark(
+                questionEntity,
+                setOf(mapping),
+            )
+        }
+    }
+
+    private fun getQuestionPageOfGuest(
+        categories: Set<InterviewQuestionCategory.Title>,
+        pageable: Pageable,
+    ): Page<InterviewQuestionResponse> {
+        val categoryEntities = interviewQuestionCategoryRepository.getEntities(categories)
+
+        val pageDataWithRelations: Page<InterviewQuestionEntity> =
+            interviewQuestionRepository.getPageWithRelations(
+                categoryEntities,
+                pageable,
+            )
+        return pageDataWithRelations.map { questionEntity ->
+            InterviewQuestionResponse.withoutCheckingBookmark(
+                questionEntity,
+            )
+        }
+    }
+
     override fun getQuestion(
         memberPk: Member.Pk?,
         questionPk: InterviewQuestion.Pk,
     ): InterviewQuestionResponse {
-        val questionEntity = interviewQuestionRepository.getWithRelations(pk = questionPk)
+        val questionEntity = interviewQuestionRepository.getEntityWithRelations(pk = questionPk)
 
         if (memberPk.isNull()) {
             return InterviewQuestionResponse.withoutCheckingBookmark(questionEntity)
@@ -104,7 +160,7 @@ class InterviewQuestionService(
         val memberEntity = memberRepository.getByPk(pk = memberPk)
         val interviewQuestionBookmarkMappingEntities: Set<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingRepository
-                .getMappingsOfQuestion(
+                .getMappings(
                     memberEntity,
                     questionEntity,
                 ).toSet()
@@ -116,8 +172,8 @@ class InterviewQuestionService(
         questionPk: InterviewQuestion.Pk,
         setCategoriesOfInterviewQuestionRequest: SetCategoriesOfInterviewQuestionRequest,
     ) {
-        val questionEntity = interviewQuestionRepository.getWithRelations(pk = questionPk)
-        val categoryEntities = interviewQuestionCategoryRepository.getAllByPks(setCategoriesOfInterviewQuestionRequest.getCategoryPks())
+        val questionEntity = interviewQuestionRepository.getEntityWithRelations(pk = questionPk)
+        val categoryEntities = interviewQuestionCategoryRepository.getEntities(setCategoriesOfInterviewQuestionRequest.getCategoryPks())
 
         interviewQuestionCategoryMappingRepository.overwriteQuestionCategories(
             interviewQuestionEntity = questionEntity,

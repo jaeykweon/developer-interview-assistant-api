@@ -54,4 +54,28 @@ class InterviewPracticeHistoryEntity(
 
     @Column(name = "created_time", nullable = false)
     val createdTime: LocalDateTime = createdTime
+
+    companion object {
+        @JvmStatic
+        fun new(
+            owner: MemberEntity,
+            question: InterviewQuestionEntity,
+            content: InterviewPracticeHistory.Content,
+            type: InterviewPracticeHistory.Type,
+            elapsedTime: InterviewPracticeHistory.ElapsedTime,
+            filePath: InterviewPracticeHistory.FilePath?,
+            createdTime: LocalDateTime,
+        ): InterviewPracticeHistoryEntity {
+            return InterviewPracticeHistoryEntity(
+                pk = InterviewPracticeHistory.Pk.new(),
+                owner = owner,
+                question = question,
+                content = content,
+                type = type,
+                elapsedTime = elapsedTime,
+                filePath = filePath,
+                createdTime = createdTime,
+            )
+        }
+    }
 }
