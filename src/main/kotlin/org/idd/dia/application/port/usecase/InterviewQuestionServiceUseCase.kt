@@ -12,17 +12,27 @@ import org.springframework.data.domain.Pageable
 interface InterviewQuestionServiceUseCase {
     fun register(request: RegisterInterviewQuestionRequest): InterviewQuestion.Pk
 
-    fun getQuestions(
-        memberPk: Member.Pk?,
-        categories: Set<InterviewQuestionCategory.Title>,
-        bookmark: Boolean?,
-        pageable: Pageable,
-    ): Page<InterviewQuestionResponse>
-
     fun getQuestion(
         memberPk: Member.Pk?,
         questionPk: InterviewQuestion.Pk,
     ): InterviewQuestionResponse
+
+    fun getQuestionPageOfGuest(
+        categories: Set<InterviewQuestionCategory.Title>,
+        pageable: Pageable,
+    ): Page<InterviewQuestionResponse>
+
+    fun getQuestionsOfMember(
+        memberPk: Member.Pk,
+        categories: Set<InterviewQuestionCategory.Title>,
+        pageable: Pageable,
+    ): Page<InterviewQuestionResponse>
+
+    fun getBookmarkedQuestionsOfMember(
+        memberPk: Member.Pk,
+        categories: Set<InterviewQuestionCategory.Title>,
+        pageable: Pageable,
+    ): Page<InterviewQuestionResponse>
 
     fun setCategoriesOfQuestion(
         questionPk: InterviewQuestion.Pk,

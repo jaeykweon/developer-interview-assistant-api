@@ -21,3 +21,7 @@ fun Any?.isNotNull(): Boolean {
     }
     return this != null
 }
+
+fun Any?.isTrue(): Boolean {
+    return this == true
+}

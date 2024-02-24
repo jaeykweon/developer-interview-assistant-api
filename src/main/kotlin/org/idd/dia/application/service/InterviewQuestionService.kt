@@ -17,7 +17,6 @@ import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.idd.dia.domain.model.Member
-import org.idd.dia.util.isNotNull
 import org.idd.dia.util.isNull
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -54,30 +53,25 @@ class InterviewQuestionService(
         return questionEntity.getPk()
     }
 
-    override fun getQuestions(
-        memberPk: Member.Pk?,
+    override fun getQuestionPageOfGuest(
         categories: Set<InterviewQuestionCategory.Title>,
-        bookmark: Boolean?,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        if (memberPk.isNotNull()) {
-            return this.getQuestionsOfMember(
-                memberPk,
-                categories,
+        val categoryEntities = interviewQuestionCategoryRepository.getEntities(categories)
+
+        val pageDataWithRelations: Page<InterviewQuestionEntity> =
+            interviewQuestionRepository.getPageWithRelations(
+                categoryEntities,
                 pageable,
             )
-        }
-        if (memberPk.isNotNull() && bookmark.isNotNull()) {
-            return this.getBookmarkedQuestionsOfMember(
-                memberPk,
-                categories,
-                pageable,
+        return pageDataWithRelations.map { questionEntity ->
+            InterviewQuestionResponse.withoutCheckingBookmark(
+                questionEntity,
             )
         }
-        return this.getQuestionPageOfGuest(categories, pageable)
     }
 
-    private fun getQuestionsOfMember(
+    override fun getQuestionsOfMember(
         memberPk: Member.Pk,
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
@@ -87,7 +81,7 @@ class InterviewQuestionService(
         val pageDataWithRelations: Page<InterviewQuestionEntity> =
             interviewQuestionRepository.getPageWithRelations(categories, pageable)
 
-        val interviewQuestionBookmarkMappingsEntity: Iterable<InterviewQuestionBookmarkMappingEntity> =
+        val interviewQuestionBookmarkMappingEntities: Iterable<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingRepository.getMappings(
                 memberEntity,
                 pageDataWithRelations.content,
@@ -95,12 +89,12 @@ class InterviewQuestionService(
         return pageDataWithRelations.map { questionEntity ->
             InterviewQuestionResponse.withCheckingBookmark(
                 questionEntity,
-                interviewQuestionBookmarkMappingsEntity,
+                interviewQuestionBookmarkMappingEntities,
             )
         }
     }
 
-    private fun getBookmarkedQuestionsOfMember(
+    override fun getBookmarkedQuestionsOfMember(
         memberPk: Member.Pk,
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
@@ -116,7 +110,7 @@ class InterviewQuestionService(
             )
 
         val questionEntities =
-            interviewQuestionRepository.getQuestions(
+            interviewQuestionRepository.getEntitiesWithRelations(
                 pks = interviewQuestionBookmarkMappingEntityPage.map { it.getQuestionPk() },
             )
 
@@ -125,24 +119,6 @@ class InterviewQuestionService(
             InterviewQuestionResponse.withCheckingBookmark(
                 questionEntity,
                 setOf(mapping),
-            )
-        }
-    }
-
-    private fun getQuestionPageOfGuest(
-        categories: Set<InterviewQuestionCategory.Title>,
-        pageable: Pageable,
-    ): Page<InterviewQuestionResponse> {
-        val categoryEntities = interviewQuestionCategoryRepository.getEntities(categories)
-
-        val pageDataWithRelations: Page<InterviewQuestionEntity> =
-            interviewQuestionRepository.getPageWithRelations(
-                categoryEntities,
-                pageable,
-            )
-        return pageDataWithRelations.map { questionEntity ->
-            InterviewQuestionResponse.withoutCheckingBookmark(
-                questionEntity,
             )
         }
     }

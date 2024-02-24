@@ -73,6 +73,9 @@ class InterviewQuestionBookmarkMappingRepository(
     }
 
     override fun getMappingsWithQuestion(pks: Iterable<Long>): List<InterviewQuestionBookmarkMappingEntity> {
+        if (pks.none()) {
+            return emptyList()
+        }
         val query: Jpql.() -> SelectQuery<InterviewQuestionBookmarkMappingEntity> = {
             jpql {
                 select(
@@ -128,11 +131,6 @@ class InterviewQuestionBookmarkMappingRepository(
 interface InterviewQuestionBookmarkMappingJpaRepository :
     JpaRepository<InterviewQuestionBookmarkMappingEntity, Long>,
     KotlinJdslJpqlExecutor {
-    fun findByOwner(
-        owner: MemberEntity,
-        pageable: Pageable,
-    ): Page<InterviewQuestionBookmarkMappingEntity>
-
     fun findByOwnerAndQuestion(
         owner: MemberEntity,
         question: InterviewQuestionEntity,

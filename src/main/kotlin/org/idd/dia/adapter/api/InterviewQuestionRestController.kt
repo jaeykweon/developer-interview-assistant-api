@@ -7,6 +7,9 @@ import org.idd.dia.domain.model.CustomPage
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.idd.dia.domain.model.Member
+import org.idd.dia.util.isNotNull
+import org.idd.dia.util.isNull
+import org.idd.dia.util.isTrue
 import org.idd.dia.util.mapToSet
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -35,14 +38,32 @@ class InterviewQuestionRestController(
                 InterviewQuestionCategory.Title(it)
             }
 
+        if (memberPk.isNotNull() && bookmark.isNull()) {
+            val questionPage: CustomPage<InterviewQuestionResponse> =
+                interviewQuestionServiceUseCase.getQuestionsOfMember(
+                    memberPk,
+                    categories,
+                    pageable,
+                ).toCustomPage()
+            return ApiResponse.ok(questionPage)
+        }
+
+        if (memberPk.isNotNull() && bookmark.isTrue()) {
+            val questionPage: CustomPage<InterviewQuestionResponse> =
+                interviewQuestionServiceUseCase.getBookmarkedQuestionsOfMember(
+                    memberPk,
+                    categories,
+                    pageable,
+                ).toCustomPage()
+
+            return ApiResponse.ok(questionPage)
+        }
+
         val questionPage: CustomPage<InterviewQuestionResponse> =
-            interviewQuestionServiceUseCase.getQuestions(
-                memberPk,
+            interviewQuestionServiceUseCase.getQuestionPageOfGuest(
                 categories,
-                bookmark,
                 pageable,
             ).toCustomPage()
-
         return ApiResponse.ok(questionPage)
     }
 
