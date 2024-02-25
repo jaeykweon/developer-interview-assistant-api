@@ -12,6 +12,7 @@ import org.idd.dia.application.dto.SetCategoriesOfInterviewQuestionRequest
 import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
+import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.entity.findPkMatches
 import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
@@ -53,7 +54,21 @@ class InterviewQuestionService(
         return questionEntity.getPk()
     }
 
-    override fun getQuestionPageOfGuest(
+    fun getQuestionsWithBookmark(
+        ownerEntity: MemberEntity,
+        pks: Iterable<InterviewQuestion.Pk>,
+    ): List<InterviewQuestionResponse> {
+        val interviewQuestionEntities = interviewQuestionRepository.getEntitiesWithRelations(pks)
+        val bookmarkMappings = interviewQuestionBookmarkMappingRepository.getMappings(ownerEntity, interviewQuestionEntities)
+        return interviewQuestionEntities.map {
+            InterviewQuestionResponse.withCheckingBookmark(
+                it,
+                bookmarkMappings,
+            )
+        }
+    }
+
+    override fun getQuestionsOfGuest(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {

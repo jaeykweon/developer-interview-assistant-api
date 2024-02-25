@@ -27,10 +27,6 @@ class InterviewQuestionRepository(
         return jpaRepository.save(questionEntity)
     }
 
-    fun getQuestions(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity> {
-        return jpaRepository.findAllById(pks.map { it.value })
-    }
-
     fun getPageWithRelations(
         interviewQuestionCategoryEntities: Iterable<InterviewQuestionCategoryEntity>,
         pageable: Pageable,

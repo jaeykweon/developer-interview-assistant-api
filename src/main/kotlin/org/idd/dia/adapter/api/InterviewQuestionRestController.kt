@@ -60,7 +60,7 @@ class InterviewQuestionRestController(
         }
 
         val questionPage: CustomPage<InterviewQuestionResponse> =
-            interviewQuestionServiceUseCase.getQuestionPageOfGuest(
+            interviewQuestionServiceUseCase.getQuestionsOfGuest(
                 categories,
                 pageable,
             ).toCustomPage()

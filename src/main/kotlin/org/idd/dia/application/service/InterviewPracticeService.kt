@@ -24,6 +24,7 @@ class InterviewPracticeService(
     private val interviewPracticeHistoryDbPort: InterviewPracticeHistoryDbPort,
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
     private val memberRepository: MemberRepository,
+    private val interviewQuestionService: InterviewQuestionService,
 ) : InterviewPracticeServiceUseCase {
     override fun registerInterviewPractice(
         memberPk: Member.Pk,
@@ -61,10 +62,16 @@ class InterviewPracticeService(
                 interviewQuestionEntity = questionEntity,
             )
 
-        val questionPks: Set<InterviewQuestion.Pk> = entitySlice.content.mapToSet { it.question.getPk() }
-        interviewQuestionDbPort.getEntitiesWithRelations(questionPks)
+        val questionResponses =
+            interviewQuestionService.getQuestionsWithBookmark(
+                ownerEntity = memberEntity,
+                pks = entitySlice.mapToSet { it.getQuestionPk() },
+            )
 
-        return entitySlice.map { InterviewPracticeHistoryResponse.from(it) }
+        return entitySlice.map { entity ->
+            val matching = questionResponses.find { entity.getQuestionPk().value == it.pkValue }!!
+            InterviewPracticeHistoryResponse.of(entity, matching)
+        }
     }
 
     override fun getInterviewPracticeHistory(
@@ -75,8 +82,13 @@ class InterviewPracticeService(
         val entity: InterviewPracticeHistoryEntity =
             interviewPracticeHistoryDbPort.getSingleEntity(interviewPracticeHistoryPk, memberEntity)
 
-        interviewQuestionDbPort.getEntitiesWithRelations(setOf(entity.getQuestionPk()))
-        return InterviewPracticeHistoryResponse.from(entity)
+        val questionResponse =
+            interviewQuestionService.getQuestion(
+                memberPk = memberPk,
+                questionPk = entity.getQuestionPk(),
+            )
+
+        return InterviewPracticeHistoryResponse.of(entity, questionResponse)
     }
 
     override fun deleteInterviewPracticeHistory(

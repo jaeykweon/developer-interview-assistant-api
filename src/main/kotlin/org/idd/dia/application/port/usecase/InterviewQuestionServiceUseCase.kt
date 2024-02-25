@@ -17,7 +17,7 @@ interface InterviewQuestionServiceUseCase {
         questionPk: InterviewQuestion.Pk,
     ): InterviewQuestionResponse
 
-    fun getQuestionPageOfGuest(
+    fun getQuestionsOfGuest(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse>
