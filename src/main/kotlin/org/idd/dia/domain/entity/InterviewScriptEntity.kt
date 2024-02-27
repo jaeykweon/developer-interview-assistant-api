@@ -38,7 +38,7 @@ class InterviewScriptEntity(
     @ManyToOne
     val question: InterviewQuestionEntity = question
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content",columnDefinition = "TEXT",  nullable = false)
     var contentValue: String = content.value
         private set
 
