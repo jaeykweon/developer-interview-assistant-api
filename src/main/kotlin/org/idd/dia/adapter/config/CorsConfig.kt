@@ -24,7 +24,7 @@ class CorsConfig : WebMvcConfigurer {
             )
             .allowedOrigins(
                 "http://localhost:3000",
-                "https://with.d-i-a.run/"
+                "https://with.d-i-a.run/",
             )
     }
 }

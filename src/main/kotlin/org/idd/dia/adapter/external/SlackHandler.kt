@@ -22,7 +22,7 @@ interface SlackHandler {
 
 @Profile("!test")
 @Component
-class ProdSlackHandler(
+class RealSlackHandler(
     @Value("\${slack.webhook.url}")
     private val slackWebhookUrl: String,
 ) : SlackHandler {
