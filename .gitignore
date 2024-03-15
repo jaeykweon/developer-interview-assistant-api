@@ -36,6 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+.envs
+dump.sql
 src/main/resources/application.properties
 src/main/resources/application-local_rds.properties
 src/main/resources/application-prod.properties
