@@ -11,7 +11,7 @@ import jakarta.persistence.Table
 import org.idd.dia.domain.model.Gender
 import org.idd.dia.domain.model.InterviewQuestionVoice
 
-@Table(name = "interview_question_voice")
+@Table(name = "interview_question_voices")
 @Entity
 class InterviewQuestionVoiceEntity(
     pk: InterviewQuestionVoice.Pk,
@@ -38,7 +38,7 @@ class InterviewQuestionVoiceEntity(
     val filePathValue: String = filePath.value
 
     val fileUrlValue: String
-        get() = "https://dnia6texl8y7f.cloudfront.net/$filePathValue"
+        get() = "https://d2fu6egyyud2t8.cloudfront.net/$filePathValue"
 
     @Column(name = "subtitle", nullable = false)
     val subtitleValue: String = subtitle.value

@@ -8,14 +8,15 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.Member
 
-@Table(name = "dia_member")
+@Table(name = "dia_members")
 @Entity
 class MemberEntity(
     pk: Member.Pk,
     nickname: Member.Nickname,
-    githubId: Member.GithubId,
+    oauthId: Member.OauthId,
+    oauthProvider: Member.OauthProvider,
     imageUrl: Member.ImageUrl,
-) : Member {
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -29,6 +30,43 @@ class MemberEntity(
     @Column(name = "image_url", nullable = false)
     val imageUrlValue: String = imageUrl.value
 
-    @Column(name = "github_id", nullable = false)
-    val githubIdValue: String = githubId.value
+    @Column(name = "oauth_id", nullable = false)
+    val oauthIdValue: String = oauthId.value
+
+    // todo: db migration 완료되면, nullable false로 변경
+    @Column(name = "oauth_provider")
+    val oauthProviderValue: String = oauthProvider.name
+
+    companion object {
+        @JvmStatic
+        fun new(
+            nickname: Member.Nickname,
+            oauthId: Member.OauthId,
+            oauthProvider: Member.OauthProvider,
+            imageUrl: Member.ImageUrl,
+        ): MemberEntity {
+            return MemberEntity(
+                pk = Member.Pk(0),
+                nickname = nickname,
+                oauthId = oauthId,
+                oauthProvider = oauthProvider,
+                imageUrl = imageUrl,
+            )
+        }
+
+        @JvmStatic
+        fun fromGithub(
+            nickname: Member.Nickname,
+            oauthId: Member.OauthId,
+            imageUrl: Member.ImageUrl,
+        ): MemberEntity {
+            return MemberEntity(
+                pk = Member.Pk(0),
+                nickname = nickname,
+                oauthId = oauthId,
+                oauthProvider = Member.OauthProvider.GITHUB,
+                imageUrl = imageUrl,
+            )
+        }
+    }
 }

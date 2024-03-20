@@ -1,16 +1,20 @@
 package org.idd.dia.adapter.db.repository.mapping
 
+import org.idd.dia.application.port.usingcase.mapping.InterviewQuestionCategoryMappingDbPort
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.mapping.InterviewQuestionCategoryMappingEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
+/**
+ * question: interview question 또는 interview question category 어느쪽에 소속시켜야할까
+ */
 @Repository
 class InterviewQuestionCategoryMappingRepository(
     private val interviewQuestionCategoryMappingJpaRepository: InterviewQuestionCategoryMappingJpaRepository,
-) {
-    fun overwriteQuestionCategories(
+) : InterviewQuestionCategoryMappingDbPort {
+    override fun overwriteQuestionCategories(
         interviewQuestionEntity: InterviewQuestionEntity,
         interviewQuestionCategoryEntities: Set<InterviewQuestionCategoryEntity>,
     ): Set<InterviewQuestionCategoryMappingEntity> {
@@ -18,8 +22,7 @@ class InterviewQuestionCategoryMappingRepository(
         val new =
             interviewQuestionCategoryEntities
                 .map {
-                    InterviewQuestionCategoryMappingEntity(
-                        pkValue = 0,
+                    InterviewQuestionCategoryMappingEntity.new(
                         question = interviewQuestionEntity,
                         category = it,
                     )

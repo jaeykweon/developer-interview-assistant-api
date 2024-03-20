@@ -11,12 +11,12 @@ import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewPracticeHistory
 import java.time.LocalDateTime
 
+@Table(name = "interview_practice_histories")
 @Entity
-@Table(name = "interview_practice_history")
 class InterviewPracticeHistoryEntity(
     pk: InterviewPracticeHistory.Pk,
-    owner: MemberEntity,
-    question: InterviewQuestionEntity,
+    ownerEntity: MemberEntity,
+    questionEntity: InterviewQuestionEntity,
     content: InterviewPracticeHistory.Content,
     type: InterviewPracticeHistory.Type,
     elapsedTime: InterviewPracticeHistory.ElapsedTime,
@@ -28,15 +28,15 @@ class InterviewPracticeHistoryEntity(
     @Column(name = "pk", nullable = false)
     val pkValue: Long = pk.value
 
-    fun getPk() = InterviewPracticeHistory.Pk(pkValue)
+    fun getPk(): InterviewPracticeHistory.Pk = InterviewPracticeHistory.Pk(pkValue)
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pk", nullable = false)
-    val owner: MemberEntity = owner
+    @JoinColumn(nullable = false)
+    val owner: MemberEntity = ownerEntity
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pk", nullable = false)
-    val question: InterviewQuestionEntity = question
+    @JoinColumn(nullable = false)
+    val question: InterviewQuestionEntity = questionEntity
 
     fun getQuestionPk() = question.getPk()
 
@@ -50,7 +50,7 @@ class InterviewPracticeHistoryEntity(
     val elapsedTimeValue = elapsedTime.value
 
     @Column(name = "file_path", nullable = true)
-    val filePath: String? = filePath?.value
+    val filePathValue: String? = filePath?.value
 
     @Column(name = "created_time", nullable = false)
     val createdTime: LocalDateTime = createdTime
@@ -58,8 +58,8 @@ class InterviewPracticeHistoryEntity(
     companion object {
         @JvmStatic
         fun new(
-            owner: MemberEntity,
-            question: InterviewQuestionEntity,
+            ownerEntity: MemberEntity,
+            questionEntity: InterviewQuestionEntity,
             content: InterviewPracticeHistory.Content,
             type: InterviewPracticeHistory.Type,
             elapsedTime: InterviewPracticeHistory.ElapsedTime,
@@ -67,9 +67,9 @@ class InterviewPracticeHistoryEntity(
             createdTime: LocalDateTime,
         ): InterviewPracticeHistoryEntity {
             return InterviewPracticeHistoryEntity(
-                pk = InterviewPracticeHistory.Pk.new(),
-                owner = owner,
-                question = question,
+                pk = InterviewPracticeHistory.Pk(0),
+                ownerEntity = ownerEntity,
+                questionEntity = questionEntity,
                 content = content,
                 type = type,
                 elapsedTime = elapsedTime,

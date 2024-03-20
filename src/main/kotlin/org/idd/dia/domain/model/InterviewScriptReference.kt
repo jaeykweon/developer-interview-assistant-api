@@ -3,7 +3,7 @@ package org.idd.dia.domain.model
 interface InterviewScriptReference {
     @JvmInline
     value class Pk(
-        val value: Long = 0L,
+        val value: Long,
     )
 
     @JvmInline

@@ -8,7 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.Lecture
 
-@Table(name = "lecture")
+@Table(name = "lectures")
 @Entity
 class LectureEntity(
     pk: Lecture.Pk,

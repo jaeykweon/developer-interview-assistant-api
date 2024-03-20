@@ -8,6 +8,7 @@ import com.slack.api.webhook.WebhookPayloads.payload
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
@@ -20,7 +21,7 @@ interface SlackHandler {
     )
 }
 
-@Profile("!test")
+@Profile("prod", "stag")
 @Component
 class RealSlackHandler(
     @Value("\${slack.webhook.url}")
@@ -30,6 +31,7 @@ class RealSlackHandler(
 
     private val slackClient = Slack.getInstance()
 
+    @Async
     override fun sendErrorMessage(
         webRequest: WebRequest,
         error: Exception,
@@ -93,5 +95,19 @@ class RealSlackHandler(
 
     companion object {
         private const val DEFAULT_STACK_TRACE_LOGGING_LINES = 7
+    }
+}
+
+/**
+ * local용
+ */
+@Profile("!prod&&!stag&&!test")
+@Component
+class FakeSlackHandler : SlackHandler {
+    override fun sendErrorMessage(
+        webRequest: WebRequest,
+        error: Exception,
+    ) {
+        println("FakeSlackHandler.sendErrorMessage executed")
     }
 }

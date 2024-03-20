@@ -8,7 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewQuestionCategory
 
-@Table(name = "interview_question_category")
+@Table(name = "interview_question_categories")
 @Entity
 class InterviewQuestionCategoryEntity(
     pk: InterviewQuestionCategory.Pk,

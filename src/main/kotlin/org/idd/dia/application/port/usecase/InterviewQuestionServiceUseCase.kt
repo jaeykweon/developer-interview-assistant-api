@@ -2,7 +2,7 @@ package org.idd.dia.application.port.usecase
 
 import org.idd.dia.application.dto.InterviewQuestionResponse
 import org.idd.dia.application.dto.RegisterInterviewQuestionRequest
-import org.idd.dia.application.dto.SetCategoriesOfInterviewQuestionRequest
+import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.idd.dia.domain.model.Member
@@ -34,18 +34,10 @@ interface InterviewQuestionServiceUseCase {
         pageable: Pageable,
     ): Page<InterviewQuestionResponse>
 
-    fun setCategoriesOfQuestion(
-        questionPk: InterviewQuestion.Pk,
-        setCategoriesOfInterviewQuestionRequest: SetCategoriesOfInterviewQuestionRequest,
-    )
+    fun getQuestionsWithBookmark(
+        ownerEntity: MemberEntity,
+        pks: Iterable<InterviewQuestion.Pk>,
+    ): List<InterviewQuestionResponse>
 
-    fun bookmarkQuestion(
-        memberPk: Member.Pk,
-        questionPk: InterviewQuestion.Pk,
-    ): Long
-
-    fun deleteQuestionBookmark(
-        memberPk: Member.Pk,
-        questionPk: InterviewQuestion.Pk,
-    ): Long
+    fun getQuestionsWithoutBookmark(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionResponse>
 }

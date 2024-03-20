@@ -11,7 +11,7 @@ import org.springframework.data.domain.SliceImpl
 import org.springframework.stereotype.Component
 
 /**
- * handler 네이밍이 맞나 이게
+ * todo: 이 handler를 어디따 옮기지
  */
 @Component
 class KotlinJdslHandler(

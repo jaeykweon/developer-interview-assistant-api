@@ -18,18 +18,18 @@ fun Iterable<InterviewQuestionBookmarkMappingEntity>.isBookmarked(interviewQuest
     return this.any { it.isBookmarked(interviewQuestionEntity) }
 }
 
+@Table(name = "interview_question_bookmark_mappings")
 @Entity
-@Table(name = "interview_question_bookmark_mapping")
 class InterviewQuestionBookmarkMappingEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
     val pkValue: Long,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(referencedColumnName = "pk", nullable = false)
+    @JoinColumn(nullable = false)
     val question: InterviewQuestionEntity,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(referencedColumnName = "pk", nullable = false)
+    @JoinColumn(nullable = false)
     val owner: MemberEntity,
     @Column(name = "created_time", nullable = false)
     val createdTime: LocalDateTime,

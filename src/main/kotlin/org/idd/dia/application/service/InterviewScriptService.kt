@@ -1,13 +1,13 @@
 package org.idd.dia.application.service
 
 import jakarta.transaction.Transactional
-import org.idd.dia.adapter.db.repository.MemberRepository
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
 import org.idd.dia.application.dto.InterviewScriptResponse
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
 import org.idd.dia.application.port.usecase.InterviewScriptServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
+import org.idd.dia.application.port.usingcase.MemberDbPort
 import org.idd.dia.domain.ConflictException
 import org.idd.dia.domain.entity.InterviewScriptEntity
 import org.idd.dia.domain.model.InterviewQuestion
@@ -20,15 +20,15 @@ import java.time.LocalDateTime
 @Transactional
 class InterviewScriptService(
     private val interviewScriptDbPort: InterviewScriptDbPort,
-    private val memberRepository: MemberRepository,
+    private val memberDbPort: MemberDbPort,
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
 ) : InterviewScriptServiceUseCase {
     override fun createOrThrowIfExist(
         request: InterviewScriptCreateRequest,
         requestMemberPk: Member.Pk,
     ): InterviewScript.Pk {
-        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(request.getQuestionPk())
-        val ownerEntity = memberRepository.getByPk(requestMemberPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(request.getQuestionPk())
+        val ownerEntity = memberDbPort.getEntity(requestMemberPk)
         val scriptAlreadyExists =
             interviewScriptDbPort.isExists(
                 questionEntity = questionEntity,
@@ -40,8 +40,8 @@ class InterviewScriptService(
         val newScriptEntity =
             InterviewScriptEntity(
                 pk = InterviewScript.Pk(),
-                owner = ownerEntity,
-                question = questionEntity,
+                ownerEntity = ownerEntity,
+                questionEntity = questionEntity,
                 content = request.getContent(),
                 createdTime = LocalDateTime.now(),
                 lastReadTime = LocalDateTime.now(),
@@ -64,8 +64,8 @@ class InterviewScriptService(
         requestMemberPk: Member.Pk,
         readTime: LocalDateTime,
     ): InterviewScriptResponse {
-        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(questionPk)
-        val ownerEntity = memberRepository.getByPk(requestMemberPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(questionPk)
+        val ownerEntity = memberDbPort.getEntity(requestMemberPk)
         val scriptEntity =
             interviewScriptDbPort.getByPkAndOwnerPk(
                 questionEntity = questionEntity,

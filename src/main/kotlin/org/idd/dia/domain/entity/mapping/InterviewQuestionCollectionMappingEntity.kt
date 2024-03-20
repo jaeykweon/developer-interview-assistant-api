@@ -9,13 +9,18 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
+import org.idd.dia.domain.entity.InterviewQuestionCollectionEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
+import org.idd.dia.domain.model.InterviewQuestion
 import java.time.LocalDateTime
 
-@Table(name = "interview_question_category_mappings")
+fun Collection<InterviewQuestionCollectionMappingEntity>.getQuestionPks(): List<InterviewQuestion.Pk> {
+    return map { it.question.getPk() }
+}
+
+@Table(name = "interview_question_collection_mappings")
 @Entity
-class InterviewQuestionCategoryMappingEntity(
+class InterviewQuestionCollectionMappingEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -25,21 +30,7 @@ class InterviewQuestionCategoryMappingEntity(
     val question: InterviewQuestionEntity,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    val category: InterviewQuestionCategoryEntity,
+    val collection: InterviewQuestionCollectionEntity,
     @Column(name = "created_time", nullable = false)
     val createdTime: LocalDateTime,
-) {
-    companion object {
-        @JvmStatic
-        fun new(
-            question: InterviewQuestionEntity,
-            category: InterviewQuestionCategoryEntity,
-        ): InterviewQuestionCategoryMappingEntity =
-            InterviewQuestionCategoryMappingEntity(
-                pkValue = 0,
-                question = question,
-                category = category,
-                createdTime = LocalDateTime.now(),
-            )
-    }
-}
+)

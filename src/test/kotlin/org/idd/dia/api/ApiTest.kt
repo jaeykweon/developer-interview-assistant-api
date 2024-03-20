@@ -81,8 +81,12 @@ abstract class ApiTest {
     }
 
     protected fun RequestSpecification.defaultAuthorization(): RequestSpecification {
-        return this.authorization("1")
+        return this
+            .authorization("ACCESS@jaeykweon@2021-08-01 00:00:00")
+            .userAgent("chrome")
     }
 
     protected fun RequestSpecification.authorization(token: String): RequestSpecification = this.header("authorization", token)
+
+    protected fun RequestSpecification.userAgent(userAgent: String): RequestSpecification = this.header("User-Agent", userAgent)
 }

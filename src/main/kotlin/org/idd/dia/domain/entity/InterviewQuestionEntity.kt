@@ -13,13 +13,13 @@ fun Iterable<InterviewQuestionEntity>.findPkMatches(pk: InterviewQuestion.Pk): I
     return this.find { it.getPk() == pk }
 }
 
-@Table(name = "interview_question")
+@Table(name = "interview_questions")
 @Entity
 class InterviewQuestionEntity(
     pk: InterviewQuestion.Pk,
-    korTitle: InterviewQuestion.Title,
-    categories: Set<InterviewQuestionCategoryMappingEntity>,
-    voices: Set<InterviewQuestionVoiceEntity>,
+    title: InterviewQuestion.Title,
+    categoryMappingEntities: Set<InterviewQuestionCategoryMappingEntity>,
+    voiceEntities: Set<InterviewQuestionVoiceEntity>,
 ) {
     @Id
     @Column(name = "pk", nullable = false)
@@ -27,12 +27,24 @@ class InterviewQuestionEntity(
 
     fun getPk() = InterviewQuestion.Pk(pkValue)
 
-    @Column(name = "kor_title", nullable = false)
-    val korTitleValue = korTitle.value
+    @Column(name = "title", nullable = false)
+    val titleValue: String = title.value
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
-    val categories: Set<InterviewQuestionCategoryMappingEntity> = categories
+    val categoryMappings: Set<InterviewQuestionCategoryMappingEntity> = categoryMappingEntities
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
-    val voices: Set<InterviewQuestionVoiceEntity> = voices
+    val voices: Set<InterviewQuestionVoiceEntity> = voiceEntities
+
+    companion object {
+        @JvmStatic
+        fun new(title: InterviewQuestion.Title): InterviewQuestionEntity {
+            return InterviewQuestionEntity(
+                pk = InterviewQuestion.Pk(0),
+                title = title,
+                categoryMappingEntities = setOf(),
+                voiceEntities = setOf(),
+            )
+        }
+    }
 }

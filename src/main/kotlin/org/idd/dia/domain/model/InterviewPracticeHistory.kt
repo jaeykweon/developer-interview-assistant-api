@@ -4,15 +4,7 @@ interface InterviewPracticeHistory {
     @JvmInline
     value class Pk(
         val value: Long,
-    ) {
-        companion object {
-            @JvmStatic
-            fun new(): Pk = Pk(0L)
-
-            @JvmStatic
-            fun max(): Pk = Pk(Long.MAX_VALUE)
-        }
-    }
+    )
 
     @JvmInline
     value class Content(

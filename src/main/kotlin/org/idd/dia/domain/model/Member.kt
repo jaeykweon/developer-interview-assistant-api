@@ -7,7 +7,7 @@ interface Member {
     )
 
     @JvmInline
-    value class GithubId(
+    value class OauthId(
         val value: String,
     )
 
@@ -20,6 +20,10 @@ interface Member {
     value class ImageUrl(
         val value: String,
     )
+
+    enum class OauthProvider {
+        GITHUB,
+    }
 
     enum class Role {
         FRONT,

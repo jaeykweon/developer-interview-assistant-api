@@ -45,6 +45,7 @@ class InterviewQuestionGetApiTest : ApiTest() {
             return listOf(
                 fieldWithPath("${prefix}pkValue").type(NUMBER).description("면접 질문 pkValue"),
                 fieldWithPath("${prefix}korTitleValue").type(STRING).description("면접 질문 제목 (한국어)"),
+                fieldWithPath("${prefix}titleValue").type(STRING).description("면접 질문 제목"),
                 fieldWithPath("${prefix}categories.[].pkValue").type(NUMBER).description("카테고리 pkValue"),
                 fieldWithPath("${prefix}categories.[].titleValue").type(STRING).description("카테고리 이름"),
                 fieldWithPath("${prefix}voices.[].pkValue").type(NUMBER).description("카테고리 pkValue"),

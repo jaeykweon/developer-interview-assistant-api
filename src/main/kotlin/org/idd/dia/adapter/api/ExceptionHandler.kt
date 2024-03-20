@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
 
-/**
- * 일부 익셉션 응답이 BAD_REQUEST, Not Found 인 이유는 악의적 사용자에게 정보를 주지 않기 위함.
- */
 @RestControllerAdvice
 class ExceptionHandler(
     private val slackHandler: SlackHandler,
@@ -33,7 +30,7 @@ class ExceptionHandler(
         return ApiResponse.badRequest("Bad Request")
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnAuthorizedException::class)
     fun handleUnAuthorizedException(
         webRequest: WebRequest,
@@ -53,6 +50,9 @@ class ExceptionHandler(
         return ApiResponse.notFound("Not Found")
     }
 
+    /**
+     * 악의적 사용자에게 정보를 주지 않기 위함 (ex. 깃허브)
+     */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ForbiddenException::class)
     fun handleForbiddenException(
@@ -63,7 +63,7 @@ class ExceptionHandler(
         return ApiResponse.notFound("Forbidden")
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(ConflictException::class)
     fun handleConflictException(
         webRequest: WebRequest,

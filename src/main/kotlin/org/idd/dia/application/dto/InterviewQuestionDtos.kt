@@ -23,6 +23,7 @@ data class RegisterInterviewQuestionRequest(
 data class InterviewQuestionResponse(
     val pkValue: Long,
     val korTitleValue: String,
+    val titleValue: String,
     val categories: Iterable<InterviewQuestionCategoryResponse>,
     val voices: Iterable<InterviewQuestionVoiceResponse>,
     val bookmark: Boolean,
@@ -31,7 +32,7 @@ data class InterviewQuestionResponse(
         @JvmStatic
         fun withoutCheckingBookmark(interviewQuestionEntity: InterviewQuestionEntity): InterviewQuestionResponse {
             val categories: List<InterviewQuestionCategoryResponse> =
-                interviewQuestionEntity.categories.map {
+                interviewQuestionEntity.categoryMappings.map {
                     InterviewQuestionCategoryResponse(it.category)
                 }
             val voices =
@@ -40,7 +41,8 @@ data class InterviewQuestionResponse(
                 }
             return InterviewQuestionResponse(
                 pkValue = interviewQuestionEntity.pkValue,
-                korTitleValue = interviewQuestionEntity.korTitleValue,
+                korTitleValue = interviewQuestionEntity.titleValue,
+                titleValue = interviewQuestionEntity.titleValue,
                 categories = categories,
                 voices = voices,
                 bookmark = false,
@@ -56,7 +58,7 @@ data class InterviewQuestionResponse(
             interviewQuestionBookmarkMappingsEntity: Iterable<InterviewQuestionBookmarkMappingEntity>,
         ): InterviewQuestionResponse {
             val categories: Iterable<InterviewQuestionCategoryResponse> =
-                interviewQuestionEntity.categories.map {
+                interviewQuestionEntity.categoryMappings.map {
                     InterviewQuestionCategoryResponse(it.category)
                 }
             val voices =
@@ -66,7 +68,8 @@ data class InterviewQuestionResponse(
             val bookmarked = interviewQuestionBookmarkMappingsEntity.isBookmarked(interviewQuestionEntity)
             return InterviewQuestionResponse(
                 pkValue = interviewQuestionEntity.pkValue,
-                korTitleValue = interviewQuestionEntity.korTitleValue,
+                korTitleValue = interviewQuestionEntity.titleValue,
+                titleValue = interviewQuestionEntity.titleValue,
                 categories = categories,
                 voices = voices,
                 bookmark = bookmarked,

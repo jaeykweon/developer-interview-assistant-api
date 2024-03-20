@@ -10,11 +10,11 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewScriptReference
 
-@Table(name = "interview_script_reference")
+@Table(name = "interview_script_references")
 @Entity
 class InterviewScriptReferenceEntity(
     pk: InterviewScriptReference.Pk,
-    owner: MemberEntity,
+    ownerEntity: MemberEntity,
     url: InterviewScriptReference.Url,
     clickCount: InterviewScriptReference.ClickCount,
 ) {
@@ -27,7 +27,7 @@ class InterviewScriptReferenceEntity(
 
     @ManyToOne
     @JoinColumn(name = "member_pk", nullable = false)
-    val owner: MemberEntity = owner
+    val owner: MemberEntity = ownerEntity
 
     @Column(name = "url", nullable = false)
     val urlValue: String = url.value

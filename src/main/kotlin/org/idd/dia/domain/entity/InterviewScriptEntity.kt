@@ -12,12 +12,12 @@ import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewScript
 import java.time.LocalDateTime
 
-@Table(name = "interview_script")
+@Table(name = "interview_scripts")
 @Entity
 class InterviewScriptEntity(
     pk: InterviewScript.Pk,
-    owner: MemberEntity,
-    question: InterviewQuestionEntity,
+    ownerEntity: MemberEntity,
+    questionEntity: InterviewQuestionEntity,
     content: InterviewScript.Content,
     createdTime: LocalDateTime,
     lastModifiedTime: LocalDateTime,
@@ -32,17 +32,17 @@ class InterviewScriptEntity(
 
     @JoinColumn(referencedColumnName = "pk", nullable = false)
     @OneToOne
-    val owner: MemberEntity = owner
+    val owner: MemberEntity = ownerEntity
 
     @JoinColumn(referencedColumnName = "pk", nullable = false)
     @ManyToOne
-    val question: InterviewQuestionEntity = question
+    val question: InterviewQuestionEntity = questionEntity
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     var contentValue: String = content.value
         private set
 
-    @Column(name = "created_time", nullable = false)
+    @Column(nullable = false)
     val createdTime: LocalDateTime = createdTime
 
     @Column(nullable = false)

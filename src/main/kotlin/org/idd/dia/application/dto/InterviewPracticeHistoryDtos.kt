@@ -44,7 +44,7 @@ data class InterviewPracticeHistoryResponse(
                 typeValue = entity.typeValue,
                 contentValue = entity.contentValue,
                 elapsedTimeValue = entity.elapsedTimeValue,
-                fileUrlValue = entity.filePath,
+                fileUrlValue = entity.filePathValue,
                 createdTimeValue = entity.createdTime,
             )
         }

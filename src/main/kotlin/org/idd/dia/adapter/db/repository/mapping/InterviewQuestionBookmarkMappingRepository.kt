@@ -5,7 +5,7 @@ import com.linecorp.kotlinjdsl.dsl.jpql.jpql
 import com.linecorp.kotlinjdsl.querymodel.jpql.select.SelectQuery
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
 import org.idd.dia.adapter.api.dropNull
-import org.idd.dia.application.port.usingcase.mapping.InterviewQuestionBookmarkMappingRepository
+import org.idd.dia.application.port.usingcase.mapping.InterviewQuestionBookmarkMappingDbPort
 import org.idd.dia.domain.ConflictException
 import org.idd.dia.domain.NotFoundException
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
@@ -23,7 +23,7 @@ import java.time.LocalDateTime
 @Repository
 class InterviewQuestionBookmarkMappingRepository(
     private val interviewQuestionBookmarkMappingJpaRepository: InterviewQuestionBookmarkMappingJpaRepository,
-) : InterviewQuestionBookmarkMappingRepository {
+) : InterviewQuestionBookmarkMappingDbPort {
     override fun getMappings(
         ownerEntity: MemberEntity,
         questionEntity: InterviewQuestionEntity,
@@ -51,7 +51,7 @@ class InterviewQuestionBookmarkMappingRepository(
                 ).from(
                     entity(InterviewQuestionBookmarkMappingEntity::class),
                     innerJoin(InterviewQuestionBookmarkMappingEntity::question),
-                    innerJoin(InterviewQuestionEntity::categories),
+                    innerJoin(InterviewQuestionEntity::categoryMappings),
                 ).whereAnd(
                     path(InterviewQuestionBookmarkMappingEntity::owner).eq(ownerEntity),
                     path(InterviewQuestionCategoryMappingEntity::category).`in`(categoryEntities),

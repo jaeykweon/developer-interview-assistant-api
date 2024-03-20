@@ -7,7 +7,7 @@ import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-interface InterviewQuestionBookmarkMappingRepository {
+interface InterviewQuestionBookmarkMappingDbPort {
     fun getMappings(
         ownerEntity: MemberEntity,
         questionEntity: InterviewQuestionEntity,

@@ -1,11 +1,17 @@
 package org.idd.dia.adapter.api
 
 import org.idd.dia.adapter.config.RequestAuth
+import org.idd.dia.application.dto.InterviewQuestionCollectionDetailViewModel
+import org.idd.dia.application.dto.InterviewQuestionCollectionSimpleViewModel
+import org.idd.dia.application.dto.InterviewQuestionCollectionSimpleViewModels
 import org.idd.dia.application.dto.InterviewQuestionResponse
+import org.idd.dia.application.port.usecase.InterviewQuestionBookmarkServiceUseCase
+import org.idd.dia.application.port.usecase.InterviewQuestionCollectionServiceUseCase
 import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.domain.model.CustomPage
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
+import org.idd.dia.domain.model.InterviewQuestionCollection
 import org.idd.dia.domain.model.Member
 import org.idd.dia.util.isNotNull
 import org.idd.dia.util.isNull
@@ -24,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestParam
 @ApiV0RestController
 class InterviewQuestionRestController(
     private val interviewQuestionServiceUseCase: InterviewQuestionServiceUseCase,
+    private val interviewQuestionBookmarkServiceUseCase: InterviewQuestionBookmarkServiceUseCase,
+    private val interviewQuestionCollectionServiceUseCase: InterviewQuestionCollectionServiceUseCase,
 ) {
     /** 문제 목록 조회 */
     @GetMapping("/interview/questions")
@@ -87,7 +95,7 @@ class InterviewQuestionRestController(
     ): ApiResponse<Long> {
         val questionPk = InterviewQuestion.Pk(questionPkValue)
         return ApiResponse.ok(
-            interviewQuestionServiceUseCase.bookmarkQuestion(memberPk, questionPk),
+            interviewQuestionBookmarkServiceUseCase.bookmarkQuestion(memberPk, questionPk),
         )
     }
 
@@ -98,7 +106,39 @@ class InterviewQuestionRestController(
     ): ApiResponse<Long> {
         val questionPk = InterviewQuestion.Pk(questionPkValue)
         return ApiResponse.ok(
-            interviewQuestionServiceUseCase.deleteQuestionBookmark(memberPk, questionPk),
+            interviewQuestionBookmarkServiceUseCase.deleteQuestionBookmark(memberPk, questionPk),
         )
+    }
+
+    @GetMapping("/interview/practice/collections")
+    fun getPracticeCollections(pageable: Pageable): ApiResponse<List<InterviewQuestionCollectionSimpleViewModel>> {
+        val collections: InterviewQuestionCollectionSimpleViewModels =
+            interviewQuestionCollectionServiceUseCase.getInterviewQuestionCollections()
+        return ApiResponse.ok(
+            collections.values,
+        )
+    }
+
+    @GetMapping("/interview/practice/collections/{collectionPkValue}")
+    fun getPracticeCollection(
+        @RequestAuth(required = false) memberPk: Member.Pk? = null,
+        @PathVariable collectionPkValue: Long,
+    ): ApiResponse<InterviewQuestionCollectionDetailViewModel> {
+        if (memberPk.isNull()) {
+            val defaultCollection: InterviewQuestionCollectionDetailViewModel =
+                interviewQuestionCollectionServiceUseCase
+                    .getInterviewQuestionCollectionForGuest(
+                        InterviewQuestionCollection.Pk(collectionPkValue),
+                    )
+            return ApiResponse.ok(defaultCollection)
+        }
+
+        val collectionOfMember =
+            interviewQuestionCollectionServiceUseCase
+                .getInterviewQuestionCollectionForMember(
+                    memberPk,
+                    InterviewQuestionCollection.Pk(collectionPkValue),
+                )
+        return ApiResponse.ok(collectionOfMember)
     }
 }

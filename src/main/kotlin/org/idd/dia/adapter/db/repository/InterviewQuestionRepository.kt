@@ -11,7 +11,6 @@ import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.mapping.InterviewQuestionCategoryMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
-import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -27,17 +26,17 @@ class InterviewQuestionRepository(
         return jpaRepository.save(questionEntity)
     }
 
-    fun getPageWithRelations(
+    override fun getPageWithCategories(
         interviewQuestionCategoryEntities: Iterable<InterviewQuestionCategoryEntity>,
         pageable: Pageable,
-    ): PageImpl<InterviewQuestionEntity> {
+    ): Page<InterviewQuestionEntity> {
         val pkValuePageQuery: Jpql.() -> SelectQuery<Long> = {
             jpql {
                 select(
                     path(InterviewQuestionEntity::pkValue),
                 ).from(
                     entity(InterviewQuestionEntity::class),
-                    innerJoin(InterviewQuestionEntity::categories),
+                    innerJoin(InterviewQuestionEntity::categoryMappings),
                     innerJoin(InterviewQuestionCategoryMappingEntity::category),
                 ).where(
                     path(InterviewQuestionCategoryMappingEntity::category).`in`(interviewQuestionCategoryEntities),
@@ -53,26 +52,26 @@ class InterviewQuestionRepository(
                 .dropNull()
 
         val pks = pkValuePage.content.map(InterviewQuestion::Pk)
-        return PageImpl(this.getEntitiesWithRelations(pks), pageable, pkValuePage.totalElements)
+        return PageImpl(this.getEntitiesWithCategoriesAndVoices(pks), pageable, pkValuePage.totalElements)
     }
 
-    override fun getPageWithRelations(
-        categories: Set<InterviewQuestionCategory.Title>,
+    override fun getPageWithCategoriesAndVoices(
+        categoryEntities: Collection<InterviewQuestionCategoryEntity>,
         pageable: Pageable,
     ): Page<InterviewQuestionEntity> {
         val pkPageQuery: Jpql.() -> SelectQuery<Long> = {
             val categoryClause =
-                if (categories.isEmpty()) {
+                if (categoryEntities.isEmpty()) {
                     null
                 } else {
-                    path(InterviewQuestionCategoryEntity::engTitleValue).`in`(categories.map { it.value })
+                    path(InterviewQuestionCategoryEntity::pkValue).`in`(categoryEntities.map { it.pkValue })
                 }
             jpql {
                 selectDistinct(
                     path(InterviewQuestionEntity::pkValue),
                 ).from(
                     entity(InterviewQuestionEntity::class),
-                    innerJoin(InterviewQuestionEntity::categories),
+                    innerJoin(InterviewQuestionEntity::categoryMappings),
                     innerJoin(InterviewQuestionCategoryMappingEntity::category),
                     innerJoin(InterviewQuestionEntity::voices),
                 ).whereAnd(
@@ -85,7 +84,7 @@ class InterviewQuestionRepository(
         val pkPageResult = jpaRepository.findPage(pageable, pkPageQuery).dropNull()
         val pks = pkPageResult.content.map { InterviewQuestion.Pk(it) }
 
-        return PageImpl(this.getEntitiesWithRelations(pks), pageable, pkPageResult.totalElements)
+        return PageImpl(this.getEntitiesWithCategoriesAndVoices(pks), pageable, pkPageResult.totalElements)
     }
 
     override fun getWithOutRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
@@ -93,26 +92,12 @@ class InterviewQuestionRepository(
             ?: throw NotFoundException("InterviewQuestionEntity with pk: $pk not found")
     }
 
-    override fun getEntityWithRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
-        val query: Jpql.() -> SelectQuery<InterviewQuestionEntity> = {
-            jpql {
-                select(
-                    entity(InterviewQuestionEntity::class),
-                ).from(
-                    entity(InterviewQuestionEntity::class),
-                    fetchJoin(InterviewQuestionEntity::categories),
-                    fetchJoin(InterviewQuestionCategoryMappingEntity::category),
-                    fetchJoin(InterviewQuestionEntity::voices),
-                ).where(
-                    path(InterviewQuestionEntity::pkValue).`in`(pk.value),
-                )
-            }
-        }
-        return jpaRepository.findAll(query).firstOrNull()
+    override fun getEntityWithCategoriesAndVoices(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
+        return this.getEntitiesWithCategoriesAndVoices(listOf(pk)).firstOrNull()
             ?: throw NotFoundException("InterviewQuestionEntity with pk: $pk not found")
     }
 
-    override fun getEntitiesWithRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity> {
+    override fun getEntitiesWithCategoriesAndVoices(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity> {
         if (pks.none()) return emptyList()
 
         val query: Jpql.() -> SelectQuery<InterviewQuestionEntity> = {
@@ -121,7 +106,7 @@ class InterviewQuestionRepository(
                     entity(InterviewQuestionEntity::class),
                 ).from(
                     entity(InterviewQuestionEntity::class),
-                    fetchJoin(InterviewQuestionEntity::categories),
+                    fetchJoin(InterviewQuestionEntity::categoryMappings),
                     fetchJoin(InterviewQuestionCategoryMappingEntity::category),
                     fetchJoin(InterviewQuestionEntity::voices),
                 ).where(
@@ -131,6 +116,8 @@ class InterviewQuestionRepository(
         }
         return jpaRepository.findAll(query).filterNotNull()
     }
+
+//    fun getPks(categ)
 }
 
 interface InterviewQuestionJpaRepository : JpaRepository<InterviewQuestionEntity, Long>, KotlinJdslJpqlExecutor

@@ -1,7 +1,8 @@
 package org.idd.dia.adapter.config
 
 import org.idd.dia.application.service.AuthService
-import org.idd.dia.domain.BadRequestException
+import org.idd.dia.domain.UnAuthorizedException
+import org.idd.dia.domain.model.MemberToken
 import org.idd.dia.util.isNull
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.MethodParameter
@@ -40,15 +41,26 @@ class RequestAuthResolver(
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Long? {
-        val requestAuth = parameter.getParameterAnnotation(RequestAuth::class.java)!!
-        val authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION)
+        val requestAuth: RequestAuth = parameter.getParameterAnnotation(RequestAuth::class.java)!!
+        val authorizationValue = webRequest.getHeader(HttpHeaders.AUTHORIZATION)
+        val userAgentValue = webRequest.getHeader(HttpHeaders.USER_AGENT)
 
-        if (authorization.isNull()) {
+        if (authorizationValue.isNull()) {
             if (requestAuth.required) {
-                throw BadRequestException("Authorization header is required")
+                throw UnAuthorizedException("Authorization header is required")
             }
             return null
         }
-        return authService.getMemberPkByAccessToken(authorization).value
+
+        val requestToken: MemberToken.AccessToken =
+            MemberToken.AccessToken(authorizationValue)
+        val userAgent: MemberToken.UserAgent? =
+            userAgentValue?.let { MemberToken.UserAgent(it) }
+
+        return authService
+            .verifyToken(
+                userAgent,
+                requestToken,
+            ).value
     }
 }
