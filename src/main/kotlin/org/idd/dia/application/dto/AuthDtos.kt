@@ -5,7 +5,9 @@ import org.idd.dia.domain.entity.MemberTokenEntity
 import org.idd.dia.domain.model.Member
 
 data class GithubAccessTokenResponse(
+    @JsonProperty("access_token")
     val accessToken: String,
+    @JsonProperty("token_type")
     val tokenType: String,
     val scope: String,
 )

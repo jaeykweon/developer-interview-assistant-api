@@ -25,6 +25,7 @@ class RealGithubOauthHandler(
         val accessTokenResponse =
             WebClient.create()
                 .post()
+                .uri("https://github.com/login/oauth/access_token")
                 .bodyValue(
                     mapOf(
                         "code" to code,
@@ -44,6 +45,7 @@ class RealGithubOauthHandler(
 
         return WebClient.create()
             .get()
+            .uri("https://api.github.com/user")
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer ${accessTokenResponse.accessToken}")
             .retrieve()
