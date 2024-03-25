@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.idd.dia.domain.entity.MemberTokenEntity
 import org.idd.dia.domain.model.Member
 
+data class GithubAuthorizationRequest(
+    val code: String? = null,
+)
+
 data class GithubAccessTokenResponse(
     @JsonProperty("access_token")
     val accessToken: String,
