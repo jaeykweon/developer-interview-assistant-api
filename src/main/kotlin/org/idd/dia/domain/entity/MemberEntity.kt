@@ -30,7 +30,8 @@ class MemberEntity(
     @Column(name = "image_url", nullable = false)
     val imageUrlValue: String = imageUrl.value
 
-    @Column(name = "oauth_id", nullable = false)
+    // todo: db migration 완료되면, nullable false로 변경
+    @Column(name = "oauth_id")
     val oauthIdValue: String = oauthId.value
 
     // todo: db migration 완료되면, nullable false로 변경
