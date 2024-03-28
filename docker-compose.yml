@@ -1,0 +1,36 @@
+# https://www.baeldung.com/spring-boot-postgresql-docker
+version: '3'
+services:
+    app:
+        image: 'dia:latest'
+        build:
+            context: .
+            dockerfile: Dockerfile-app
+        container_name: dia-app
+        ports:
+            - "58080:8080"
+        networks:
+            - dia-network
+        environment:
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/dia_db
+            - oauth.github.client-secret=${GITHUB_OAUTH_SECRET}
+        depends_on:
+            - db
+    db:
+        build:
+            context: .
+            dockerfile: Dockerfile-db
+        container_name: dia-db
+        ports:
+            - "55432:5432"
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: 1q2w3e4r
+            POSTGRES_DB: dia_db
+        networks:
+            - dia-network
+
+networks:
+    dia-network:
+        driver: bridge
+

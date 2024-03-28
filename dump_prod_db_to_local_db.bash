@@ -9,7 +9,7 @@ echo "명령어 실행 오류 발생시 즉시 종료합니다."
 set -e
 
 DUMP_SOURCE_FILE="dump.sql"
-ENV_FILE="./.envs"
+ENV_FILE="./.env"
 
 echo "프로덕션 환경의 데이터베이스를 로컬 환경으로 덮어 씌웁니다."
 source $ENV_FILE
@@ -22,29 +22,31 @@ PGPASSWORD=$PROD_PG_PASSWORD pg_dump \
 -d "$PROD_PG_DB_NAME" \
 > $DUMP_SOURCE_FILE
 
-echo "로컬 데이터베이스($LOCAL_DB_NAME)를 삭제하기 위해 기존 세션을 종료합니다."
-PGPASSWORD=$LOCAL_PG_PASSWORD psql -U postgres -c \
-"SELECT pg_terminate_backend(pg_stat_activity.pid) \
+echo "로컬 데이터베이스($LOCAL_PG_DB_NAME)를 삭제하기 위해 기존 세션을 종료합니다."
+PGPASSWORD=$LOCAL_PG_PASSWORD psql \
+-U "$LOCAL_PG_USER" \
+-c "SELECT pg_terminate_backend(pg_stat_activity.pid) \
 FROM pg_stat_activity \
-WHERE pg_stat_activity.datname = '$LOCAL_DB_NAME';"
+WHERE pg_stat_activity.datname = '$LOCAL_PG_DB_NAME';"
 
-echo "로컬 데이터베이스($LOCAL_DB_NAME)를 삭제합니다."
+echo "로컬 데이터베이스($LOCAL_PG_DB_NAME)를 삭제합니다."
 PGPASSWORD=$LOCAL_PG_PASSWORD psql \
--U postgres \
--c "DROP DATABASE $LOCAL_DB_NAME;"
+-U "$LOCAL_PG_USER" \
+-c "DROP DATABASE $LOCAL_PG_DB_NAME;"
 
-echo "로컬 데이터베이스($LOCAL_DB_NAME)를 생성합니다."
+echo "로컬 데이터베이스($LOCAL_PG_DB_NAME)를 생성합니다."
 PGPASSWORD=$LOCAL_PG_PASSWORD psql \
--U postgres \
--c "CREATE DATABASE $LOCAL_DB_NAME;"
+-U "$LOCAL_PG_USER" \
+-c "CREATE DATABASE $LOCAL_PG_DB_NAME;"
 
-echo "로컬 데이터베이스($LOCAL_DB_NAME)를 복원합니다."
+echo "로컬 데이터베이스($LOCAL_PG_DB_NAME)를 복원합니다."
 PGPASSWORD=$LOCAL_PG_PASSWORD psql \
--U postgres "$LOCAL_DB_NAME" < $DUMP_SOURCE_FILE
+-U "$LOCAL_PG_USER" \
+"$LOCAL_PG_DB_NAME" < $DUMP_SOURCE_FILE
 
-echo "postgres 계정에 권한을 부여합니다."
+echo "$LOCAL_PG_USER 계정에 권한을 부여합니다."
 PGPASSWORD=$LOCAL_PG_PASSWORD psql \
--U postgres \
--c "ALTER DATABASE $LOCAL_DB_NAME OWNER TO postgres;"
+-U "$LOCAL_PG_USER" \
+-c "ALTER DATABASE $LOCAL_PG_DB_NAME OWNER TO $LOCAL_PG_USER;"
 
-echo "프로덕션 데이터베이스 -> 로컬 데이터베이스($LOCAL_DB_NAME) 복원이 완료되었습니다."
+echo "프로덕션 데이터베이스 -> 로컬 데이터베이스($LOCAL_PG_DB_NAME) 복원이 완료되었습니다."

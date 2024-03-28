@@ -36,6 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
+.env
 .envs
 dump.sql
 src/main/resources/application.properties
