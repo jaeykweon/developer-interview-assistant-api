@@ -18,19 +18,9 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
  */
 @DisplayName("면접 연습 히스토리 단 건 조회 API")
 class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
-    private final val dataFields =
-        listOf(
-            fieldWithPath("data.pkValue").type(NUMBER).description("면접 연습 히스토리 pkValue"),
-            fieldWithPath("data.typeValue").type(STRING).description("면접 연습 종료"),
-            fieldWithPath("data.contentValue").type(STRING).description("카테고리 pkValue"),
-            fieldWithPath("data.elapsedTimeValue").type(NUMBER).description("카테고리 이름"),
-            fieldWithPath("data.fileUrlValue").type(STRING).optional().description("카테고리 pkValue"),
-            fieldWithPath("data.createdTimeValue").type(STRING).description("면접 질문 pk 값"),
-        )
-
     val responseFields: List<FieldDescriptor> =
         commonResponseFields +
-            dataFields +
+            getResponseFields("data.") +
             InterviewQuestionGetApiTest.getResponseFields("data.question.")
 
     @DisplayName("성공 케이스")
@@ -53,5 +43,20 @@ class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
                 .get("api/v0/interview/practice/histories/{pkValue}", 1001)
 
         response.statusCode shouldBe 200
+    }
+
+    companion object {
+        @JvmStatic
+        fun getResponseFields(prefix: String): List<FieldDescriptor> {
+            return listOf(
+                fieldWithPath("${prefix}pkValue").type(NUMBER).description("면접 연습 히스토리 pkValue"),
+                fieldWithPath("${prefix}typeValue").type(STRING).description("면접 연습 종료"),
+                fieldWithPath("${prefix}contentValue").type(STRING).description("카테고리 pkValue"),
+                fieldWithPath("${prefix}elapsedTimeValue").type(NUMBER).description("카테고리 이름"),
+                fieldWithPath("${prefix}fileUrlValue").type(STRING).optional().description("카테고리 pkValue"),
+                fieldWithPath("${prefix}starValue").type(Boolean).description("면접 연습 히스토리 별표 여부"),
+                fieldWithPath("${prefix}createdTimeValue").type(STRING).description("면접 질문 pk 값"),
+            )
+        }
     }
 }

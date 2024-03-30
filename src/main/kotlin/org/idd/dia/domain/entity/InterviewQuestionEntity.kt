@@ -8,6 +8,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.idd.dia.domain.entity.mapping.InterviewQuestionCategoryMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
+import java.time.LocalDateTime
 
 fun Iterable<InterviewQuestionEntity>.findPkMatches(pk: InterviewQuestion.Pk): InterviewQuestionEntity? {
     return this.find { it.getPk() == pk }
@@ -20,6 +21,7 @@ class InterviewQuestionEntity(
     title: InterviewQuestion.Title,
     categoryMappingEntities: Set<InterviewQuestionCategoryMappingEntity>,
     voiceEntities: Set<InterviewQuestionVoiceEntity>,
+    createdTime: LocalDateTime,
 ) {
     @Id
     @Column(name = "pk", nullable = false)
@@ -36,14 +38,22 @@ class InterviewQuestionEntity(
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     val voices: Set<InterviewQuestionVoiceEntity> = voiceEntities
 
+    // todo: 마이그레이션 후 nullable 삭제
+    @Column
+    val createdTime: LocalDateTime? = createdTime
+
     companion object {
         @JvmStatic
-        fun new(title: InterviewQuestion.Title): InterviewQuestionEntity {
+        fun new(
+            title: InterviewQuestion.Title,
+            time: LocalDateTime = LocalDateTime.now(),
+        ): InterviewQuestionEntity {
             return InterviewQuestionEntity(
                 pk = InterviewQuestion.Pk(0),
                 title = title,
                 categoryMappingEntities = setOf(),
                 voiceEntities = setOf(),
+                createdTime = time,
             )
         }
     }

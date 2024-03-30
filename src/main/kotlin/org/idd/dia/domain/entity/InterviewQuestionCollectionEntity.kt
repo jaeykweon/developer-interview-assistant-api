@@ -12,12 +12,14 @@ import org.idd.dia.domain.entity.mapping.InterviewQuestionCollectionMappingEntit
 import org.idd.dia.domain.entity.mapping.getQuestionPks
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCollection
+import java.time.LocalDateTime
 
 @Table(name = "interview_question_collections")
 @Entity
 class InterviewQuestionCollectionEntity(
     pk: InterviewQuestionCollection.Pk,
     title: InterviewQuestionCollection.Title,
+    createdTime: LocalDateTime,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +40,20 @@ class InterviewQuestionCollectionEntity(
     val questionPkValues: List<Long>
         get() = questionMappings.getQuestionPks().map { it.value }
 
+    // todo: 마이그레이션 후 nullable 삭제
+    @Column
+    val createdTime: LocalDateTime? = createdTime
+
     companion object {
         @JvmStatic
-        fun new(title: InterviewQuestionCollection.Title): InterviewQuestionCollectionEntity {
+        fun new(
+            title: InterviewQuestionCollection.Title,
+            time: LocalDateTime,
+        ): InterviewQuestionCollectionEntity {
             return InterviewQuestionCollectionEntity(
                 pk = InterviewQuestionCollection.Pk(0),
                 title = title,
+                createdTime = time,
             )
         }
     }

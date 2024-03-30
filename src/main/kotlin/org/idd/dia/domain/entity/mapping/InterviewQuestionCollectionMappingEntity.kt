@@ -31,6 +31,7 @@ class InterviewQuestionCollectionMappingEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     val question: InterviewQuestionEntity,
-    @Column(name = "created_time", nullable = false)
-    val createdTime: LocalDateTime,
+    // todo: 마이그레이션 후 nullable 삭제
+    @Column(name = "created_time")
+    val createdTime: LocalDateTime?,
 )

@@ -6,7 +6,7 @@ interface InterviewPracticeHistory {
         val value: Long,
     ) {
         init {
-            require(value > 0) { "pk must be more than 0" }
+            require(value >= 0) { "pk must be equal or greater than 0" }
         }
     }
 

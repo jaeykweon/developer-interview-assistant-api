@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.Gender
 import org.idd.dia.domain.model.InterviewQuestionVoice
+import java.time.LocalDateTime
 
 @Table(name = "interview_question_voices")
 @Entity
@@ -19,6 +20,7 @@ class InterviewQuestionVoiceEntity(
     gender: Gender,
     filePath: InterviewQuestionVoice.FilePath,
     subtitle: InterviewQuestionVoice.SubTitle,
+    createdTime: LocalDateTime,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,4 +44,8 @@ class InterviewQuestionVoiceEntity(
 
     @Column(name = "subtitle", nullable = false)
     val subtitleValue: String = subtitle.value
+
+    // todo: 마이그레이션 후 nullable 삭제
+    @Column
+    val createdTime: LocalDateTime? = createdTime
 }
