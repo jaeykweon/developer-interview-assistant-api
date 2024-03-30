@@ -9,6 +9,7 @@ import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewQuestionCollectionDbPort
 import org.idd.dia.application.port.usingcase.MemberDbPort
 import org.idd.dia.domain.NotFoundException
+import org.idd.dia.domain.entity.InterviewQuestionCollectionEntity
 import org.idd.dia.domain.model.InterviewQuestionCollection
 import org.idd.dia.domain.model.Member
 import org.springframework.stereotype.Service
@@ -21,7 +22,8 @@ class InterviewQuestionCollectionService(
     private val memberDbPort: MemberDbPort,
 ) : InterviewQuestionCollectionServiceUseCase {
     override fun getInterviewQuestionCollections(): InterviewQuestionCollectionSimpleViewModels {
-        val collectionEntities = interviewQuestionCollectionDbPort.getAllEntitiesWithQuestionMappings()
+        val collectionEntities: List<InterviewQuestionCollectionEntity> =
+            interviewQuestionCollectionDbPort.getAllEntitiesWithQuestionMappings()
 
         return InterviewQuestionCollectionSimpleViewModels.of(collectionEntities)
     }
@@ -29,7 +31,7 @@ class InterviewQuestionCollectionService(
     override fun getInterviewQuestionCollectionForGuest(
         collectionPk: InterviewQuestionCollection.Pk,
     ): InterviewQuestionCollectionDetailViewModel {
-        val collectionEntity =
+        val collectionEntity: InterviewQuestionCollectionEntity =
             interviewQuestionCollectionDbPort.getEntityWithQuestionMappings(pk = collectionPk)
                 ?: throw NotFoundException("Collection not found")
         val questionResponses = interviewQuestionServiceUseCase.getQuestionsWithoutBookmark(collectionEntity.questionPks)

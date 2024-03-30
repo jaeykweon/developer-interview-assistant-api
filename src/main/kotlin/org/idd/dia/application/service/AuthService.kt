@@ -32,6 +32,7 @@ class AuthService(
             ).getOwnerPk()
     }
 
+    // todo: 한 ip에서 짧은 시간 내 여러번 요청하는 경우에 대한 핸들링 필요
     fun loginOrRegisterWithGithub(
         code: String,
         userAgent: MemberToken.UserAgent?,

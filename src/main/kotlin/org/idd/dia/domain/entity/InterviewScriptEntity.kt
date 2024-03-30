@@ -30,12 +30,12 @@ class InterviewScriptEntity(
 
     fun getPk() = InterviewScript.Pk(pkValue)
 
-    @JoinColumn(referencedColumnName = "pk", nullable = false)
     @OneToOne
+    @JoinColumn(nullable = false)
     val owner: MemberEntity = ownerEntity
 
-    @JoinColumn(referencedColumnName = "pk", nullable = false)
     @ManyToOne
+    @JoinColumn(nullable = false)
     val question: InterviewQuestionEntity = questionEntity
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)

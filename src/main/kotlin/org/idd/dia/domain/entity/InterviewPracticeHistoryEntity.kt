@@ -21,6 +21,7 @@ class InterviewPracticeHistoryEntity(
     type: InterviewPracticeHistory.Type,
     elapsedTime: InterviewPracticeHistory.ElapsedTime,
     filePath: InterviewPracticeHistory.FilePath?,
+    star: Boolean,
     createdTime: LocalDateTime,
 ) {
     @Id
@@ -44,16 +45,29 @@ class InterviewPracticeHistoryEntity(
     val contentValue: String = content.value
 
     @Column(name = "type", nullable = false)
-    val typeValue = type.name
+    val typeValue: String = type.name
 
     @Column(name = "elapsed_time", nullable = false)
-    val elapsedTimeValue = elapsedTime.value
+    val elapsedTimeValue: Int = elapsedTime.value
 
     @Column(name = "file_path", nullable = true)
     val filePathValue: String? = filePath?.value
 
+    // todo: db 마이그레이션 후 nullable false로 변경
+    @Column(name = "star")
+    var starValue: Boolean = star
+        private set
+
     @Column(name = "created_time", nullable = false)
     val createdTime: LocalDateTime = createdTime
+
+    fun star() {
+        this.starValue = true
+    }
+
+    fun unStar() {
+        this.starValue = false
+    }
 
     companion object {
         @JvmStatic
@@ -74,6 +88,7 @@ class InterviewPracticeHistoryEntity(
                 type = type,
                 elapsedTime = elapsedTime,
                 filePath = filePath,
+                star = false,
                 createdTime = createdTime,
             )
         }

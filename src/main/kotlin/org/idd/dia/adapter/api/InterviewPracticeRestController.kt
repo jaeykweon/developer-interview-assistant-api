@@ -2,8 +2,10 @@ package org.idd.dia.adapter.api
 
 import org.idd.dia.adapter.config.RequestAuth
 import org.idd.dia.application.dto.InterviewPracticeHistoryResponse
+import org.idd.dia.application.dto.InterviewPracticeHistoryStarResultResponse
 import org.idd.dia.application.dto.RecordInterviewPracticeRequest
-import org.idd.dia.application.port.usecase.InterviewPracticeServiceUseCase
+import org.idd.dia.application.port.usecase.InterviewPracticeHistoryServiceUseCase
+import org.idd.dia.application.port.usecase.InterviewPracticeHistoryStarServiceUseCase
 import org.idd.dia.domain.model.CustomScroll
 import org.idd.dia.domain.model.InterviewPracticeHistory
 import org.idd.dia.domain.model.InterviewQuestion
@@ -18,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam
 
 @ApiV0RestController
 class InterviewPracticeRestController(
-    private val interviewPracticeService: InterviewPracticeServiceUseCase,
+    private val interviewPracticeHistoryService: InterviewPracticeHistoryServiceUseCase,
+    private val interviewPracticeHistoryStarServiceUseCase: InterviewPracticeHistoryStarServiceUseCase,
 ) {
     /** 연습 기록 저장 */
     @PostMapping("/interview/practice/histories")
@@ -26,7 +29,7 @@ class InterviewPracticeRestController(
         @RequestAuth memberPk: Member.Pk,
         @RequestBody request: RecordInterviewPracticeRequest,
     ): ApiResponse<Long> {
-        val savedPk = interviewPracticeService.registerInterviewPractice(memberPk, request)
+        val savedPk = interviewPracticeHistoryService.registerHistory(memberPk, request)
         return ApiResponse.ok(savedPk.value)
     }
 
@@ -43,7 +46,7 @@ class InterviewPracticeRestController(
             questionPkValue?.let { InterviewQuestion.Pk(questionPkValue) }
 
         val sliceData: Slice<InterviewPracticeHistoryResponse> =
-            interviewPracticeService.getInterviewPracticeHistories(memberPk, previousPk, questionPk)
+            interviewPracticeHistoryService.getHistories(memberPk, previousPk, questionPk)
 
         return ApiResponse.ok(
             sliceData.toCustomScroll(),
@@ -51,28 +54,57 @@ class InterviewPracticeRestController(
     }
 
     /** 연습 기록 단 건 조회 */
-    @GetMapping("/interview/practice/histories/{practiceHistoryPkValue}")
+    @GetMapping("/interview/practice/histories/{practiceHistoryPk}")
     fun getPracticeHistory(
+        @PathVariable practiceHistoryPk: InterviewPracticeHistory.Pk,
         @RequestAuth memberPk: Member.Pk,
-        @PathVariable practiceHistoryPkValue: Long,
     ): ApiResponse<InterviewPracticeHistoryResponse> {
-        val practiceHistoryPk = InterviewPracticeHistory.Pk(practiceHistoryPkValue)
         return ApiResponse.ok(
-            interviewPracticeService.getInterviewPracticeHistory(memberPk, practiceHistoryPk),
+            interviewPracticeHistoryService.getHistory(memberPk, practiceHistoryPk),
         )
     }
 
     /** 연습 기록 삭제 */
-    @DeleteMapping("/interview/practice/histories/{practiceHistoryPkValue}")
+    @DeleteMapping("/interview/practice/histories/{practiceHistoryPk}")
     fun deletePracticeHistory(
+        @PathVariable practiceHistoryPk: InterviewPracticeHistory.Pk,
         @RequestAuth memberPk: Member.Pk,
-        @PathVariable practiceHistoryPkValue: Long,
     ): ApiResponse<Long> {
         val deletedPk =
-            interviewPracticeService.deleteInterviewPracticeHistory(
+            interviewPracticeHistoryService.deleteHistory(
                 memberPk,
-                InterviewPracticeHistory.Pk(practiceHistoryPkValue),
+                practiceHistoryPk,
             )
         return ApiResponse.ok(deletedPk.value)
+    }
+
+    /** 연습 기록 별표 */
+    @PostMapping("/interview/practice/histories/{practiceHistoryPk}/star")
+    fun starPracticeHistory(
+        @PathVariable practiceHistoryPk: InterviewPracticeHistory.Pk,
+        @RequestAuth memberPk: Member.Pk,
+    ): ApiResponse<InterviewPracticeHistoryStarResultResponse> {
+        val result =
+            interviewPracticeHistoryStarServiceUseCase.setStarOfInterviewPracticeHistory(
+                memberPk,
+                practiceHistoryPk,
+                star = true,
+            )
+        return ApiResponse.ok(result)
+    }
+
+    /** 연습 기록 별표 해제 */
+    @DeleteMapping("/interview/practice/histories/{practiceHistoryPk}/star")
+    fun unStarPracticeHistory(
+        @PathVariable practiceHistoryPk: InterviewPracticeHistory.Pk,
+        @RequestAuth memberPk: Member.Pk,
+    ): ApiResponse<InterviewPracticeHistoryStarResultResponse> {
+        val result =
+            interviewPracticeHistoryStarServiceUseCase.setStarOfInterviewPracticeHistory(
+                memberPk,
+                practiceHistoryPk,
+                star = false,
+            )
+        return ApiResponse.ok(result)
     }
 }

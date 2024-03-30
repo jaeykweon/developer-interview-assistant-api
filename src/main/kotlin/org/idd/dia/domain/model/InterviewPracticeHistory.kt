@@ -4,7 +4,11 @@ interface InterviewPracticeHistory {
     @JvmInline
     value class Pk(
         val value: Long,
-    )
+    ) {
+        init {
+            require(value > 0) { "pk must be more than 0" }
+        }
+    }
 
     @JvmInline
     value class Content(

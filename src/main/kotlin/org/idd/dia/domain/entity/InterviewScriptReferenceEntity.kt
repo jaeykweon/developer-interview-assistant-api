@@ -26,7 +26,7 @@ class InterviewScriptReferenceEntity(
     fun getPk() = InterviewScriptReference.Pk(pkValue)
 
     @ManyToOne
-    @JoinColumn(name = "member_pk", nullable = false)
+    @JoinColumn(nullable = false)
     val owner: MemberEntity = ownerEntity
 
     @Column(name = "url", nullable = false)

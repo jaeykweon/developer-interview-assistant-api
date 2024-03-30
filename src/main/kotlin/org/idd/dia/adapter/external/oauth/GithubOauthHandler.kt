@@ -36,6 +36,7 @@ class RealGithubOauthHandler(
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(GithubAccessTokenResponse::class.java)
+                .retry(0)
                 .onErrorMap { error ->
                     // todo: 로깅이 정해지면 에러 로깅
                     throw ServiceUnavailableException("github oauth access token 요청 중 에러 발생")

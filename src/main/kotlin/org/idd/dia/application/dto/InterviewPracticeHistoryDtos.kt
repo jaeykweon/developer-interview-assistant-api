@@ -30,6 +30,7 @@ data class InterviewPracticeHistoryResponse(
     val contentValue: String,
     val elapsedTimeValue: Int,
     val fileUrlValue: String?,
+    val starValue: Boolean,
     val createdTimeValue: LocalDateTime,
 ) {
     companion object {
@@ -45,8 +46,20 @@ data class InterviewPracticeHistoryResponse(
                 contentValue = entity.contentValue,
                 elapsedTimeValue = entity.elapsedTimeValue,
                 fileUrlValue = entity.filePathValue,
+                starValue = entity.starValue,
                 createdTimeValue = entity.createdTime,
             )
+        }
+    }
+}
+
+data class InterviewPracticeHistoryStarResultResponse(
+    val stared: Boolean,
+) {
+    companion object {
+        @JvmStatic
+        fun fromEntity(interviewPracticeHistoryEntity: InterviewPracticeHistoryEntity): InterviewPracticeHistoryStarResultResponse {
+            return InterviewPracticeHistoryStarResultResponse(interviewPracticeHistoryEntity.starValue)
         }
     }
 }

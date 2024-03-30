@@ -28,7 +28,7 @@ class InterviewQuestionVoiceEntity(
     fun getPk() = InterviewQuestionVoice.Pk(pkValue)
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pk", nullable = false)
+    @JoinColumn(nullable = false)
     val question: InterviewQuestionEntity = question
 
     @Column(name = "gender", nullable = false)

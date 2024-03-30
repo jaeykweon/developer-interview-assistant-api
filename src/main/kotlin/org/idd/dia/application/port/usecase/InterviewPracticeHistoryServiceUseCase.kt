@@ -7,31 +7,29 @@ import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
 import org.springframework.data.domain.Slice
 
-interface InterviewPracticeServiceUseCase {
+interface InterviewPracticeHistoryServiceUseCase {
     /** 면접 연습 기록하기 */
-    fun registerInterviewPractice(
+    fun registerHistory(
         memberPk: Member.Pk,
         request: RecordInterviewPracticeRequest,
     ): InterviewPracticeHistory.Pk
 
     /** 면접 연습 기록 목록 조회하기 */
-    fun getInterviewPracticeHistories(
+    fun getHistories(
         memberPk: Member.Pk,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionPk: InterviewQuestion.Pk?,
     ): Slice<InterviewPracticeHistoryResponse>
 
     /** 면접 연습 기록 단 건 조회하기 */
-    fun getInterviewPracticeHistory(
+    fun getHistory(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
     ): InterviewPracticeHistoryResponse
 
     /** 면접 연습 기록 삭제하기 */
-    fun deleteInterviewPracticeHistory(
+    fun deleteHistory(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
     ): InterviewPracticeHistory.Pk
-
-    /** 실전 면접 연습하기 */
 }

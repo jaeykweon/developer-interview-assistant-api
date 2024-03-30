@@ -27,10 +27,10 @@ class InterviewQuestionCollectionMappingEntity(
     val pkValue: Long,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    val question: InterviewQuestionEntity,
+    val collection: InterviewQuestionCollectionEntity,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    val collection: InterviewQuestionCollectionEntity,
+    val question: InterviewQuestionEntity,
     @Column(name = "created_time", nullable = false)
     val createdTime: LocalDateTime,
 )

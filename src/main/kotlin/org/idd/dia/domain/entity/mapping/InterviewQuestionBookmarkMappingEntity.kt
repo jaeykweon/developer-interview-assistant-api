@@ -28,6 +28,9 @@ class InterviewQuestionBookmarkMappingEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     val question: InterviewQuestionEntity,
+    /**
+     * todo: owner로 해도 될까 아니면 member로 해야할까?
+     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     val owner: MemberEntity,

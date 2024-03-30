@@ -3,7 +3,7 @@ package org.idd.dia.application.service
 import jakarta.transaction.Transactional
 import org.idd.dia.application.dto.InterviewPracticeHistoryResponse
 import org.idd.dia.application.dto.RecordInterviewPracticeRequest
-import org.idd.dia.application.port.usecase.InterviewPracticeServiceUseCase
+import org.idd.dia.application.port.usecase.InterviewPracticeHistoryServiceUseCase
 import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewPracticeHistoryDbPort
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
@@ -21,13 +21,13 @@ import java.time.LocalDateTime
 
 @Service
 @Transactional
-class InterviewPracticeService(
+class InterviewPracticeHistoryService(
     private val interviewPracticeHistoryDbPort: InterviewPracticeHistoryDbPort,
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
     private val memberDbPort: MemberDbPort,
     private val interviewQuestionServiceUseCase: InterviewQuestionServiceUseCase,
-) : InterviewPracticeServiceUseCase {
-    override fun registerInterviewPractice(
+) : InterviewPracticeHistoryServiceUseCase {
+    override fun registerHistory(
         memberPk: Member.Pk,
         request: RecordInterviewPracticeRequest,
     ): InterviewPracticeHistory.Pk {
@@ -47,7 +47,7 @@ class InterviewPracticeService(
         return saved.getPk()
     }
 
-    override fun getInterviewPracticeHistories(
+    override fun getHistories(
         memberPk: Member.Pk,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionPk: InterviewQuestion.Pk?,
@@ -75,7 +75,7 @@ class InterviewPracticeService(
         }
     }
 
-    override fun getInterviewPracticeHistory(
+    override fun getHistory(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
     ): InterviewPracticeHistoryResponse {
@@ -92,7 +92,7 @@ class InterviewPracticeService(
         return InterviewPracticeHistoryResponse.of(entity, questionResponse)
     }
 
-    override fun deleteInterviewPracticeHistory(
+    override fun deleteHistory(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
     ): InterviewPracticeHistory.Pk {
