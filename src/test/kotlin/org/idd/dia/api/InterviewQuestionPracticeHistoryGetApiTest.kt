@@ -34,13 +34,13 @@ class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
                     document(
                         "get-interview-history",
                         pathParameters(
-                            parameterWithName("pkValue").description("면접 연습 pkValue"),
+                            parameterWithName("pk").description("면접 연습 pkValue"),
                         ),
                         responseFields(responseFields),
                     ),
                 )
                 .`when`()
-                .get("api/v0/interview/practice/histories/{pkValue}", 1001)
+                .get("api/v0/interview/practice/histories/{pk}", 1001)
 
         response.statusCode shouldBe 200
     }

@@ -76,35 +76,32 @@ class InterviewQuestionRestController(
     }
 
     /** 문제 단 건 조회 */
-    @GetMapping("/interview/questions/{questionPkValue}")
+    @GetMapping("/interview/questions/{questionPk}")
     fun getQuestion(
+        @PathVariable questionPk: InterviewQuestion.Pk,
         @RequestAuth(required = false) memberPk: Member.Pk? = null,
-        @PathVariable questionPkValue: Long,
     ): ApiResponse<InterviewQuestionResponse> {
-        val questionPk = InterviewQuestion.Pk(questionPkValue)
         val interviewQuestion =
             interviewQuestionServiceUseCase
                 .getQuestion(memberPk, questionPk)
         return ApiResponse.ok(interviewQuestion)
     }
 
-    @PostMapping("/interview/questions/{questionPkValue}/bookmark")
+    @PostMapping("/interview/questions/{questionPk}/bookmark")
     fun setQuestionBookmark(
-        @PathVariable questionPkValue: Long,
+        @PathVariable questionPk: InterviewQuestion.Pk,
         @RequestAuth memberPk: Member.Pk,
     ): ApiResponse<Long> {
-        val questionPk = InterviewQuestion.Pk(questionPkValue)
         return ApiResponse.ok(
             interviewQuestionBookmarkServiceUseCase.bookmarkQuestion(memberPk, questionPk),
         )
     }
 
-    @DeleteMapping("/interview/questions/{questionPkValue}/bookmark")
+    @DeleteMapping("/interview/questions/{questionPk}/bookmark")
     fun deleteQuestionBookmark(
-        @PathVariable questionPkValue: Long,
+        @PathVariable questionPk: InterviewQuestion.Pk,
         @RequestAuth memberPk: Member.Pk,
     ): ApiResponse<Long> {
-        val questionPk = InterviewQuestion.Pk(questionPkValue)
         return ApiResponse.ok(
             interviewQuestionBookmarkServiceUseCase.deleteQuestionBookmark(memberPk, questionPk),
         )
@@ -119,16 +116,16 @@ class InterviewQuestionRestController(
         )
     }
 
-    @GetMapping("/interview/practice/collections/{collectionPkValue}")
+    @GetMapping("/interview/practice/collections/{collectionPk}")
     fun getPracticeCollection(
+        @PathVariable collectionPk: InterviewQuestionCollection.Pk,
         @RequestAuth(required = false) memberPk: Member.Pk? = null,
-        @PathVariable collectionPkValue: Long,
     ): ApiResponse<InterviewQuestionCollectionDetailViewModel> {
         if (memberPk.isNull()) {
             val defaultCollection: InterviewQuestionCollectionDetailViewModel =
                 interviewQuestionCollectionServiceUseCase
                     .getInterviewQuestionCollectionForGuest(
-                        InterviewQuestionCollection.Pk(collectionPkValue),
+                        collectionPk,
                     )
             return ApiResponse.ok(defaultCollection)
         }
@@ -137,7 +134,7 @@ class InterviewQuestionRestController(
             interviewQuestionCollectionServiceUseCase
                 .getInterviewQuestionCollectionForMember(
                     memberPk,
-                    InterviewQuestionCollection.Pk(collectionPkValue),
+                    collectionPk,
                 )
         return ApiResponse.ok(collectionOfMember)
     }

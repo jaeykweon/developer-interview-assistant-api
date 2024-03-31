@@ -55,16 +55,16 @@ class InterviewScriptRestController(
     }
 
     /** 스크립트 수정 */
-    @PatchMapping("/interview/scripts/{scriptPkValue}")
+    @PatchMapping("/interview/scripts/{scriptPk}")
     fun editScript(
         @RequestAuth memberPk: Member.Pk,
-        @PathVariable scriptPkValue: Long,
+        @PathVariable scriptPk: InterviewScript.Pk,
         @RequestBody request: InterviewScriptUpdateRequest,
     ): ApiResponse<InterviewScriptResponse> {
         val time = LocalDateTime.now()
         val interviewScriptResponse =
             interviewScriptServiceUseCase.updateContent(
-                scriptPk = InterviewScript.Pk(scriptPkValue),
+                scriptPk = scriptPk,
                 request = request,
                 requestMemberPk = memberPk,
                 updateTime = time,

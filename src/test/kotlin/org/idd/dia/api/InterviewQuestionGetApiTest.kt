@@ -29,12 +29,12 @@ class InterviewQuestionGetApiTest : ApiTest() {
                 .filter(
                     document(
                         "get-interview-question",
-                        pathParameters(parameterWithName("pkValue").description("면접 질문 pkValue")),
+                        pathParameters(parameterWithName("pk").description("면접 질문 pk")),
                         responseFields(responseFields),
                     ),
                 )
                 .`when`()
-                .get("/api/v0/interview/questions/{pkValue}", 1001)
+                .get("/api/v0/interview/questions/{pk}", 1001)
 
         response.statusCode shouldBe 200
     }
