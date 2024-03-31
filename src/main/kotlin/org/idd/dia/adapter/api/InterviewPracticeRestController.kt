@@ -28,9 +28,9 @@ class InterviewPracticeRestController(
     fun recordPracticeHistory(
         @RequestAuth memberPk: Member.Pk,
         @RequestBody request: RecordInterviewPracticeRequest,
-    ): ApiResponse<Long> {
+    ): ApiResponse<InterviewPracticeHistory.Pk> {
         val savedPk = interviewPracticeHistoryService.registerHistory(memberPk, request)
-        return ApiResponse.ok(savedPk.value)
+        return ApiResponse.ok(savedPk)
     }
 
     /** 연습 기록 목록 조회 */
@@ -39,6 +39,7 @@ class InterviewPracticeRestController(
         @RequestAuth memberPk: Member.Pk,
         @RequestParam previousPkValue: Long? = null,
         @RequestParam questionPkValue: Long? = null,
+        @RequestParam star: Boolean? = null,
     ): ApiResponse<CustomScroll<InterviewPracticeHistoryResponse>> {
         val previousPk: InterviewPracticeHistory.Pk? =
             previousPkValue?.let { InterviewPracticeHistory.Pk(previousPkValue) }
@@ -46,7 +47,7 @@ class InterviewPracticeRestController(
             questionPkValue?.let { InterviewQuestion.Pk(questionPkValue) }
 
         val sliceData: Slice<InterviewPracticeHistoryResponse> =
-            interviewPracticeHistoryService.getHistories(memberPk, previousPk, questionPk)
+            interviewPracticeHistoryService.getHistories(memberPk, previousPk, questionPk, star)
 
         return ApiResponse.ok(
             sliceData.toCustomScroll(),

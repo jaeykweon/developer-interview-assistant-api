@@ -19,6 +19,7 @@ interface InterviewPracticeHistoryServiceUseCase {
         memberPk: Member.Pk,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionPk: InterviewQuestion.Pk?,
+        star: Boolean?,
     ): Slice<InterviewPracticeHistoryResponse>
 
     /** 면접 연습 기록 단 건 조회하기 */

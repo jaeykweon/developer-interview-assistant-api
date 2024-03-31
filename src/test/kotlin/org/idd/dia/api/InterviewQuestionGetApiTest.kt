@@ -41,7 +41,7 @@ class InterviewQuestionGetApiTest : ApiTest() {
 
     companion object {
         @JvmStatic
-        fun getResponseFields(prefix: String): List<FieldDescriptor> {
+        fun getResponseFields(prefix: String? = "data."): List<FieldDescriptor> {
             return listOf(
                 fieldWithPath("${prefix}pkValue").type(NUMBER).description("면접 질문 pkValue"),
                 fieldWithPath("${prefix}korTitleValue").type(STRING).description("면접 질문 제목 (한국어)"),

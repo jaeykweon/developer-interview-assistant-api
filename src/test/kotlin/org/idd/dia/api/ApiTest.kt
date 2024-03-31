@@ -54,6 +54,8 @@ abstract class ApiTest {
             fieldWithPath("data.next").type(BOOLEAN).description("다음 페이지 유무"),
         )
 
+    final val scrollDataPrefix = "data.scrollData.[]."
+
     val gson = Gson()
 
     @BeforeEach

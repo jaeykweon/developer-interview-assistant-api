@@ -20,8 +20,7 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
 class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
     val responseFields: List<FieldDescriptor> =
         commonResponseFields +
-            getResponseFields("data.") +
-            InterviewQuestionGetApiTest.getResponseFields("data.question.")
+            getResponseFields()
 
     @DisplayName("성공 케이스")
     @Test
@@ -47,7 +46,7 @@ class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
 
     companion object {
         @JvmStatic
-        fun getResponseFields(prefix: String): List<FieldDescriptor> {
+        fun getResponseFields(prefix: String? = "data."): List<FieldDescriptor> {
             return listOf(
                 fieldWithPath("${prefix}pkValue").type(NUMBER).description("면접 연습 히스토리 pkValue"),
                 fieldWithPath("${prefix}typeValue").type(STRING).description("면접 연습 종료"),
@@ -56,7 +55,7 @@ class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
                 fieldWithPath("${prefix}fileUrlValue").type(STRING).optional().description("카테고리 pkValue"),
                 fieldWithPath("${prefix}starValue").type(Boolean).description("면접 연습 히스토리 별표 여부"),
                 fieldWithPath("${prefix}createdTimeValue").type(STRING).description("면접 질문 pk 값"),
-            )
+            ) + InterviewQuestionGetApiTest.getResponseFields("${prefix}question.")
         }
     }
 }

@@ -28,6 +28,7 @@ class InterviewPracticeHistoryRepository(
         memberEntity: MemberEntity,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionEntity: InterviewQuestionEntity?,
+        star: Boolean?,
     ): Slice<InterviewPracticeHistoryEntity> {
         val query =
             jpql {
@@ -38,10 +39,13 @@ class InterviewPracticeHistoryRepository(
                 ).whereAnd(
                     path(InterviewPracticeHistoryEntity::owner).eq(memberEntity),
                     previousPk?.let {
-                        path(InterviewPracticeHistoryEntity::pkValue).le(previousPk.value)
+                        path(InterviewPracticeHistoryEntity::pkValue).le(it.value)
                     },
                     interviewQuestionEntity?.let {
                         path(InterviewPracticeHistoryEntity::question).eq(it)
+                    },
+                    star?.let {
+                        path(InterviewPracticeHistoryEntity::starValue).eq(it)
                     },
                 ).orderBy(
                     path(InterviewPracticeHistoryEntity::pkValue).desc(),

@@ -13,6 +13,7 @@ interface InterviewPracticeHistoryDbPort {
         memberEntity: MemberEntity,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionEntity: InterviewQuestionEntity?,
+        star: Boolean?,
     ): Slice<InterviewPracticeHistoryEntity>
 
     fun getSingleEntity(

@@ -51,6 +51,7 @@ class InterviewPracticeHistoryService(
         memberPk: Member.Pk,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionPk: InterviewQuestion.Pk?,
+        star: Boolean?,
     ): Slice<InterviewPracticeHistoryResponse> {
         val memberEntity: MemberEntity = memberDbPort.getEntity(pk = memberPk)
         val questionEntity: InterviewQuestionEntity? =
@@ -61,6 +62,7 @@ class InterviewPracticeHistoryService(
                 memberEntity = memberEntity,
                 previousPk = previousPk,
                 interviewQuestionEntity = questionEntity,
+                star = star,
             )
 
         val questionResponses =
