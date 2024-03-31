@@ -18,7 +18,7 @@ data class GithubAccessTokenResponse(
 
 data class GithubUserData(
     val login: String,
-    val name: String,
+    val name: String?,
     val id: Long,
     @JsonProperty("node_id")
     val nodeId: String,
@@ -26,13 +26,13 @@ data class GithubUserData(
     val avatarUrl: String,
     @JsonProperty("html_url")
     val htmlUrl: String,
-    val company: String?,
+    val company: String? = null,
 ) {
     val githubId: Member.OauthId
         get() = Member.OauthId(login)
 
     val nickname: Member.Nickname
-        get() = Member.Nickname(name)
+        get() = name?.let { Member.Nickname(it) } ?: Member.Nickname(login)
 
     val imageUrl: Member.ImageUrl
         get() = Member.ImageUrl(avatarUrl)
