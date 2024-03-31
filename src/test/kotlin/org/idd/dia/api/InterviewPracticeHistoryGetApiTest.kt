@@ -16,7 +16,7 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
  */
 @DisplayName("면접 연습 히스토리 단 건 조회 API")
 class InterviewPracticeHistoryGetApiTest : ApiTest() {
-    val responseFieldDescriptors: List<FieldDescriptor> =
+    private val responseFieldDescriptors: List<FieldDescriptor> =
         commonResponseFields +
             getResponseFields()
 

@@ -12,7 +12,7 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
  */
 @DisplayName("면접 연습 기록 목록 조회 API")
 class InterviewPracticeHistoriesGetApiTest : ApiTest() {
-    val responseFieldDescriptors =
+    private val responseFieldDescriptors =
         commonResponseFields +
             scrollResponseFields +
             InterviewPracticeHistoryGetApiTest.getResponseFields(scrollDataPrefix)

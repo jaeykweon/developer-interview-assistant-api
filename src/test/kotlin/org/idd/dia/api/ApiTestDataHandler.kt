@@ -35,6 +35,9 @@ class ApiTestDataHandler(
         tableNames = getManagedTableNames()
     }
 
+    /**
+     * initDataSqlPath에 정의된 SQL 파일을 실행하여 테스트 데이터를 초기화합니다.
+     */
     fun setUp() {
         try {
             dataSource.connection.use { connection ->
@@ -51,6 +54,9 @@ class ApiTestDataHandler(
         }
     }
 
+    /**
+     * 모든 테이블을 삭제 합니다.
+     */
     @Transactional
     fun truncate() {
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE")

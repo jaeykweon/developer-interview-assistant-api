@@ -13,7 +13,7 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
  */
 @DisplayName("면접 질문 목록 조회 API")
 class InterviewQuestionsGetApiTest : ApiTest() {
-    val responseFields: List<FieldDescriptor> =
+    private val responseFieldDescriptors: List<FieldDescriptor> =
         commonResponseFields +
             pageResponseFields +
             InterviewQuestionGetApiTest.getResponseFields("data.pageData.[].")
@@ -27,7 +27,7 @@ class InterviewQuestionsGetApiTest : ApiTest() {
                 .filter(
                     document(
                         "get-interview-questions",
-                        responseFields(responseFields),
+                        responseFields(responseFieldDescriptors),
                     ),
                 )
                 .`when`()

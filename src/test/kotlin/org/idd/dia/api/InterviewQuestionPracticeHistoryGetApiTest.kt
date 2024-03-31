@@ -18,7 +18,7 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
  */
 @DisplayName("면접 연습 히스토리 단 건 조회 API")
 class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
-    val responseFields: List<FieldDescriptor> =
+    private val responseFieldDescriptors: List<FieldDescriptor> =
         commonResponseFields +
             getResponseFields()
 
@@ -35,7 +35,7 @@ class InterviewQuestionPracticeHistoryGetApiTest : ApiTest() {
                         pathParameters(
                             parameterWithName("pk").description("면접 연습 pkValue"),
                         ),
-                        responseFields(responseFields),
+                        responseFields(responseFieldDescriptors),
                     ),
                 )
                 .`when`()

@@ -13,11 +13,10 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
  */
 @DisplayName("면접 연습 히스토리 목록 조회 API")
 class InterviewQuestionPracticeHistoriesGetApiTest : ApiTest() {
-    val responseFields: List<FieldDescriptor> =
+    private val responseFieldDescriptors: List<FieldDescriptor> =
         commonResponseFields +
             scrollResponseFields +
-            InterviewQuestionPracticeHistoryGetApiTest.getResponseFields(scrollDataPrefix) +
-            InterviewQuestionGetApiTest.getResponseFields("${scrollDataPrefix}question.")
+            InterviewQuestionPracticeHistoryGetApiTest.getResponseFields(scrollDataPrefix)
 
     @DisplayName("성공 케이스")
     @Test
@@ -29,7 +28,7 @@ class InterviewQuestionPracticeHistoriesGetApiTest : ApiTest() {
                 .filter(
                     document(
                         "get-interview-histories",
-                        responseFields(responseFields),
+                        responseFields(responseFieldDescriptors),
                     ),
                 )
                 .`when`()
