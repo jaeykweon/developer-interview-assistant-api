@@ -18,7 +18,7 @@ class InterviewQuestionBookmarkService(
         memberPk: Member.Pk,
         questionPk: InterviewQuestion.Pk,
     ): Long {
-        val questionEntity = interviewQuestionDbPort.getWithOutRelations(pk = questionPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithOutRelations(pk = questionPk)
         val memberEntity = memberDbPort.getEntity(pk = memberPk)
 
         return interviewQuestionBookmarkMappingDbPort.addBookmark(
@@ -31,7 +31,7 @@ class InterviewQuestionBookmarkService(
         memberPk: Member.Pk,
         questionPk: InterviewQuestion.Pk,
     ): Long {
-        val questionEntity = interviewQuestionDbPort.getWithOutRelations(pk = questionPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithOutRelations(pk = questionPk)
         val memberEntity = memberDbPort.getEntity(pk = memberPk)
 
         return interviewQuestionBookmarkMappingDbPort.removeBookmark(

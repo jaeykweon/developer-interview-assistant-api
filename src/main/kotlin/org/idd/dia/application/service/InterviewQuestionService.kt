@@ -13,6 +13,7 @@ import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.entity.findPkMatches
+import org.idd.dia.domain.entity.getPk
 import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
@@ -93,7 +94,7 @@ class InterviewQuestionService(
         }
     }
 
-    override fun getBookmarkedQuestionsOfMember(
+    override fun getOnlyBookmarkedQuestionsOfMember(
         memberPk: Member.Pk,
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
@@ -110,11 +111,11 @@ class InterviewQuestionService(
 
         val questionEntities =
             interviewQuestionDbPort.getEntitiesWithCategoriesAndVoices(
-                pks = interviewQuestionBookmarkMappingEntityPage.map { it.getQuestionPk() },
+                pks = interviewQuestionBookmarkMappingEntityPage.map { it.question.getPk() },
             )
 
         return interviewQuestionBookmarkMappingEntityPage.map { mapping ->
-            val questionEntity = questionEntities.findPkMatches(mapping.getQuestionPk())!!
+            val questionEntity = questionEntities.findPkMatches(mapping.question.getPk())!!
             InterviewQuestionResponse.withCheckingBookmark(
                 questionEntity,
                 setOf(mapping),
@@ -144,17 +145,36 @@ class InterviewQuestionService(
     }
 
     override fun getQuestionsWithBookmark(
-        ownerEntity: MemberEntity,
+        memberPk: Member.Pk,
         pks: Iterable<InterviewQuestion.Pk>,
     ): List<InterviewQuestionResponse> {
-        val interviewQuestionEntities = interviewQuestionDbPort.getEntitiesWithCategoriesAndVoices(pks)
-        val bookmarkMappings = interviewQuestionBookmarkMappingDbPort.getMappings(ownerEntity, interviewQuestionEntities)
+        val ownerEntity: MemberEntity = memberDbPort.getEntity(pk = memberPk)
+
+        val interviewQuestionEntities: List<InterviewQuestionEntity> =
+            interviewQuestionDbPort.getEntitiesWithCategoriesAndVoices(pks)
+
+        val bookmarkMappings: List<InterviewQuestionBookmarkMappingEntity> =
+            interviewQuestionBookmarkMappingDbPort.getMappings(ownerEntity, interviewQuestionEntities)
+
         return interviewQuestionEntities.map {
             InterviewQuestionResponse.withCheckingBookmark(
                 it,
                 bookmarkMappings,
             )
         }
+    }
+
+    override fun getQuestionWithBookmark(
+        memberPk: Member.Pk,
+        pk: InterviewQuestion.Pk,
+    ): InterviewQuestionResponse {
+        val ownerEntity = memberDbPort.getEntity(pk = memberPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(pk)
+        val bookmarkMappings = interviewQuestionBookmarkMappingDbPort.getMappings(ownerEntity, questionEntity)
+        return InterviewQuestionResponse.withCheckingBookmark(
+            questionEntity,
+            bookmarkMappings,
+        )
     }
 
     override fun getQuestionsWithoutBookmark(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionResponse> {

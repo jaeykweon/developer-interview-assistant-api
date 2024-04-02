@@ -14,6 +14,8 @@ import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCollection
 import java.time.LocalDateTime
 
+fun InterviewQuestionCollectionEntity.getPk() = InterviewQuestionCollection.Pk(pkValue)
+
 @Table(name = "interview_question_collections")
 @Entity
 class InterviewQuestionCollectionEntity(
@@ -25,8 +27,6 @@ class InterviewQuestionCollectionEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
     val pkValue: Long = pk.value
-
-    fun getPk() = InterviewQuestionCollection.Pk(pkValue)
 
     @Column(name = "title", nullable = false)
     val titleValue: String = title.value

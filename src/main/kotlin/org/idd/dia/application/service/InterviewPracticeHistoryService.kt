@@ -32,7 +32,7 @@ class InterviewPracticeHistoryService(
         request: RecordInterviewPracticeRequest,
     ): InterviewPracticeHistory.Pk {
         val memberEntity = memberDbPort.getEntity(pk = memberPk)
-        val questionEntity = interviewQuestionDbPort.getWithOutRelations(pk = request.getInterviewQuestionPk())
+        val questionEntity = interviewQuestionDbPort.getEntityWithOutRelations(pk = request.getInterviewQuestionPk())
         val newHistoryEntity =
             InterviewPracticeHistoryEntity.new(
                 ownerEntity = memberEntity,
@@ -67,7 +67,7 @@ class InterviewPracticeHistoryService(
 
         val questionResponses =
             interviewQuestionServiceUseCase.getQuestionsWithBookmark(
-                ownerEntity = memberEntity,
+                memberPk = memberPk,
                 pks = entitySlice.mapToSet { it.getQuestionPk() },
             )
 

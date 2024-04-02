@@ -63,7 +63,7 @@ class AuthService(
         }
     }
 
-    // 테스트를 위해 open으로 열어놓음
+    // 테스트를 위해 public 으로 열어놓음
     fun issueAccessToken(
         ownerPk: Member.Pk,
         localDateTime: LocalDateTime,

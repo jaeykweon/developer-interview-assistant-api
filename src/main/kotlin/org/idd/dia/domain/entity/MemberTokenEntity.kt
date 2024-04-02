@@ -29,7 +29,7 @@ class MemberTokenEntity(
 
     @Column(name = "access_token")
     var accessTokenValue: String = accessToken.value
-        private set
+        protected set
 
     @Column(name = "user_agent", nullable = true)
     val userAgentValue: String? = userAgent?.value

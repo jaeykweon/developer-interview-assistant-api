@@ -58,7 +58,7 @@ class InterviewQuestionRestController(
 
         if (memberPk.isNotNull() && bookmark.isTrue()) {
             val questionPage: CustomPage<InterviewQuestionResponse> =
-                interviewQuestionServiceUseCase.getBookmarkedQuestionsOfMember(
+                interviewQuestionServiceUseCase.getOnlyBookmarkedQuestionsOfMember(
                     memberPk,
                     categories,
                     pageable,
@@ -88,7 +88,7 @@ class InterviewQuestionRestController(
     }
 
     @PostMapping("/interview/questions/{questionPk}/bookmark")
-    fun setQuestionBookmark(
+    fun postQuestionBookmark(
         @PathVariable questionPk: InterviewQuestion.Pk,
         @RequestAuth memberPk: Member.Pk,
     ): ApiResponse<Long> {
@@ -107,8 +107,12 @@ class InterviewQuestionRestController(
         )
     }
 
+    // todo: pageable 적용
     @GetMapping("/interview/practice/collections")
-    fun getPracticeCollections(pageable: Pageable): ApiResponse<List<InterviewQuestionCollectionSimpleViewModel>> {
+    fun getPracticeCollections(
+        @RequestAuth(required = false) memberPk: Member.Pk? = null,
+        pageable: Pageable,
+    ): ApiResponse<List<InterviewQuestionCollectionSimpleViewModel>> {
         val collections: InterviewQuestionCollectionSimpleViewModels =
             interviewQuestionCollectionServiceUseCase.getInterviewQuestionCollections()
         return ApiResponse.ok(

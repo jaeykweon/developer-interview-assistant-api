@@ -9,7 +9,9 @@ import org.springframework.data.domain.Pageable
 interface InterviewQuestionDbPort {
     fun save(questionEntity: InterviewQuestionEntity): InterviewQuestionEntity
 
-    fun getWithOutRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity
+    fun getEntityWithOutRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity
+
+    fun getEntitiesWithOutRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity>
 
     fun getEntityWithCategoriesAndVoices(pk: InterviewQuestion.Pk): InterviewQuestionEntity
 

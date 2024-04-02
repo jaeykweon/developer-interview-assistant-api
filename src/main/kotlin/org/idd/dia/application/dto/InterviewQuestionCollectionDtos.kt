@@ -39,22 +39,18 @@ data class InterviewQuestionCollectionSimpleViewModel(
 data class InterviewQuestionCollectionDetailViewModel(
     val pkValue: Long,
     val titleValue: String,
-    val questions: List<InterviewQuestionResponse>,
-    val questionPkValues: List<Long>,
-    val questionCountValue: Int,
+    val questionAndScripts: List<InterviewScriptFormResponse>,
 ) {
     companion object {
         @JvmStatic
         fun of(
             entity: InterviewQuestionCollectionEntity,
-            questions: List<InterviewQuestionResponse>,
+            questionAndScripts: List<InterviewScriptFormResponse>,
         ): InterviewQuestionCollectionDetailViewModel {
             return InterviewQuestionCollectionDetailViewModel(
                 pkValue = entity.pkValue,
                 titleValue = entity.titleValue,
-                questions = questions,
-                questionPkValues = entity.questionPkValues,
-                questionCountValue = entity.questionPkValues.size,
+                questionAndScripts = questionAndScripts,
             )
         }
     }

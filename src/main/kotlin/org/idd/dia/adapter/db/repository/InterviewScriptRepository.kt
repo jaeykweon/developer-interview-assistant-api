@@ -51,6 +51,16 @@ class InterviewScriptRepository(
             "스크립트가 존재하지 않습니다 (questionPk: ${questionEntity.pkValue}, ownerPk: ${ownerEntity.pkValue})",
         )
     }
+
+    override fun getAllByQuestionsOfMember(
+        questionEntities: List<InterviewQuestionEntity>,
+        ownerEntity: MemberEntity,
+    ): List<InterviewScriptEntity> {
+        return interviewScriptJpaRepository.findAllByQuestionInAndOwner(
+            questionEntities = questionEntities,
+            owner = ownerEntity,
+        )
+    }
 }
 
 interface InterviewScriptJpaRepository : JpaRepository<InterviewScriptEntity, Long> {
@@ -65,4 +75,9 @@ interface InterviewScriptJpaRepository : JpaRepository<InterviewScriptEntity, Lo
         question: InterviewQuestionEntity,
         owner: MemberEntity,
     ): InterviewScriptEntity?
+
+    fun findAllByQuestionInAndOwner(
+        questionEntities: List<InterviewQuestionEntity>,
+        owner: MemberEntity,
+    ): List<InterviewScriptEntity>
 }

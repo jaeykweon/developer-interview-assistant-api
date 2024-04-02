@@ -11,7 +11,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
-import org.idd.dia.domain.model.InterviewQuestion
 import java.time.LocalDateTime
 
 fun Iterable<InterviewQuestionBookmarkMappingEntity>.isBookmarked(interviewQuestionEntity: InterviewQuestionEntity): Boolean {
@@ -37,11 +36,8 @@ class InterviewQuestionBookmarkMappingEntity(
     @Column(name = "created_time", nullable = false)
     val createdTime: LocalDateTime,
 ) {
-    fun getQuestionPk(): InterviewQuestion.Pk {
-        return question.getPk()
-    }
-
     companion object {
+        @JvmStatic
         fun new(
             question: InterviewQuestionEntity,
             owner: MemberEntity,

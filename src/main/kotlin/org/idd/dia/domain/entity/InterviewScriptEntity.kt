@@ -40,18 +40,18 @@ class InterviewScriptEntity(
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     var contentValue: String = content.value
-        private set
+        protected set
 
     @Column(nullable = false)
     val createdTime: LocalDateTime = createdTime
 
     @Column(nullable = false)
     var lastModifiedTime: LocalDateTime = lastModifiedTime
-        private set
+        protected set
 
     @Column(nullable = false)
     var lastReadTime: LocalDateTime = lastReadTime
-        private set
+        protected set
 
     fun read(time: LocalDateTime) {
         this.lastReadTime = time

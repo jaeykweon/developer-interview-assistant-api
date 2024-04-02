@@ -87,9 +87,13 @@ class InterviewQuestionRepository(
         return PageImpl(this.getEntitiesWithCategoriesAndVoices(pks), pageable, pkPageResult.totalElements)
     }
 
-    override fun getWithOutRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
+    override fun getEntityWithOutRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity {
         return jpaRepository.findByIdOrNull(pk.value)
             ?: throw NotFoundException("InterviewQuestionEntity with pk: $pk not found")
+    }
+
+    override fun getEntitiesWithOutRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity> {
+        return jpaRepository.findAllById(pks.map { it.value })
     }
 
     override fun getEntityWithCategoriesAndVoices(pk: InterviewQuestion.Pk): InterviewQuestionEntity {

@@ -81,7 +81,7 @@ class InterviewPracticeRestController(
 
     /** 연습 기록 별표 */
     @PostMapping("/interview/practice/histories/{practiceHistoryPk}/star")
-    fun starPracticeHistory(
+    fun postStarPracticeHistory(
         @PathVariable practiceHistoryPk: InterviewPracticeHistory.Pk,
         @RequestAuth memberPk: Member.Pk,
     ): ApiResponse<InterviewPracticeHistoryStarResultResponse> {
@@ -96,7 +96,7 @@ class InterviewPracticeRestController(
 
     /** 연습 기록 별표 해제 */
     @DeleteMapping("/interview/practice/histories/{practiceHistoryPk}/star")
-    fun unStarPracticeHistory(
+    fun deleteStarPracticeHistory(
         @PathVariable practiceHistoryPk: InterviewPracticeHistory.Pk,
         @RequestAuth memberPk: Member.Pk,
     ): ApiResponse<InterviewPracticeHistoryStarResultResponse> {

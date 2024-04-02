@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.idd.dia.domain.entity.InterviewQuestionCollectionEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
+import org.idd.dia.domain.entity.getPk
 import org.idd.dia.domain.model.InterviewQuestion
 import java.time.LocalDateTime
 

@@ -2,7 +2,6 @@ package org.idd.dia.application.port.usecase
 
 import org.idd.dia.application.dto.InterviewQuestionResponse
 import org.idd.dia.application.dto.RegisterInterviewQuestionRequest
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
 import org.idd.dia.domain.model.Member
@@ -28,16 +27,22 @@ interface InterviewQuestionServiceUseCase {
         pageable: Pageable,
     ): Page<InterviewQuestionResponse>
 
-    fun getBookmarkedQuestionsOfMember(
+    /** 문제들 중 북마크 된 문제들만 조회 */
+    fun getOnlyBookmarkedQuestionsOfMember(
         memberPk: Member.Pk,
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse>
 
     fun getQuestionsWithBookmark(
-        ownerEntity: MemberEntity,
+        memberPk: Member.Pk,
         pks: Iterable<InterviewQuestion.Pk>,
     ): List<InterviewQuestionResponse>
 
     fun getQuestionsWithoutBookmark(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionResponse>
+
+    fun getQuestionWithBookmark(
+        memberPk: Member.Pk,
+        pk: InterviewQuestion.Pk,
+    ): InterviewQuestionResponse
 }

@@ -2,6 +2,7 @@ package org.idd.dia.application.port.usecase
 
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
 import org.idd.dia.application.dto.InterviewScriptResponse
+import org.idd.dia.application.dto.InterviewScriptResponseV2
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewScript
@@ -31,4 +32,9 @@ interface InterviewScriptServiceUseCase {
         scriptPk: InterviewScript.Pk,
         requestMemberPk: Member.Pk,
     ): InterviewScriptResponse
+
+    fun getScripts(
+        questionPks: Collection<InterviewQuestion.Pk>,
+        memberPk: Member.Pk,
+    ): List<InterviewScriptResponseV2>
 }

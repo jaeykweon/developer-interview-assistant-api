@@ -3,13 +3,17 @@ package org.idd.dia.application.service
 import jakarta.transaction.Transactional
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
 import org.idd.dia.application.dto.InterviewScriptResponse
+import org.idd.dia.application.dto.InterviewScriptResponseV2
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
+import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.application.port.usecase.InterviewScriptServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
 import org.idd.dia.application.port.usingcase.MemberDbPort
 import org.idd.dia.domain.ConflictException
 import org.idd.dia.domain.entity.InterviewScriptEntity
+import org.idd.dia.domain.entity.MemberEntity
+import org.idd.dia.domain.entity.getPk
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewScript
 import org.idd.dia.domain.model.Member
@@ -22,6 +26,7 @@ class InterviewScriptService(
     private val interviewScriptDbPort: InterviewScriptDbPort,
     private val memberDbPort: MemberDbPort,
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
+    private val interviewQuestionServiceUseCase: InterviewQuestionServiceUseCase,
 ) : InterviewScriptServiceUseCase {
     override fun createOrThrowIfExist(
         request: InterviewScriptCreateRequest,
@@ -51,14 +56,6 @@ class InterviewScriptService(
         return saved.getPk()
     }
 
-    override fun getScript(
-        scriptPk: InterviewScript.Pk,
-        requestMemberPk: Member.Pk,
-    ): InterviewScriptResponse {
-        val scriptEntity = interviewScriptDbPort.getByPk(scriptPk)
-        return InterviewScriptResponse.from(scriptEntity)
-    }
-
     override fun read(
         questionPk: InterviewQuestion.Pk,
         requestMemberPk: Member.Pk,
@@ -72,7 +69,29 @@ class InterviewScriptService(
                 ownerEntity = ownerEntity,
             )
         scriptEntity.read(readTime)
-        return InterviewScriptResponse.from(scriptEntity)
+
+        val questionResponse =
+            interviewQuestionServiceUseCase.getQuestionWithBookmark(
+                memberPk = requestMemberPk,
+                pk = scriptEntity.question.getPk(),
+            )
+        return InterviewScriptResponse.of(scriptEntity, questionResponse)
+    }
+
+    // todo: 캐시 추가?
+    override fun getScript(
+        scriptPk: InterviewScript.Pk,
+        requestMemberPk: Member.Pk,
+    ): InterviewScriptResponse {
+        val scriptEntity: InterviewScriptEntity =
+            interviewScriptDbPort.getByPk(scriptPk)
+        val questionResponse =
+            interviewQuestionServiceUseCase.getQuestionWithBookmark(
+                memberPk = requestMemberPk,
+                pk = scriptEntity.question.getPk(),
+            )
+
+        return InterviewScriptResponse.of(scriptEntity, questionResponse)
     }
 
     override fun updateContent(
@@ -87,5 +106,24 @@ class InterviewScriptService(
             updateTime = updateTime,
         )
         return InterviewScriptResponse.from(entity)
+    }
+
+    override fun getScripts(
+        questionPks: Collection<InterviewQuestion.Pk>,
+        memberPk: Member.Pk,
+    ): List<InterviewScriptResponseV2> {
+        val ownerEntity: MemberEntity =
+            memberDbPort
+                .getEntity(memberPk)
+        val questionEntities =
+            interviewQuestionDbPort
+                .getEntitiesWithOutRelations(questionPks)
+        val scriptEntities: List<InterviewScriptEntity> =
+            interviewScriptDbPort
+                .getAllByQuestionsOfMember(questionEntities, ownerEntity)
+
+        return scriptEntities.map {
+            InterviewScriptResponseV2.from(it)
+        }
     }
 }

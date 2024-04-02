@@ -35,7 +35,7 @@ data class InterviewQuestionResponse(
                 interviewQuestionEntity.categoryMappings.map {
                     InterviewQuestionCategoryResponse(it.category)
                 }
-            val voices =
+            val voices: List<InterviewQuestionVoiceResponse> =
                 interviewQuestionEntity.voices.map {
                     InterviewQuestionVoiceResponse(it)
                 }

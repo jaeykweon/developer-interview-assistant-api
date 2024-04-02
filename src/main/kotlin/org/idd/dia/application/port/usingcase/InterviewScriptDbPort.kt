@@ -21,4 +21,9 @@ interface InterviewScriptDbPort {
     ): InterviewScriptEntity
 
     fun getByQuestionPk(questionEntity: InterviewQuestionEntity): InterviewScriptEntity
+
+    fun getAllByQuestionsOfMember(
+        questionEntities: List<InterviewQuestionEntity>,
+        ownerEntity: MemberEntity,
+    ): List<InterviewScriptEntity>
 }

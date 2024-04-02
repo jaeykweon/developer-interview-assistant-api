@@ -56,7 +56,7 @@ class InterviewPracticeHistoryEntity(
     // todo: db 마이그레이션 후 nullable false로 변경
     @Column(name = "star")
     var starValue: Boolean = star
-        private set
+        protected set
 
     @Column(name = "created_time", nullable = false)
     val createdTime: LocalDateTime = createdTime
