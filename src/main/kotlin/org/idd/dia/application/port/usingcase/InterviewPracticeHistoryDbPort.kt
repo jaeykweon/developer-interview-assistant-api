@@ -4,6 +4,7 @@ import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 
 interface InterviewPracticeHistoryDbPort {
@@ -14,6 +15,7 @@ interface InterviewPracticeHistoryDbPort {
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionEntity: InterviewQuestionEntity?,
         star: Boolean?,
+        pageable: Pageable,
     ): Slice<InterviewPracticeHistoryEntity>
 
     fun getSingleEntity(

@@ -2,7 +2,7 @@ package org.idd.dia.adapter.api
 
 import org.idd.dia.adapter.config.RequestAuth
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
-import org.idd.dia.application.dto.InterviewScriptResponse
+import org.idd.dia.application.dto.InterviewScriptResponseV2
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
 import org.idd.dia.application.port.usecase.InterviewScriptServiceUseCase
 import org.idd.dia.domain.model.InterviewQuestion
@@ -28,9 +28,9 @@ class InterviewScriptRestController(
     fun createScript(
         @RequestAuth memberPk: Member.Pk,
         @RequestBody interviewScriptCreateRequest: InterviewScriptCreateRequest,
-    ): ApiResponse<InterviewScriptResponse> {
+    ): ApiResponse<InterviewScriptResponseV2> {
         val newPk: InterviewScript.Pk =
-            interviewScriptServiceUseCase.createOrThrowIfExist(
+            interviewScriptServiceUseCase.create(
                 interviewScriptCreateRequest,
                 memberPk,
             )
@@ -43,7 +43,7 @@ class InterviewScriptRestController(
     fun getScript(
         @RequestAuth memberPk: Member.Pk,
         @RequestParam questionPkValue: Long,
-    ): ApiResponse<InterviewScriptResponse> {
+    ): ApiResponse<InterviewScriptResponseV2> {
         val time = LocalDateTime.now()
         val interviewScriptResponse =
             interviewScriptServiceUseCase.read(
@@ -60,7 +60,7 @@ class InterviewScriptRestController(
         @RequestAuth memberPk: Member.Pk,
         @PathVariable scriptPk: InterviewScript.Pk,
         @RequestBody request: InterviewScriptUpdateRequest,
-    ): ApiResponse<InterviewScriptResponse> {
+    ): ApiResponse<InterviewScriptResponseV2> {
         val time = LocalDateTime.now()
         val interviewScriptResponse =
             interviewScriptServiceUseCase.updateContent(

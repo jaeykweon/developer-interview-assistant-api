@@ -15,6 +15,7 @@ import org.idd.dia.domain.model.InterviewPracticeHistory
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
 import org.idd.dia.util.mapToSet
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -52,6 +53,7 @@ class InterviewPracticeHistoryService(
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionPk: InterviewQuestion.Pk?,
         star: Boolean?,
+        pageable: Pageable,
     ): Slice<InterviewPracticeHistoryResponse> {
         val memberEntity: MemberEntity = memberDbPort.getEntity(pk = memberPk)
         val questionEntity: InterviewQuestionEntity? =
@@ -63,6 +65,7 @@ class InterviewPracticeHistoryService(
                 previousPk = previousPk,
                 interviewQuestionEntity = questionEntity,
                 star = star,
+                pageable = pageable,
             )
 
         val questionResponses =

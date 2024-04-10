@@ -10,6 +10,7 @@ import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -29,6 +30,7 @@ class InterviewPracticeHistoryRepository(
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionEntity: InterviewQuestionEntity?,
         star: Boolean?,
+        pageable: Pageable,
     ): Slice<InterviewPracticeHistoryEntity> {
         val query =
             jpql {
@@ -51,7 +53,7 @@ class InterviewPracticeHistoryRepository(
                     path(InterviewPracticeHistoryEntity::pkValue).desc(),
                 )
             }
-        return kotlinJdslHandler.executeScrollQuery(query)
+        return kotlinJdslHandler.executeScrollQuery(query, pageable)
     }
 
     override fun getSingleEntity(

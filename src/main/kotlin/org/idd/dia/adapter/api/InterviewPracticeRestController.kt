@@ -10,6 +10,7 @@ import org.idd.dia.domain.model.CustomScroll
 import org.idd.dia.domain.model.InterviewPracticeHistory
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -40,6 +41,7 @@ class InterviewPracticeRestController(
         @RequestParam previousPkValue: Long? = null,
         @RequestParam questionPkValue: Long? = null,
         @RequestParam star: Boolean? = null,
+        pageable: Pageable,
     ): ApiResponse<CustomScroll<InterviewPracticeHistoryResponse>> {
         val previousPk: InterviewPracticeHistory.Pk? =
             previousPkValue?.let { InterviewPracticeHistory.Pk(previousPkValue) }
@@ -47,7 +49,7 @@ class InterviewPracticeRestController(
             questionPkValue?.let { InterviewQuestion.Pk(questionPkValue) }
 
         val sliceData: Slice<InterviewPracticeHistoryResponse> =
-            interviewPracticeHistoryService.getHistories(memberPk, previousPk, questionPk, star)
+            interviewPracticeHistoryService.getHistories(memberPk, previousPk, questionPk, star, pageable)
 
         return ApiResponse.ok(
             sliceData.toCustomScroll(),

@@ -5,6 +5,7 @@ import org.idd.dia.application.dto.RecordInterviewPracticeRequest
 import org.idd.dia.domain.model.InterviewPracticeHistory
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 
 interface InterviewPracticeHistoryServiceUseCase {
@@ -20,6 +21,7 @@ interface InterviewPracticeHistoryServiceUseCase {
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionPk: InterviewQuestion.Pk?,
         star: Boolean?,
+        pageable: Pageable,
     ): Slice<InterviewPracticeHistoryResponse>
 
     /** 면접 연습 기록 단 건 조회하기 */

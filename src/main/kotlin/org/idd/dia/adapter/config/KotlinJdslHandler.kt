@@ -5,7 +5,6 @@ import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.extension.createQuery
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
-import org.idd.dia.adapter.config.PageableConfig.Companion.DEFAULT_PAGE_SIZE
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.SliceImpl
 import org.springframework.stereotype.Component
@@ -20,13 +19,17 @@ class KotlinJdslHandler(
 ) {
     private val jpqlRenderContext = JpqlRenderContext()
 
-    fun <T : Any> executeScrollQuery(query: SelectQuery<T>): SliceImpl<T> {
+    fun <T : Any> executeScrollQuery(
+        query: SelectQuery<T>,
+        pageable: Pageable,
+    ): SliceImpl<T> {
         val maybeOneMoreResult =
             entityManager
                 .createQuery(query, jpqlRenderContext)
+                .setMaxResults(pageable.pageSize + 1)
                 .resultList
 
-        val next = maybeOneMoreResult.size > DEFAULT_PAGE_SIZE
+        val next = maybeOneMoreResult.size > pageable.pageSize
 
         val realResult =
             if (next) {

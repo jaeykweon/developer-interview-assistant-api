@@ -59,7 +59,7 @@ data class InterviewScriptFormResponse(
             return questionResponses.map { questionResponse ->
                 val targetScript: InterviewScriptResponseV2? =
                     scriptResponses.find { scriptResponse ->
-                        scriptResponse.questionPk == questionResponse.pkValue
+                        scriptResponse.questionPkValue == questionResponse.pkValue
                     }
                 return@map ofMember(questionResponse, targetScript)
             }
@@ -69,34 +69,9 @@ data class InterviewScriptFormResponse(
 
 // todo: InterviewScriptResponse 를 이거로 변경
 data class InterviewScriptResponseV2(
-    val pk: Long,
-    val owner: Long,
-    val questionPk: Long,
-    val content: String,
-    val createdTime: LocalDateTime,
-    val lastModifiedTime: LocalDateTime,
-    val lastReadTime: LocalDateTime,
-) {
-    companion object {
-        @JvmStatic
-        fun from(entity: InterviewScriptEntity): InterviewScriptResponseV2 {
-            return InterviewScriptResponseV2(
-                pk = entity.pkValue,
-                owner = entity.owner.pkValue,
-                questionPk = entity.question.pkValue,
-                content = entity.contentValue,
-                createdTime = entity.createdTime,
-                lastModifiedTime = entity.lastModifiedTime,
-                lastReadTime = entity.lastReadTime,
-            )
-        }
-    }
-}
-
-data class InterviewScriptResponse(
     val pkValue: Long,
     val ownerPkValue: Long,
-    val question: InterviewQuestionResponse,
+    val questionPkValue: Long,
     val contentValue: String,
     val createdTimeValue: LocalDateTime,
     val lastModifiedTimeValue: LocalDateTime,
@@ -104,32 +79,15 @@ data class InterviewScriptResponse(
 ) {
     companion object {
         @JvmStatic
-        fun from(entity: InterviewScriptEntity): InterviewScriptResponse {
-            val question = InterviewQuestionResponse.withoutCheckingBookmark(entity.question)
-            return InterviewScriptResponse(
+        fun from(entity: InterviewScriptEntity): InterviewScriptResponseV2 {
+            return InterviewScriptResponseV2(
                 pkValue = entity.pkValue,
                 ownerPkValue = entity.owner.pkValue,
-                question = question,
+                questionPkValue = entity.question.pkValue,
                 contentValue = entity.contentValue,
                 createdTimeValue = entity.createdTime,
                 lastModifiedTimeValue = entity.lastModifiedTime,
                 lastReadTimeValue = entity.lastReadTime,
-            )
-        }
-
-        @JvmStatic
-        fun of(
-            scriptEntity: InterviewScriptEntity,
-            questionResponse: InterviewQuestionResponse,
-        ): InterviewScriptResponse {
-            return InterviewScriptResponse(
-                pkValue = scriptEntity.pkValue,
-                ownerPkValue = scriptEntity.owner.pkValue,
-                question = questionResponse,
-                contentValue = scriptEntity.contentValue,
-                createdTimeValue = scriptEntity.createdTime,
-                lastModifiedTimeValue = scriptEntity.lastModifiedTime,
-                lastReadTimeValue = scriptEntity.lastReadTime,
             )
         }
     }

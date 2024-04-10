@@ -57,11 +57,32 @@ class InterviewScriptEntity(
         this.lastReadTime = time
     }
 
+    // todo: 함수형? 객체?
     fun updateContent(
         newContent: InterviewScript.Content,
         updateTime: LocalDateTime,
     ) {
         this.contentValue = newContent.value
         this.lastModifiedTime = updateTime
+    }
+
+    companion object {
+        @JvmStatic
+        fun new(
+            ownerEntity: MemberEntity,
+            questionEntity: InterviewQuestionEntity,
+            content: InterviewScript.Content,
+            time: LocalDateTime,
+        ): InterviewScriptEntity {
+            return InterviewScriptEntity(
+                pk = InterviewScript.Pk(),
+                ownerEntity = ownerEntity,
+                questionEntity = questionEntity,
+                content = content,
+                createdTime = time,
+                lastReadTime = time,
+                lastModifiedTime = time,
+            )
+        }
     }
 }

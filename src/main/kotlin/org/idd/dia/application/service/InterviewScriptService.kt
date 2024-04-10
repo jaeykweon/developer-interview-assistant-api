@@ -2,10 +2,8 @@ package org.idd.dia.application.service
 
 import jakarta.transaction.Transactional
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
-import org.idd.dia.application.dto.InterviewScriptResponse
 import org.idd.dia.application.dto.InterviewScriptResponseV2
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
-import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.application.port.usecase.InterviewScriptServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
@@ -26,9 +24,8 @@ class InterviewScriptService(
     private val interviewScriptDbPort: InterviewScriptDbPort,
     private val memberDbPort: MemberDbPort,
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
-    private val interviewQuestionServiceUseCase: InterviewQuestionServiceUseCase,
 ) : InterviewScriptServiceUseCase {
-    override fun createOrThrowIfExist(
+    override fun create(
         request: InterviewScriptCreateRequest,
         requestMemberPk: Member.Pk,
     ): InterviewScript.Pk {
@@ -43,14 +40,11 @@ class InterviewScriptService(
             throw ConflictException("이미 스크립트가 존재합니다")
         }
         val newScriptEntity =
-            InterviewScriptEntity(
-                pk = InterviewScript.Pk(),
+            InterviewScriptEntity.new(
                 ownerEntity = ownerEntity,
                 questionEntity = questionEntity,
                 content = request.getContent(),
-                createdTime = LocalDateTime.now(),
-                lastReadTime = LocalDateTime.now(),
-                lastModifiedTime = LocalDateTime.now(),
+                time = LocalDateTime.now(),
             )
         val saved = interviewScriptDbPort.save(newScriptEntity)
         return saved.getPk()
@@ -60,7 +54,7 @@ class InterviewScriptService(
         questionPk: InterviewQuestion.Pk,
         requestMemberPk: Member.Pk,
         readTime: LocalDateTime,
-    ): InterviewScriptResponse {
+    ): InterviewScriptResponseV2 {
         val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(questionPk)
         val ownerEntity = memberDbPort.getEntity(requestMemberPk)
         val scriptEntity =
@@ -70,28 +64,18 @@ class InterviewScriptService(
             )
         scriptEntity.read(readTime)
 
-        val questionResponse =
-            interviewQuestionServiceUseCase.getQuestionWithBookmark(
-                memberPk = requestMemberPk,
-                pk = scriptEntity.question.getPk(),
-            )
-        return InterviewScriptResponse.of(scriptEntity, questionResponse)
+        return InterviewScriptResponseV2.from(scriptEntity)
     }
 
-    // todo: 캐시 추가?
+    // todo: 캐시 추가
     override fun getScript(
         scriptPk: InterviewScript.Pk,
         requestMemberPk: Member.Pk,
-    ): InterviewScriptResponse {
+    ): InterviewScriptResponseV2 {
         val scriptEntity: InterviewScriptEntity =
             interviewScriptDbPort.getByPk(scriptPk)
-        val questionResponse =
-            interviewQuestionServiceUseCase.getQuestionWithBookmark(
-                memberPk = requestMemberPk,
-                pk = scriptEntity.question.getPk(),
-            )
 
-        return InterviewScriptResponse.of(scriptEntity, questionResponse)
+        return InterviewScriptResponseV2.from(scriptEntity)
     }
 
     override fun updateContent(
@@ -99,13 +83,13 @@ class InterviewScriptService(
         request: InterviewScriptUpdateRequest,
         requestMemberPk: Member.Pk,
         updateTime: LocalDateTime,
-    ): InterviewScriptResponse {
+    ): InterviewScriptResponseV2 {
         val entity = interviewScriptDbPort.getByPk(scriptPk)
         entity.updateContent(
             newContent = request.getContent(),
             updateTime = updateTime,
         )
-        return InterviewScriptResponse.from(entity)
+        return InterviewScriptResponseV2.from(entity)
     }
 
     override fun getScripts(
