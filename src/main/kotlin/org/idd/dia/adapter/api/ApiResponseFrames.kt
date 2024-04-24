@@ -70,6 +70,14 @@ data class ApiResponse<T>(
             )
 
         @JvmStatic
+        fun conflict(detail: String?): ApiResponse<Nothing> =
+            ApiResponse(
+                data = null,
+                status = HttpStatus.CONFLICT.value(),
+                detail = detail,
+            )
+
+        @JvmStatic
         fun internalServerError(detail: String?): ApiResponse<Nothing> =
             ApiResponse(
                 data = null,

@@ -70,7 +70,7 @@ class ExceptionHandler(
         e: ConflictException,
     ): ApiResponse<Nothing> {
         logger.info("Conflict Exception Occurred", e)
-        return ApiResponse.badRequest("Conflict")
+        return ApiResponse.conflict("Conflict")
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
