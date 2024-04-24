@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
+import org.springframework.restdocs.headers.HeaderDescriptor
+import org.springframework.restdocs.headers.HeaderDocumentation
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.payload.JsonFieldType.BOOLEAN
 import org.springframework.restdocs.payload.JsonFieldType.NUMBER
@@ -35,6 +37,17 @@ abstract class ApiTest {
 
     @Autowired
     private val apiTestDataHandler: ApiTestDataHandler? = null
+
+    final val authRequired: HeaderDescriptor =
+        HeaderDocumentation
+            .headerWithName("Authorization")
+            .description("Auth Token")
+
+    final val authOptional: HeaderDescriptor =
+        HeaderDocumentation
+            .headerWithName("Authorization")
+            .description("Auth Token (Optional)")
+            .optional()
 
     final val commonResponseFields =
         listOf(
