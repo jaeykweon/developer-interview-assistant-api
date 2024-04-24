@@ -115,6 +115,8 @@ class InterviewQuestionRepository(
                     fetchJoin(InterviewQuestionEntity::voices),
                 ).where(
                     path(InterviewQuestionEntity::pkValue).`in`(pks.map { it.value }),
+                ).orderBy(
+                    path(InterviewQuestionEntity::pkValue).desc(),
                 )
             }
         }
