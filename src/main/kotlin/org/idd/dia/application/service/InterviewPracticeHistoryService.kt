@@ -57,7 +57,7 @@ class InterviewPracticeHistoryService(
     ): Slice<InterviewPracticeHistoryResponse> {
         val memberEntity: MemberEntity = memberDbPort.getEntity(pk = memberPk)
         val questionEntity: InterviewQuestionEntity? =
-            interviewQuestionPk?.let { interviewQuestionDbPort.getEntityWithCategoriesAndVoices(it) }
+            interviewQuestionPk?.let { interviewQuestionDbPort.getEntityWithRelations(it) }
 
         val entitySlice: Slice<InterviewPracticeHistoryEntity> =
             interviewPracticeHistoryDbPort.getScroll(

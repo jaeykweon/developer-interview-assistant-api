@@ -55,10 +55,11 @@ class InterviewQuestionService(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        val categoryEntities = interviewQuestionCategoryDbPort.getEntities(categories)
+        val categoryEntities: Set<InterviewQuestionCategoryEntity> =
+            interviewQuestionCategoryDbPort.getEntities(categories)
 
         val pageDataWithRelations: Page<InterviewQuestionEntity> =
-            interviewQuestionDbPort.getPageWithCategories(
+            interviewQuestionDbPort.getPageWithRelations(
                 categoryEntities,
                 pageable,
             )
@@ -74,12 +75,14 @@ class InterviewQuestionService(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
+        val memberEntity: MemberEntity =
+            memberDbPort.getEntity(pk = memberPk)
 
-        val categoryEntities = interviewQuestionCategoryDbPort.getEntities(categories)
+        val categoryEntities: Set<InterviewQuestionCategoryEntity> =
+            interviewQuestionCategoryDbPort.getEntities(categories)
 
         val pageDataWithRelations: Page<InterviewQuestionEntity> =
-            interviewQuestionDbPort.getPageWithCategoriesAndVoices(categoryEntities, pageable)
+            interviewQuestionDbPort.getPageWithRelations(categoryEntities, pageable)
 
         val interviewQuestionBookmarkMappingEntities: Iterable<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingDbPort.getMappings(
@@ -99,8 +102,10 @@ class InterviewQuestionService(
         categories: Set<InterviewQuestionCategory.Title>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
-        val categoryEntities = interviewQuestionCategoryDbPort.getEntities(categories)
+        val memberEntity: MemberEntity =
+            memberDbPort.getEntity(pk = memberPk)
+        val categoryEntities: Set<InterviewQuestionCategoryEntity> =
+            interviewQuestionCategoryDbPort.getEntities(categories)
 
         val interviewQuestionBookmarkMappingEntityPage: Page<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingDbPort.getMappingsWithQuestion(
@@ -110,7 +115,7 @@ class InterviewQuestionService(
             )
 
         val questionEntities =
-            interviewQuestionDbPort.getEntitiesWithCategoriesAndVoices(
+            interviewQuestionDbPort.getEntitiesWithRelations(
                 pks = interviewQuestionBookmarkMappingEntityPage.map { it.question.getPk() },
             )
 
@@ -127,7 +132,7 @@ class InterviewQuestionService(
         memberPk: Member.Pk?,
         questionPk: InterviewQuestion.Pk,
     ): InterviewQuestionResponse {
-        val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(pk = questionPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(pk = questionPk)
 
         if (memberPk.isNull()) {
             return InterviewQuestionResponse.withoutCheckingBookmark(questionEntity)
@@ -151,7 +156,7 @@ class InterviewQuestionService(
         val ownerEntity: MemberEntity = memberDbPort.getEntity(pk = memberPk)
 
         val interviewQuestionEntities: List<InterviewQuestionEntity> =
-            interviewQuestionDbPort.getEntitiesWithCategoriesAndVoices(pks)
+            interviewQuestionDbPort.getEntitiesWithRelations(pks)
 
         val bookmarkMappings: List<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingDbPort.getMappings(ownerEntity, interviewQuestionEntities)
@@ -169,7 +174,7 @@ class InterviewQuestionService(
         pk: InterviewQuestion.Pk,
     ): InterviewQuestionResponse {
         val ownerEntity = memberDbPort.getEntity(pk = memberPk)
-        val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(pk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(pk)
         val bookmarkMappings = interviewQuestionBookmarkMappingDbPort.getMappings(ownerEntity, questionEntity)
         return InterviewQuestionResponse.withCheckingBookmark(
             questionEntity,
@@ -178,7 +183,7 @@ class InterviewQuestionService(
     }
 
     override fun getQuestionsWithoutBookmark(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionResponse> {
-        val interviewQuestionEntities = interviewQuestionDbPort.getEntitiesWithCategoriesAndVoices(pks)
+        val interviewQuestionEntities = interviewQuestionDbPort.getEntitiesWithRelations(pks)
         return interviewQuestionEntities.map {
             InterviewQuestionResponse.withoutCheckingBookmark(it)
         }

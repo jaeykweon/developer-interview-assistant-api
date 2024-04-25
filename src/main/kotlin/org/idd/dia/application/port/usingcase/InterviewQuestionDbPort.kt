@@ -13,17 +13,12 @@ interface InterviewQuestionDbPort {
 
     fun getEntitiesWithOutRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity>
 
-    fun getEntityWithCategoriesAndVoices(pk: InterviewQuestion.Pk): InterviewQuestionEntity
+    fun getEntityWithRelations(pk: InterviewQuestion.Pk): InterviewQuestionEntity
 
-    fun getEntitiesWithCategoriesAndVoices(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity>
+    fun getEntitiesWithRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity>
 
-    fun getPageWithCategoriesAndVoices(
+    fun getPageWithRelations(
         categoryEntities: Collection<InterviewQuestionCategoryEntity>,
-        pageable: Pageable,
-    ): Page<InterviewQuestionEntity>
-
-    fun getPageWithCategories(
-        interviewQuestionCategoryEntities: Iterable<InterviewQuestionCategoryEntity>,
         pageable: Pageable,
     ): Page<InterviewQuestionEntity>
 }

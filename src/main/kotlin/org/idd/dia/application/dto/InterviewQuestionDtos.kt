@@ -83,3 +83,19 @@ data class SetCategoriesOfInterviewQuestionRequest(
 ) {
     fun getCategoryPks(): Set<InterviewQuestionCategory.Pk> = categoryPkValues.mapToSet { InterviewQuestionCategory.Pk(it) }
 }
+
+data class InterviewQuestionBookmarkResultResponse(
+    val bookmarked: Boolean,
+) {
+    companion object {
+        @JvmStatic
+        fun bookmarked(): InterviewQuestionBookmarkResultResponse {
+            return InterviewQuestionBookmarkResultResponse(true)
+        }
+
+        @JvmStatic
+        fun unBookmarked(): InterviewQuestionBookmarkResultResponse {
+            return InterviewQuestionBookmarkResultResponse(false)
+        }
+    }
+}

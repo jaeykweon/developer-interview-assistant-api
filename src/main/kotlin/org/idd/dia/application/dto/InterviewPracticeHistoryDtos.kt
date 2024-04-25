@@ -59,7 +59,9 @@ data class InterviewPracticeHistoryStarResultResponse(
     companion object {
         @JvmStatic
         fun fromEntity(interviewPracticeHistoryEntity: InterviewPracticeHistoryEntity): InterviewPracticeHistoryStarResultResponse {
-            return InterviewPracticeHistoryStarResultResponse(interviewPracticeHistoryEntity.starValue)
+            return InterviewPracticeHistoryStarResultResponse(
+                interviewPracticeHistoryEntity.starValue,
+            )
         }
     }
 }

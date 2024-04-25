@@ -11,7 +11,6 @@ import org.idd.dia.application.port.usingcase.MemberDbPort
 import org.idd.dia.domain.ConflictException
 import org.idd.dia.domain.entity.InterviewScriptEntity
 import org.idd.dia.domain.entity.MemberEntity
-import org.idd.dia.domain.entity.getPk
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewScript
 import org.idd.dia.domain.model.Member
@@ -29,7 +28,7 @@ class InterviewScriptService(
         request: InterviewScriptCreateRequest,
         requestMemberPk: Member.Pk,
     ): InterviewScript.Pk {
-        val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(request.getQuestionPk())
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(request.getQuestionPk())
         val ownerEntity = memberDbPort.getEntity(requestMemberPk)
         val scriptAlreadyExists =
             interviewScriptDbPort.isExists(
@@ -55,7 +54,7 @@ class InterviewScriptService(
         requestMemberPk: Member.Pk,
         readTime: LocalDateTime,
     ): InterviewScriptResponseV2 {
-        val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(questionPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(questionPk)
         val ownerEntity = memberDbPort.getEntity(requestMemberPk)
         val scriptEntity =
             interviewScriptDbPort.getByPkAndOwnerPk(

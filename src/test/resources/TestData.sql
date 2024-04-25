@@ -74,7 +74,17 @@ VALUES
 INSERT INTO interview_practice_histories
     (pk, owner_pk, question_pk, content, type, elapsed_time, file_path, star, created_time)
 VALUES
-    (1001, 1001, 1001, 'HTTP는 HyperText Transfer Protocol의 약자로, 웹 서버와 클라이언트 간에 데이터를 주고받기 위한 통신 규약입니다. HTTPS는 HTTP에 데이터 암호화가 추가된 것으로, 보안이 강화된 프로토콜입니다.', 'SINGLE', 60, null, false,'2021-08-01 00:00:00');
+    (1001, 1001, 1001, '첫번째 연습입니다. HTTP는 HyperText Transfer Protocol의 약자로, 웹 서버와 클라이언트 간에 데이터를 주고받기 위한 통신 규약입니다. HTTPS는 HTTP에 데이터 암호화가 추가된 것으로, 보안이 강화된 프로토콜입니다.', 'SINGLE', 60, null, false,'2021-08-01 00:00:00');
+
+INSERT INTO interview_practice_histories
+    (pk, owner_pk, question_pk, content, type, elapsed_time, file_path, star, created_time)
+VALUES
+    (1002, 1001, 1001, '두번째 연습입니다. HTTP는 HyperText Transfer Protocol의 약자로, 웹 서버와 클라이언트 간에 데이터를 주고받기 위한 통신 규약입니다. HTTPS는 HTTP에 데이터 암호화가 추가된 것으로, 보안이 강화된 프로토콜입니다.', 'SINGLE', 60, null, true,'2021-08-01 00:00:00');
+
+INSERT INTO interview_question_bookmark_mappings
+    (pk, owner_pk, question_pk, created_time)
+VALUES
+    (1001, 1001, 1001, '2021-08-01 00:00:00');
 
 -- SELECT setval('interview_question_pk_seq', (SELECT MAX(id) FROM interview_practice_history));
 

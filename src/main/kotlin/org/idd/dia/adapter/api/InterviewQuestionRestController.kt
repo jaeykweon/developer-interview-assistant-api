@@ -1,6 +1,7 @@
 package org.idd.dia.adapter.api
 
 import org.idd.dia.adapter.config.RequestAuth
+import org.idd.dia.application.dto.InterviewQuestionBookmarkResultResponse
 import org.idd.dia.application.dto.InterviewQuestionCollectionDetailViewModel
 import org.idd.dia.application.dto.InterviewQuestionCollectionSimpleViewModel
 import org.idd.dia.application.dto.InterviewQuestionCollectionSimpleViewModels
@@ -87,11 +88,14 @@ class InterviewQuestionRestController(
         return ApiResponse.ok(interviewQuestion)
     }
 
+    /**
+     * 문제 북마크
+     */
     @PostMapping("/interview/questions/{questionPk}/bookmark")
     fun postQuestionBookmark(
         @PathVariable questionPk: InterviewQuestion.Pk,
         @RequestAuth memberPk: Member.Pk,
-    ): ApiResponse<Long> {
+    ): ApiResponse<InterviewQuestionBookmarkResultResponse> {
         return ApiResponse.ok(
             interviewQuestionBookmarkServiceUseCase.bookmarkQuestion(memberPk, questionPk),
         )
@@ -101,7 +105,7 @@ class InterviewQuestionRestController(
     fun deleteQuestionBookmark(
         @PathVariable questionPk: InterviewQuestion.Pk,
         @RequestAuth memberPk: Member.Pk,
-    ): ApiResponse<Long> {
+    ): ApiResponse<InterviewQuestionBookmarkResultResponse> {
         return ApiResponse.ok(
             interviewQuestionBookmarkServiceUseCase.deleteQuestionBookmark(memberPk, questionPk),
         )

@@ -20,7 +20,7 @@ class InterviewQuestionCategoryService(
         questionPk: InterviewQuestion.Pk,
         setCategoriesOfInterviewQuestionRequest: SetCategoriesOfInterviewQuestionRequest,
     ) {
-        val questionEntity = interviewQuestionDbPort.getEntityWithCategoriesAndVoices(pk = questionPk)
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(pk = questionPk)
         val categoryEntities = interviewQuestionCategoryDbPort.getEntities(setCategoriesOfInterviewQuestionRequest.getCategoryPks())
 
         interviewQuestionCategoryMappingDbPort.overwriteQuestionCategories(

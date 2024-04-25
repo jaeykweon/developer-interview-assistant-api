@@ -29,7 +29,7 @@ interface InterviewQuestionBookmarkMappingDbPort {
     fun addBookmark(
         memberEntity: MemberEntity,
         questionEntity: InterviewQuestionEntity,
-    ): Long
+    ): InterviewQuestionBookmarkMappingEntity
 
     fun removeBookmark(
         memberEntity: MemberEntity,

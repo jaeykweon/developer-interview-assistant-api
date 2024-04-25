@@ -6,6 +6,7 @@ import io.restassured.http.ContentType
 import org.idd.dia.application.dto.RecordInterviewPracticeRequest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType.NUMBER
 import org.springframework.restdocs.payload.JsonFieldType.STRING
@@ -18,7 +19,7 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.doc
  * @see org.idd.dia.adapter.api.InterviewPracticeRestController.recordPracticeHistory
  */
 @DisplayName("면접 연습 히스토리 등록 API")
-class InterviewPracticeHistoryRecordApiTest : ApiTest() {
+class InterviewPracticeHistoryPostApiTest : ApiTest() {
     private val request =
         RecordInterviewPracticeRequest(
             interviewQuestionPkValue = 1001,
@@ -40,7 +41,7 @@ class InterviewPracticeHistoryRecordApiTest : ApiTest() {
     private final val responseDataFields =
         listOf(fieldWithPath("data").type(NUMBER).description("면접 연습 히스토리 pkValue"))
 
-    val responseFields: List<FieldDescriptor> =
+    private val responseFields: List<FieldDescriptor> =
         commonResponseFields + responseDataFields
 
     @DisplayName("성공 케이스")
@@ -53,6 +54,7 @@ class InterviewPracticeHistoryRecordApiTest : ApiTest() {
                 .filter(
                     document(
                         "register-interview-practice-history",
+                        requestHeaders(authRequired),
                         requestFields(requestFields),
                         responseFields(responseFields),
                     ),

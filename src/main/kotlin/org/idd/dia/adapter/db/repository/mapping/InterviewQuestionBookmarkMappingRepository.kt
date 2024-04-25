@@ -94,7 +94,7 @@ class InterviewQuestionBookmarkMappingRepository(
     override fun addBookmark(
         memberEntity: MemberEntity,
         questionEntity: InterviewQuestionEntity,
-    ): Long {
+    ): InterviewQuestionBookmarkMappingEntity {
         if (isBookmarkExist(memberEntity, questionEntity)) {
             throw ConflictException("Bookmark already exists")
         }
@@ -104,7 +104,7 @@ class InterviewQuestionBookmarkMappingRepository(
                 owner = memberEntity,
                 createdTime = LocalDateTime.now(),
             ),
-        ).pkValue
+        )
     }
 
     override fun removeBookmark(

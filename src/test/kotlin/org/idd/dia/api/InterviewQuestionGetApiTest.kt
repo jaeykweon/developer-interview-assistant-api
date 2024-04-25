@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldBe
 import io.restassured.RestAssured.given
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType.NUMBER
 import org.springframework.restdocs.payload.JsonFieldType.STRING
@@ -31,6 +32,7 @@ class InterviewQuestionGetApiTest : ApiTest() {
                 .filter(
                     document(
                         "get-interview-question",
+                        requestHeaders(authOptional),
                         pathParameters(parameterWithName("pk").description("면접 질문 pk")),
                         responseFields(responseFieldDescriptors),
                     ),

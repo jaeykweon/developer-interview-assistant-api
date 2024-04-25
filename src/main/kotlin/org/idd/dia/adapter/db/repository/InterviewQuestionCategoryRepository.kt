@@ -16,7 +16,7 @@ class InterviewQuestionCategoryRepository(
         return interviewQuestionCategoryJpaRepository.findAllById(pkValues).toSet()
     }
 
-    override fun getEntities(titles: Collection<InterviewQuestionCategory.Title>): Collection<InterviewQuestionCategoryEntity> {
+    override fun getEntities(titles: Collection<InterviewQuestionCategory.Title>): Set<InterviewQuestionCategoryEntity> {
         val titleValues = titles.mapToSet { it.value }
         return interviewQuestionCategoryJpaRepository.findAllByEngTitleValueIn(titleValues).toSet()
     }

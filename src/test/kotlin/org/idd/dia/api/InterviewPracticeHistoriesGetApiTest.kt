@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldBe
 import io.restassured.RestAssured.given
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
@@ -28,6 +29,7 @@ class InterviewPracticeHistoriesGetApiTest : ApiTest() {
                     document(
                         "get-interview-histories",
                         responseFields(responseFieldDescriptors),
+                        requestHeaders(authRequired),
                     ),
                 )
                 .`when`()
