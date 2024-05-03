@@ -1,52 +1,83 @@
 package org.idd.dia.adapter.db.repository
 
-import org.idd.dia.adapter.db.entity.InterviewScriptEntity
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
+import org.idd.dia.domain.NotFoundException
+import org.idd.dia.domain.entity.InterviewQuestionEntity
+import org.idd.dia.domain.entity.InterviewScriptEntity
+import org.idd.dia.domain.entity.MemberEntity
+import org.idd.dia.domain.model.InterviewScript
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
 class InterviewScriptRepository(
-    private val interviewScriptJpaRepository: InterviewScriptJpaRepository
-) {
-    fun isExists(questionPk: InterviewQuestion.Pk, ownerPk: Member.Pk): Boolean {
+    private val interviewScriptJpaRepository: InterviewScriptJpaRepository,
+) : InterviewScriptDbPort {
+    override fun isExists(
+        questionEntity: InterviewQuestionEntity,
+        ownerEntity: MemberEntity,
+    ): Boolean {
         return interviewScriptJpaRepository
-            .existsByQuestionPkAndOwnerPk(
-                questionPk = questionPk.value,
-                ownerPk = ownerPk.value
+            .existsByQuestionAndOwner(
+                question = questionEntity,
+                owner = ownerEntity,
             )
     }
 
-    fun save(entity: InterviewScriptEntity): InterviewScriptEntity {
-        return interviewScriptJpaRepository.save(entity)
+    override fun save(interviewScriptEntity: InterviewScriptEntity): InterviewScriptEntity {
+        return interviewScriptJpaRepository.save(interviewScriptEntity)
     }
 
-    fun get(pk: InterviewScript.Pk): InterviewScriptEntity {
+    override fun getByPk(pk: InterviewScript.Pk): InterviewScriptEntity {
         return interviewScriptJpaRepository.findByIdOrNull(pk.value)
-            ?: throw IllegalArgumentException()
+            ?: throw NotFoundException("스크립트가 존재하지 않습니다 (pk: ${pk.value})")
     }
 
-    fun get(questionPk: InterviewQuestion.Pk): InterviewScriptEntity {
-        return interviewScriptJpaRepository.findByQuestionPk(questionPk.value) ?: throw IllegalArgumentException()
+    override fun getByQuestionPk(questionEntity: InterviewQuestionEntity): InterviewScriptEntity {
+        return interviewScriptJpaRepository.findByQuestion(questionEntity)
+            ?: throw NotFoundException("스크립트가 존재하지 않습니다 (questionPk: ${questionEntity.pkValue})")
     }
 
-    fun getByQuestionPkAndOwnerPk(
-        questionPk: InterviewQuestion.Pk,
-        ownerPk: Member.Pk
+    override fun getByPkAndOwnerPk(
+        questionEntity: InterviewQuestionEntity,
+        ownerEntity: MemberEntity,
     ): InterviewScriptEntity {
         return interviewScriptJpaRepository
-            .findByQuestionPkAndOwnerPk(
-                questionPk = questionPk.value,
-                ownerPk = ownerPk.value
-            ) ?: throw IllegalArgumentException()
+            .findByQuestionAndOwner(
+                question = questionEntity,
+                owner = ownerEntity,
+            ) ?: throw NotFoundException(
+            "스크립트가 존재하지 않습니다 (questionPk: ${questionEntity.pkValue}, ownerPk: ${ownerEntity.pkValue})",
+        )
+    }
+
+    override fun getAllByQuestionsOfMember(
+        questionEntities: List<InterviewQuestionEntity>,
+        ownerEntity: MemberEntity,
+    ): List<InterviewScriptEntity> {
+        return interviewScriptJpaRepository.findAllByQuestionInAndOwner(
+            questionEntities = questionEntities,
+            owner = ownerEntity,
+        )
     }
 }
 
 interface InterviewScriptJpaRepository : JpaRepository<InterviewScriptEntity, Long> {
-    fun existsByQuestionPkAndOwnerPk(questionPk: Long, ownerPk: Long): Boolean
-    fun findByQuestionPk(questionPk: Long): InterviewScriptEntity?
-    fun findByQuestionPkAndOwnerPk(questionPk: Long, ownerPk: Long): InterviewScriptEntity?
+    fun existsByQuestionAndOwner(
+        question: InterviewQuestionEntity,
+        owner: MemberEntity,
+    ): Boolean
+
+    fun findByQuestion(questionEntity: InterviewQuestionEntity): InterviewScriptEntity?
+
+    fun findByQuestionAndOwner(
+        question: InterviewQuestionEntity,
+        owner: MemberEntity,
+    ): InterviewScriptEntity?
+
+    fun findAllByQuestionInAndOwner(
+        questionEntities: List<InterviewQuestionEntity>,
+        owner: MemberEntity,
+    ): List<InterviewScriptEntity>
 }

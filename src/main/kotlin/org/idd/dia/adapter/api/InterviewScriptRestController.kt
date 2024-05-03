@@ -1,11 +1,13 @@
 package org.idd.dia.adapter.api
 
+import org.idd.dia.adapter.config.RequestAuth
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
+import org.idd.dia.application.dto.InterviewScriptResponseV2
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
-import org.idd.dia.application.port.`in`.InterviewScriptServiceUseCase
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.application.port.usecase.InterviewScriptServiceUseCase
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,40 +16,59 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDateTime
 
+/**
+ * 스크립트(대본) 관련 API
+ */
 @ApiV0RestController
 class InterviewScriptRestController(
-    private val interviewScriptServiceUseCase: InterviewScriptServiceUseCase
+    private val interviewScriptServiceUseCase: InterviewScriptServiceUseCase,
 ) {
+    /** 스크립트 작성 */
     @PostMapping("/interview/scripts")
-    fun create(
+    fun createScript(
+        @RequestAuth memberPk: Member.Pk,
         @RequestBody interviewScriptCreateRequest: InterviewScriptCreateRequest,
-    ): InterviewScript {
-        return interviewScriptServiceUseCase.create(interviewScriptCreateRequest, TODO())
+    ): ApiResponse<InterviewScriptResponseV2> {
+        val newPk: InterviewScript.Pk =
+            interviewScriptServiceUseCase.create(
+                interviewScriptCreateRequest,
+                memberPk,
+            )
+        val newScript = interviewScriptServiceUseCase.getScript(newPk, memberPk)
+        return ApiResponse.ok(newScript)
     }
 
+    /** 스크립트 조회 */
     @GetMapping("/interview/scripts")
-    fun get(
-        @RequestParam questionPk: Long,
-    ): InterviewScript {
+    fun getScript(
+        @RequestAuth memberPk: Member.Pk,
+        @RequestParam questionPkValue: Long,
+    ): ApiResponse<InterviewScriptResponseV2> {
         val time = LocalDateTime.now()
-        return interviewScriptServiceUseCase.read(
-            questionPk = InterviewQuestion.Pk(questionPk),
-            requestMemberPk = TODO(),
-            readTime = time,
-        )
+        val interviewScriptResponse =
+            interviewScriptServiceUseCase.read(
+                questionPk = InterviewQuestion.Pk(questionPkValue),
+                requestMemberPk = memberPk,
+                readTime = time,
+            )
+        return ApiResponse.ok(interviewScriptResponse)
     }
 
+    /** 스크립트 수정 */
     @PatchMapping("/interview/scripts/{scriptPk}")
-    fun updateContent(
-        @PathVariable scriptPk: Long,
+    fun editScript(
+        @RequestAuth memberPk: Member.Pk,
+        @PathVariable scriptPk: InterviewScript.Pk,
         @RequestBody request: InterviewScriptUpdateRequest,
-    ): InterviewScript {
+    ): ApiResponse<InterviewScriptResponseV2> {
         val time = LocalDateTime.now()
-        return interviewScriptServiceUseCase.updateContent(
-            scriptPk = InterviewScript.Pk(scriptPk),
-            request = request,
-            requestMemberPk = Member.Pk(TODO()),
-            updateTime = time
-        )
+        val interviewScriptResponse =
+            interviewScriptServiceUseCase.updateContent(
+                scriptPk = scriptPk,
+                request = request,
+                requestMemberPk = memberPk,
+                updateTime = time,
+            )
+        return ApiResponse.ok(interviewScriptResponse)
     }
 }

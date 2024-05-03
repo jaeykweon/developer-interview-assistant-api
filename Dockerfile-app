@@ -1,0 +1,7 @@
+FROM amazoncorretto:21.0.2-alpine
+
+COPY build/libs/dia-*.jar dia.jar
+
+ENV SPRING_PROFILES_ACTIVE=local
+
+ENTRYPOINT ["java", "-jar", "dia.jar"]

@@ -1,70 +1,112 @@
 package org.idd.dia.application.service
 
+import jakarta.transaction.Transactional
 import org.idd.dia.application.dto.InterviewScriptCreateRequest
+import org.idd.dia.application.dto.InterviewScriptResponseV2
 import org.idd.dia.application.dto.InterviewScriptUpdateRequest
-import org.idd.dia.application.port.`in`.InterviewScriptServiceUseCase
-import org.idd.dia.application.port.out.InterviewScriptDbPort
-import org.idd.dia.domain.InterviewQuestion
-import org.idd.dia.domain.InterviewScript
-import org.idd.dia.domain.Member
+import org.idd.dia.application.port.usecase.InterviewScriptServiceUseCase
+import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
+import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
+import org.idd.dia.application.port.usingcase.MemberDbPort
+import org.idd.dia.domain.ConflictException
+import org.idd.dia.domain.entity.InterviewScriptEntity
+import org.idd.dia.domain.entity.MemberEntity
+import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
+@Transactional
 class InterviewScriptService(
-    private val interviewScriptDbPort: InterviewScriptDbPort
+    private val interviewScriptDbPort: InterviewScriptDbPort,
+    private val memberDbPort: MemberDbPort,
+    private val interviewQuestionDbPort: InterviewQuestionDbPort,
 ) : InterviewScriptServiceUseCase {
-
     override fun create(
         request: InterviewScriptCreateRequest,
-        requestMemberPk: Member.Pk
-    ): InterviewScript {
-        val scriptAlreadyExists = interviewScriptDbPort.isExists(
-            questionPk = request.questionPk,
-            ownerPk = requestMemberPk
-        )
-        if (scriptAlreadyExists) { throw IllegalArgumentException() }
-
-        val new = InterviewScript(
-            pk = InterviewScript.Pk(),
-            ownerPk = requestMemberPk,
-            questionPk = request.questionPk,
-            content = request.content,
-            createdTime = LocalDateTime.now(),
-            lastReadTime = LocalDateTime.now(),
-            lastModifiedTime = LocalDateTime.now()
-        )
-        return interviewScriptDbPort.save(new)
+        requestMemberPk: Member.Pk,
+    ): InterviewScript.Pk {
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(request.getQuestionPk())
+        val ownerEntity = memberDbPort.getEntity(requestMemberPk)
+        val scriptAlreadyExists =
+            interviewScriptDbPort.isExists(
+                questionEntity = questionEntity,
+                ownerEntity = ownerEntity,
+            )
+        if (scriptAlreadyExists) {
+            throw ConflictException("이미 스크립트가 존재합니다")
+        }
+        val newScriptEntity =
+            InterviewScriptEntity.new(
+                ownerEntity = ownerEntity,
+                questionEntity = questionEntity,
+                content = request.getContent(),
+                time = LocalDateTime.now(),
+            )
+        val saved = interviewScriptDbPort.save(newScriptEntity)
+        return saved.getPk()
     }
 
     override fun read(
         questionPk: InterviewQuestion.Pk,
         requestMemberPk: Member.Pk,
-        readTime: LocalDateTime
-    ): InterviewScript {
-        val script: InterviewScript =
-            interviewScriptDbPort
-                .get(
-                    questionPk = questionPk,
-                    ownerPk = requestMemberPk
-                )
-                .readContent(readTime = readTime)
-        return interviewScriptDbPort.save(script)
+        readTime: LocalDateTime,
+    ): InterviewScriptResponseV2 {
+        val questionEntity = interviewQuestionDbPort.getEntityWithRelations(questionPk)
+        val ownerEntity = memberDbPort.getEntity(requestMemberPk)
+        val scriptEntity =
+            interviewScriptDbPort.getByPkAndOwnerPk(
+                questionEntity = questionEntity,
+                ownerEntity = ownerEntity,
+            )
+        scriptEntity.read(readTime)
+
+        return InterviewScriptResponseV2.from(scriptEntity)
+    }
+
+    // todo: 캐시 추가
+    override fun getScript(
+        scriptPk: InterviewScript.Pk,
+        requestMemberPk: Member.Pk,
+    ): InterviewScriptResponseV2 {
+        val scriptEntity: InterviewScriptEntity =
+            interviewScriptDbPort.getByPk(scriptPk)
+
+        return InterviewScriptResponseV2.from(scriptEntity)
     }
 
     override fun updateContent(
         scriptPk: InterviewScript.Pk,
         request: InterviewScriptUpdateRequest,
         requestMemberPk: Member.Pk,
-        updateTime: LocalDateTime
-    ): InterviewScript {
-        val updated: InterviewScript =
+        updateTime: LocalDateTime,
+    ): InterviewScriptResponseV2 {
+        val entity = interviewScriptDbPort.getByPk(scriptPk)
+        entity.updateContent(
+            newContent = request.getContent(),
+            updateTime = updateTime,
+        )
+        return InterviewScriptResponseV2.from(entity)
+    }
+
+    override fun getScripts(
+        questionPks: Collection<InterviewQuestion.Pk>,
+        memberPk: Member.Pk,
+    ): List<InterviewScriptResponseV2> {
+        val ownerEntity: MemberEntity =
+            memberDbPort
+                .getEntity(memberPk)
+        val questionEntities =
+            interviewQuestionDbPort
+                .getEntitiesWithOutRelations(questionPks)
+        val scriptEntities: List<InterviewScriptEntity> =
             interviewScriptDbPort
-                .get(pk = scriptPk)
-                .updateContent(
-                    newContent = request.content,
-                    updateTime = updateTime
-                )
-        return interviewScriptDbPort.save(updated)
+                .getAllByQuestionsOfMember(questionEntities, ownerEntity)
+
+        return scriptEntities.map {
+            InterviewScriptResponseV2.from(it)
+        }
     }
 }

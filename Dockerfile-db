@@ -1,0 +1,8 @@
+FROM postgres:15.5
+
+COPY .env .env
+COPY dump_prod_db_to_local_db.bash dump_prod_db_to_local_db.bash
+
+RUN chmod +x /dump_prod_db_to_local_db.bash
+
+#ENTRYPOINT ["bash", "/dump_prod_db_to_local_db.bash"]
