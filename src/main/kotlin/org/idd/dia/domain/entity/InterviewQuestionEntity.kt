@@ -47,8 +47,7 @@ class InterviewQuestionEntity(
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     val voices: Set<InterviewQuestionVoiceEntity> = voiceEntities
 
-    // todo: 마이그레이션 후 nullable 삭제
-    @Column
+    @Column(nullable = false)
     val createdTime: LocalDateTime? = createdTime
 
     companion object {

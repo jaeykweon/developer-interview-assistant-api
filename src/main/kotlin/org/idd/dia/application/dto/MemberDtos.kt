@@ -26,6 +26,8 @@ data class MemberInfoViewModel(
     val oauthProviderValue: String,
     val nicknameValue: String,
     val imageUrlValue: String,
+    val createdTime: String,
+    val updatedTime: String
 ) {
     constructor(memberEntity: MemberEntity) : this(
         pkValue = memberEntity.pkValue,
@@ -33,5 +35,7 @@ data class MemberInfoViewModel(
         oauthProviderValue = memberEntity.oauthProviderValue,
         nicknameValue = memberEntity.nicknameValue,
         imageUrlValue = memberEntity.imageUrlValue,
+        createdTime = memberEntity.createdTime.toString(),
+        updatedTime = memberEntity.updatedTime.toString()
     )
 }
