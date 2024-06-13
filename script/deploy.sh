@@ -89,7 +89,7 @@ echo "새 프로세스 포트: $new_port"
 nohup java -jar build/libs/dia-0.0.1-SNAPSHOT.jar \
 --server.port="$new_port" \
 --spring.profiles.active="$environment" \
-> output.log 2>&1 &
+> /dev/null 2>&1 &
 
 echo "새 프로세스를 실행했습니다. 20초 후 부터 health check를 시작합니다."
 sleep 20

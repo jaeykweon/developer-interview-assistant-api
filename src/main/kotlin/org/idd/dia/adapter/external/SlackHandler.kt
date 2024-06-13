@@ -5,6 +5,7 @@ import com.slack.api.model.Attachment
 import com.slack.api.model.Field
 import com.slack.api.webhook.Payload.PayloadBuilder
 import com.slack.api.webhook.WebhookPayloads.payload
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -104,10 +105,13 @@ class RealSlackHandler(
 @Profile("!prod&&!stag&&!test")
 @Component
 class FakeSlackHandler : SlackHandler {
+
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
     override fun sendErrorMessage(
         webRequest: WebRequest,
         error: Exception,
     ) {
-        println("FakeSlackHandler.sendErrorMessage executed")
+        logger.info("FakeSlackHandler.sendErrorMessage executed")
     }
 }
