@@ -14,7 +14,7 @@ import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
 /**
- * @see org.idd.dia.adapter.api.InterviewPracticeRestController.postStarPracticeHistory
+ * @see org.idd.dia.adapter.api.InterviewPracticeHistoryRestController.postStarPracticeHistory
  */
 @DisplayName("면접 연습 히스토리 별표 등록 API")
 class InterviewPracticeHistoryStarPostApiTest : ApiTest() {

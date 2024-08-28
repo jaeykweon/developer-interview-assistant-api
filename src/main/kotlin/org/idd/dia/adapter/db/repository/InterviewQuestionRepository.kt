@@ -26,6 +26,13 @@ class InterviewQuestionRepository(
         return jpaRepository.save(questionEntity)
     }
 
+    override fun getPageWithRelations(pageable: Pageable): Page<InterviewQuestionEntity> {
+        return this.getPageWithRelations(emptySet(), pageable)
+    }
+
+    /**
+     * category 조건이 없더라도 category가 부여되지 않은 문제를 들고오면 안되기 때문에 inner join을 제거하지 않는다.
+     */
     override fun getPageWithRelations(
         categoryEntities: Collection<InterviewQuestionCategoryEntity>,
         pageable: Pageable,

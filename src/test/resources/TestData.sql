@@ -66,9 +66,9 @@ VALUES (1003, '프론트엔드 문제 음성 파일.mp3', 'MALE', 1003, '프론�
 
 -------면접 대본 / Interview Script Data-------
 INSERT INTO interview_scripts
-    (pk, owner_pk, question_pk, content, created_time, last_modified_time, last_read_time)
+    (pk, owner_pk, question_pk, content)
 VALUES
-    (1001, 1001, 1001, 'HTTP는 HyperText Transfer Protocol의 약자로, 웹 서버와 클라이언트 간에 데이터를 주고받기 위한 통신 규약입니다. HTTPS는 HTTP에 데이터 암호화가 추가된 것으로, 보안이 강화된 프로토콜입니다.', '2021-08-01 00:00:00', '2021-08-01 00:00:00', '2021-08-01 00:00:00');
+    (1001, 1001, 1001, 'HTTP는 HyperText Transfer Protocol의 약자로, 웹 서버와 클라이언트 간에 데이터를 주고받기 위한 통신 규약입니다. HTTPS는 HTTP에 데이터 암호화가 추가된 것으로, 보안이 강화된 프로토콜입니다.');
 
 ------Interview Practice History Data------
 INSERT INTO interview_practice_histories

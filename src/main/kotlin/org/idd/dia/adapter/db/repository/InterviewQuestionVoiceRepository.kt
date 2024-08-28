@@ -4,9 +4,9 @@ import org.idd.dia.application.port.usingcase.InterviewQuestionVoiceDbPort
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.InterviewQuestionVoiceEntity
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 
-@Component
+@Repository
 class InterviewQuestionVoiceRepository(
     private val interviewQuestionVoiceJpaRepository: InterviewQuestionVoiceJpaRepository,
 ) : InterviewQuestionVoiceDbPort {

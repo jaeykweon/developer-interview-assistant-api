@@ -54,22 +54,22 @@ data class InterviewQuestionResponse(
          */
         @JvmStatic
         fun withCheckingBookmark(
-            interviewQuestionEntity: InterviewQuestionEntity,
-            interviewQuestionBookmarkMappingsEntity: Iterable<InterviewQuestionBookmarkMappingEntity>,
+            question: InterviewQuestionEntity,
+            questionBookmarkMappings: Iterable<InterviewQuestionBookmarkMappingEntity>,
         ): InterviewQuestionResponse {
             val categories: Iterable<InterviewQuestionCategoryResponse> =
-                interviewQuestionEntity.categoryMappings.map {
+                question.categoryMappings.map {
                     InterviewQuestionCategoryResponse(it.category)
                 }
             val voices =
-                interviewQuestionEntity.voices.map {
+                question.voices.map {
                     InterviewQuestionVoiceResponse(it)
                 }
-            val bookmarked = interviewQuestionBookmarkMappingsEntity.isBookmarked(interviewQuestionEntity)
+            val bookmarked = questionBookmarkMappings.isBookmarked(question)
             return InterviewQuestionResponse(
-                pkValue = interviewQuestionEntity.pkValue,
-                korTitleValue = interviewQuestionEntity.titleValue,
-                titleValue = interviewQuestionEntity.titleValue,
+                pkValue = question.pkValue,
+                korTitleValue = question.titleValue,
+                titleValue = question.titleValue,
                 categories = categories,
                 voices = voices,
                 bookmark = bookmarked,
@@ -84,18 +84,18 @@ data class SetCategoriesOfInterviewQuestionRequest(
     fun getCategoryPks(): Set<InterviewQuestionCategory.Pk> = categoryPkValues.mapToSet { InterviewQuestionCategory.Pk(it) }
 }
 
-data class InterviewQuestionBookmarkResultResponse(
+data class InterviewQuestionBookmarkResponse(
     val bookmarked: Boolean,
 ) {
     companion object {
         @JvmStatic
-        fun bookmarked(): InterviewQuestionBookmarkResultResponse {
-            return InterviewQuestionBookmarkResultResponse(true)
+        fun bookmarked(): InterviewQuestionBookmarkResponse {
+            return InterviewQuestionBookmarkResponse(true)
         }
 
         @JvmStatic
-        fun unBookmarked(): InterviewQuestionBookmarkResultResponse {
-            return InterviewQuestionBookmarkResultResponse(false)
+        fun unBookmarked(): InterviewQuestionBookmarkResponse {
+            return InterviewQuestionBookmarkResponse(false)
         }
     }
 }

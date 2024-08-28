@@ -20,9 +20,7 @@ class InterviewScriptEntity(
     questionEntity: InterviewQuestionEntity,
     content: InterviewScript.Content,
     createdTime: LocalDateTime,
-    lastModifiedTime: LocalDateTime,
-    lastReadTime: LocalDateTime,
-) {
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -42,15 +40,8 @@ class InterviewScriptEntity(
     var contentValue: String = content.value
         protected set
 
-    @Column(nullable = false)
-    val createdTime: LocalDateTime = createdTime
-
-    @Column(nullable = false)
-    var lastModifiedTime: LocalDateTime = lastModifiedTime
-        protected set
-
-    @Column(nullable = false)
-    var lastReadTime: LocalDateTime = lastReadTime
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    var lastReadTime: LocalDateTime = createdTime
         protected set
 
     fun read(time: LocalDateTime) {
@@ -63,7 +54,7 @@ class InterviewScriptEntity(
         updateTime: LocalDateTime,
     ) {
         this.contentValue = newContent.value
-        this.lastModifiedTime = updateTime
+        this.updatedTime = updateTime
     }
 
     companion object {
@@ -80,8 +71,6 @@ class InterviewScriptEntity(
                 questionEntity = questionEntity,
                 content = content,
                 createdTime = time,
-                lastReadTime = time,
-                lastModifiedTime = time,
             )
         }
     }

@@ -13,7 +13,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
 /**
- * @see org.idd.dia.adapter.api.InterviewPracticeRestController.getPracticeHistory
+ * @see org.idd.dia.adapter.api.InterviewPracticeHistoryRestController.getPracticeHistory
  */
 @DisplayName("면접 연습 히스토리 단 건 조회 API")
 class InterviewPracticeHistoryGetApiTest : ApiTest() {

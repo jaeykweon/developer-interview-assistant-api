@@ -8,6 +8,7 @@ import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewPracticeHistoryDbPort
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.application.port.usingcase.MemberDbPort
+import org.idd.dia.application.service.internal.InterviewQuestionInternalService
 import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
@@ -27,6 +28,7 @@ class InterviewPracticeHistoryService(
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
     private val memberDbPort: MemberDbPort,
     private val interviewQuestionServiceUseCase: InterviewQuestionServiceUseCase,
+    private val interviewQuestionInternalService: InterviewQuestionInternalService,
 ) : InterviewPracticeHistoryServiceUseCase {
     override fun registerHistory(
         memberPk: Member.Pk,
@@ -69,8 +71,8 @@ class InterviewPracticeHistoryService(
             )
 
         val questionResponses =
-            interviewQuestionServiceUseCase.getQuestionsWithBookmark(
-                memberPk = memberPk,
+            interviewQuestionInternalService.getQuestionsWithBookmark(
+                memberEntity = memberEntity,
                 pks = entitySlice.mapToSet { it.getQuestionPk() },
             )
 

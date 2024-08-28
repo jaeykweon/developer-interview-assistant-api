@@ -18,7 +18,7 @@ class MemberEntity(
     oauthProvider: Member.OauthProvider,
     imageUrl: Member.ImageUrl,
     createdTime: LocalDateTime,
-) {
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -37,13 +37,6 @@ class MemberEntity(
 
     @Column(name = "oauth_provider", nullable = false)
     val oauthProviderValue: String = oauthProvider.name
-
-    @Column(nullable = false)
-    val createdTime: LocalDateTime = createdTime
-
-    @Column(nullable = false)
-    var updatedTime: LocalDateTime = createdTime
-        protected set
 
     companion object {
         @JvmStatic

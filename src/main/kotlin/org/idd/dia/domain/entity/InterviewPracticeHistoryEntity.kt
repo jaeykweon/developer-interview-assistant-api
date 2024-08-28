@@ -23,7 +23,7 @@ class InterviewPracticeHistoryEntity(
     filePath: InterviewPracticeHistory.FilePath?,
     star: Boolean,
     createdTime: LocalDateTime,
-) {
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -57,9 +57,6 @@ class InterviewPracticeHistoryEntity(
     @Column(name = "star")
     var starValue: Boolean = star
         protected set
-
-    @Column(name = "created_time", nullable = false)
-    val createdTime: LocalDateTime = createdTime
 
     fun star() {
         this.starValue = true

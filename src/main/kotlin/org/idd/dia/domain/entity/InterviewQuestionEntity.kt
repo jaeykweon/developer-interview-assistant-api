@@ -32,7 +32,7 @@ class InterviewQuestionEntity(
     categoryMappingEntities: Set<InterviewQuestionCategoryMappingEntity>,
     voiceEntities: Set<InterviewQuestionVoiceEntity>,
     createdTime: LocalDateTime,
-) {
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -46,9 +46,6 @@ class InterviewQuestionEntity(
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     val voices: Set<InterviewQuestionVoiceEntity> = voiceEntities
-
-    @Column(nullable = false)
-    val createdTime: LocalDateTime? = createdTime
 
     companion object {
         @JvmStatic

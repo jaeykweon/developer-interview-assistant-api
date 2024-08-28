@@ -7,10 +7,10 @@ import org.idd.dia.application.dto.InterviewQuestionCollectionSimpleViewModels
 import org.idd.dia.application.dto.InterviewQuestionResponse
 import org.idd.dia.application.dto.InterviewScriptResponseV2
 import org.idd.dia.application.port.usecase.InterviewQuestionCollectionServiceUseCase
-import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
-import org.idd.dia.application.port.usecase.InterviewScriptServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewQuestionCollectionDbPort
 import org.idd.dia.application.port.usingcase.MemberDbPort
+import org.idd.dia.application.service.internal.InterviewQuestionInternalService
+import org.idd.dia.application.service.internal.InterviewScriptInternalService
 import org.idd.dia.domain.entity.InterviewQuestionCollectionEntity
 import org.idd.dia.domain.model.InterviewQuestionCollection
 import org.idd.dia.domain.model.Member
@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service
 @Transactional
 class InterviewQuestionCollectionService(
     private val interviewQuestionCollectionDbPort: InterviewQuestionCollectionDbPort,
-    private val interviewQuestionServiceUseCase: InterviewQuestionServiceUseCase,
-    private val interviewScriptServiceUseCase: InterviewScriptServiceUseCase,
     private val memberDbPort: MemberDbPort,
+    private val interviewScriptInternalService: InterviewScriptInternalService,
+    private val interviewQuestionInternalService: InterviewQuestionInternalService,
 ) : InterviewQuestionCollectionServiceUseCase {
     override fun getInterviewQuestionCollections(): InterviewQuestionCollectionSimpleViewModels {
         val collectionEntities: List<InterviewQuestionCollectionEntity> =
@@ -38,7 +38,7 @@ class InterviewQuestionCollectionService(
             interviewQuestionCollectionDbPort.getEntityWithQuestionMappings(pk = collectionPk)
 
         val questionResponses: List<InterviewQuestionResponse> =
-            interviewQuestionServiceUseCase
+            interviewQuestionInternalService
                 .getQuestionsWithoutBookmark(collectionEntity.questionPks)
 
         val scriptForms = InterviewScriptFormResponse.multiOfGuest(questionResponses)
@@ -50,16 +50,18 @@ class InterviewQuestionCollectionService(
         memberPk: Member.Pk,
         collectionPk: InterviewQuestionCollection.Pk,
     ): InterviewQuestionCollectionDetailViewModel {
+        val memberEntity = memberDbPort.getEntity(pk = memberPk)
+
         val collectionEntity: InterviewQuestionCollectionEntity =
             interviewQuestionCollectionDbPort.getEntityWithQuestionMappings(pk = collectionPk)
 
         val questionResponses: List<InterviewQuestionResponse> =
-            interviewQuestionServiceUseCase
-                .getQuestionsWithBookmark(memberPk, collectionEntity.questionPks)
+            interviewQuestionInternalService
+                .getQuestionsWithBookmark(memberEntity, collectionEntity.questionPks)
 
         val scriptResponses: List<InterviewScriptResponseV2> =
-            interviewScriptServiceUseCase
-                .getScripts(collectionEntity.questionPks, memberPk)
+            interviewScriptInternalService
+                .getScripts(memberEntity, collectionEntity.questionPks)
 
         val scriptForms: List<InterviewScriptFormResponse> =
             InterviewScriptFormResponse

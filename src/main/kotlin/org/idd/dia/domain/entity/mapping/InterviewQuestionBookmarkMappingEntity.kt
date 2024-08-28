@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.idd.dia.domain.entity.CommonEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
 import java.time.LocalDateTime
@@ -33,9 +34,8 @@ class InterviewQuestionBookmarkMappingEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     val owner: MemberEntity,
-    @Column(name = "created_time", nullable = false)
-    val createdTime: LocalDateTime,
-) {
+    createdTime: LocalDateTime,
+) : CommonEntity(createdTime) {
     companion object {
         @JvmStatic
         fun new(

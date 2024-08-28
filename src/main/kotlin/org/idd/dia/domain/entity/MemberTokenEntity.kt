@@ -21,7 +21,7 @@ class MemberTokenEntity(
     userAgent: MemberToken.UserAgent?,
     owner: MemberEntity,
     createdTime: LocalDateTime,
-) {
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -38,17 +38,19 @@ class MemberTokenEntity(
     @JoinColumn(nullable = false)
     val owner: MemberEntity = owner
 
-    @Column(nullable = false)
-    val createdTime: LocalDateTime = createdTime
-
     fun getOwnerPk(): Member.Pk = owner.getPk()
 
     // todo: 자기 자신을 반환하는 것은 함수형 프로그래밍인데 패러다임이 혼재해도 되는걸까
+
+    /**
+     * userAgent가 있는 경우 userAgent를 비교하여 일치하는지 확인하고,
+     * accessToken이 일치하는지 확인합니다.
+     */
     fun validateAccessToken(
         accessToken: MemberToken.AccessToken,
         userAgent: MemberToken.UserAgent?,
     ): MemberTokenEntity {
-        if (this.userAgentValue != userAgent?.value) {
+        if (this.userAgentValue?.take(10) != userAgent?.value?.take(10)) {
             throw UnAuthorizedException("UserAgent is not matched")
         }
         if (this.accessTokenValue != accessToken.value) {

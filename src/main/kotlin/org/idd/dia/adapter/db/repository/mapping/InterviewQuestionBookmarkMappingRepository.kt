@@ -12,7 +12,6 @@ import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
-import org.idd.dia.domain.entity.mapping.InterviewQuestionCategoryMappingEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -41,10 +40,23 @@ class InterviewQuestionBookmarkMappingRepository(
 
     override fun getMappingsWithQuestion(
         ownerEntity: MemberEntity,
-        categoryEntities: Iterable<InterviewQuestionCategoryEntity>,
+        pageable: Pageable,
+    ): Page<InterviewQuestionBookmarkMappingEntity> {
+        return getMappingsWithQuestion(ownerEntity, emptySet(), pageable)
+    }
+
+    override fun getMappingsWithQuestion(
+        ownerEntity: MemberEntity,
+        categoryEntities: Set<InterviewQuestionCategoryEntity>,
         pageable: Pageable,
     ): Page<InterviewQuestionBookmarkMappingEntity> {
         val pkValuePageQuery: Jpql.() -> SelectQuery<Long> = {
+            val categoryClause =
+                if (categoryEntities.isEmpty()) {
+                    null
+                } else {
+                    path(InterviewQuestionCategoryEntity::pkValue).`in`(categoryEntities.map { it.pkValue })
+                }
             jpql {
                 select(
                     path(InterviewQuestionBookmarkMappingEntity::pkValue),
@@ -54,7 +66,7 @@ class InterviewQuestionBookmarkMappingRepository(
                     innerJoin(InterviewQuestionEntity::categoryMappings),
                 ).whereAnd(
                     path(InterviewQuestionBookmarkMappingEntity::owner).eq(ownerEntity),
-                    path(InterviewQuestionCategoryMappingEntity::category).`in`(categoryEntities),
+                    categoryClause,
                 ).orderBy(
                     path(InterviewQuestionBookmarkMappingEntity::pkValue).desc(),
                 )

@@ -8,7 +8,7 @@ import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
 /**
- * @see org.idd.dia.adapter.api.InterviewPracticeRestController.deletePracticeHistory
+ * @see org.idd.dia.adapter.api.InterviewPracticeHistoryRestController.deletePracticeHistory
  */
 @DisplayName("면접 연습 히스토리 삭제 API")
 class InterviewPracticeHistoryDeleteApiTest : ApiTest() {

@@ -31,9 +31,4 @@ interface InterviewScriptServiceUseCase {
         scriptPk: InterviewScript.Pk,
         requestMemberPk: Member.Pk,
     ): InterviewScriptResponseV2
-
-    fun getScripts(
-        questionPks: Collection<InterviewQuestion.Pk>,
-        memberPk: Member.Pk,
-    ): List<InterviewScriptResponseV2>
 }

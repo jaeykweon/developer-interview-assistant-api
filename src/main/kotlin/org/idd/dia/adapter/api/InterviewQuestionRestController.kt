@@ -1,7 +1,7 @@
 package org.idd.dia.adapter.api
 
 import org.idd.dia.adapter.config.RequestAuth
-import org.idd.dia.application.dto.InterviewQuestionBookmarkResultResponse
+import org.idd.dia.application.dto.InterviewQuestionBookmarkResponse
 import org.idd.dia.application.dto.InterviewQuestionCollectionDetailViewModel
 import org.idd.dia.application.dto.InterviewQuestionCollectionSimpleViewModel
 import org.idd.dia.application.dto.InterviewQuestionCollectionSimpleViewModels
@@ -38,41 +38,41 @@ class InterviewQuestionRestController(
     @GetMapping("/interview/questions")
     fun getQuestions(
         @RequestAuth(required = false) memberPk: Member.Pk? = null,
-        @RequestParam(required = false) categoryValues: Set<String>,
+        @RequestParam(required = false) categoryValues: Set<String>? = null,
         @RequestParam(required = false) bookmark: Boolean? = null,
         pageable: Pageable,
     ): ApiResponse<CustomPage<InterviewQuestionResponse>> {
-        val categories: Set<InterviewQuestionCategory.Title> =
-            categoryValues.mapToSet {
+        val categories: Set<InterviewQuestionCategory.Title>? =
+            categoryValues?.mapToSet {
                 InterviewQuestionCategory.Title(it)
             }
 
-        if (memberPk.isNotNull() && bookmark.isNull()) {
-            val questionPage: CustomPage<InterviewQuestionResponse> =
-                interviewQuestionServiceUseCase.getQuestionsOfMember(
-                    memberPk,
-                    categories,
-                    pageable,
-                ).toCustomPage()
-            return ApiResponse.ok(questionPage)
-        }
+        val questionPage =
+            when {
+                memberPk.isNull() && bookmark.isNull() ->
+                    interviewQuestionServiceUseCase.getQuestionsForGuest(
+                        categories,
+                        pageable,
+                    )
+                memberPk.isNotNull() && bookmark.isNull() ->
+                    interviewQuestionServiceUseCase.getQuestionsForMember(
+                        memberPk,
+                        categories,
+                        pageable,
+                    )
+                memberPk.isNotNull() && bookmark.isTrue() ->
+                    interviewQuestionServiceUseCase.getBookmarkedQuestions(
+                        memberPk,
+                        categories,
+                        pageable,
+                    )
+                else ->
+                    interviewQuestionServiceUseCase.getQuestionsForGuest(
+                        categories,
+                        pageable,
+                    )
+            }.toCustomPage()
 
-        if (memberPk.isNotNull() && bookmark.isTrue()) {
-            val questionPage: CustomPage<InterviewQuestionResponse> =
-                interviewQuestionServiceUseCase.getOnlyBookmarkedQuestionsOfMember(
-                    memberPk,
-                    categories,
-                    pageable,
-                ).toCustomPage()
-
-            return ApiResponse.ok(questionPage)
-        }
-
-        val questionPage: CustomPage<InterviewQuestionResponse> =
-            interviewQuestionServiceUseCase.getQuestionsOfGuest(
-                categories,
-                pageable,
-            ).toCustomPage()
         return ApiResponse.ok(questionPage)
     }
 
@@ -95,7 +95,7 @@ class InterviewQuestionRestController(
     fun postQuestionBookmark(
         @PathVariable questionPk: InterviewQuestion.Pk,
         @RequestAuth memberPk: Member.Pk,
-    ): ApiResponse<InterviewQuestionBookmarkResultResponse> {
+    ): ApiResponse<InterviewQuestionBookmarkResponse> {
         return ApiResponse.ok(
             interviewQuestionBookmarkServiceUseCase.bookmarkQuestion(memberPk, questionPk),
         )
@@ -105,7 +105,7 @@ class InterviewQuestionRestController(
     fun deleteQuestionBookmark(
         @PathVariable questionPk: InterviewQuestion.Pk,
         @RequestAuth memberPk: Member.Pk,
-    ): ApiResponse<InterviewQuestionBookmarkResultResponse> {
+    ): ApiResponse<InterviewQuestionBookmarkResponse> {
         return ApiResponse.ok(
             interviewQuestionBookmarkServiceUseCase.deleteQuestionBookmark(memberPk, questionPk),
         )

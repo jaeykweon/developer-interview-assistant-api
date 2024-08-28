@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewScriptReference
+import java.time.LocalDateTime
 
 @Table(name = "interview_script_references")
 @Entity
@@ -17,7 +18,8 @@ class InterviewScriptReferenceEntity(
     ownerEntity: MemberEntity,
     url: InterviewScriptReference.Url,
     clickCount: InterviewScriptReference.ClickCount,
-) {
+    createdTime: LocalDateTime,
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)

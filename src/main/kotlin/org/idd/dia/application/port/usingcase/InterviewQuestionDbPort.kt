@@ -17,6 +17,8 @@ interface InterviewQuestionDbPort {
 
     fun getEntitiesWithRelations(pks: Iterable<InterviewQuestion.Pk>): List<InterviewQuestionEntity>
 
+    fun getPageWithRelations(pageable: Pageable): Page<InterviewQuestionEntity>
+
     fun getPageWithRelations(
         categoryEntities: Collection<InterviewQuestionCategoryEntity>,
         pageable: Pageable,

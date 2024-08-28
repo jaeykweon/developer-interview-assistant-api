@@ -16,7 +16,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 
 /**
- * @see org.idd.dia.adapter.api.InterviewPracticeRestController.recordPracticeHistory
+ * @see org.idd.dia.adapter.api.InterviewPracticeHistoryRestController.recordPracticeHistory
  */
 @DisplayName("면접 연습 히스토리 등록 API")
 class InterviewPracticeHistoryPostApiTest : ApiTest() {

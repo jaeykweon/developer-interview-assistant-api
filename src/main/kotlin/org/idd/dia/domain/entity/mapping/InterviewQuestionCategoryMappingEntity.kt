@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.idd.dia.domain.entity.CommonEntity
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import java.time.LocalDateTime
@@ -26,9 +27,8 @@ class InterviewQuestionCategoryMappingEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     val category: InterviewQuestionCategoryEntity,
-    @Column(name = "created_time", nullable = false)
-    val createdTime: LocalDateTime,
-) {
+    createdTime: LocalDateTime,
+) : CommonEntity(createdTime) {
     companion object {
         @JvmStatic
         fun new(

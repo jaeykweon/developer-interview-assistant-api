@@ -27,7 +27,7 @@ data class MemberInfoViewModel(
     val nicknameValue: String,
     val imageUrlValue: String,
     val createdTime: String,
-    val updatedTime: String
+    val updatedTime: String,
 ) {
     constructor(memberEntity: MemberEntity) : this(
         pkValue = memberEntity.pkValue,
@@ -36,6 +36,6 @@ data class MemberInfoViewModel(
         nicknameValue = memberEntity.nicknameValue,
         imageUrlValue = memberEntity.imageUrlValue,
         createdTime = memberEntity.createdTime.toString(),
-        updatedTime = memberEntity.updatedTime.toString()
+        updatedTime = memberEntity.updatedTime.toString(),
     )
 }

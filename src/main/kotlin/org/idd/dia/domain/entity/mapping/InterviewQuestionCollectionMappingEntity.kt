@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.idd.dia.domain.entity.CommonEntity
 import org.idd.dia.domain.entity.InterviewQuestionCollectionEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.getPk
@@ -32,7 +33,5 @@ class InterviewQuestionCollectionMappingEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     val question: InterviewQuestionEntity,
-    // todo: 마이그레이션 후 nullable 삭제
-    @Column(name = "created_time")
-    val createdTime: LocalDateTime?,
-)
+    createdTime: LocalDateTime,
+) : CommonEntity(createdTime)

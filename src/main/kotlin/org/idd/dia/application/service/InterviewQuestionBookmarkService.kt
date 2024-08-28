@@ -1,6 +1,6 @@
 package org.idd.dia.application.service
 
-import org.idd.dia.application.dto.InterviewQuestionBookmarkResultResponse
+import org.idd.dia.application.dto.InterviewQuestionBookmarkResponse
 import org.idd.dia.application.port.usecase.InterviewQuestionBookmarkServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.application.port.usingcase.MemberDbPort
@@ -18,7 +18,7 @@ class InterviewQuestionBookmarkService(
     override fun bookmarkQuestion(
         memberPk: Member.Pk,
         questionPk: InterviewQuestion.Pk,
-    ): InterviewQuestionBookmarkResultResponse {
+    ): InterviewQuestionBookmarkResponse {
         val questionEntity = interviewQuestionDbPort.getEntityWithOutRelations(pk = questionPk)
         val memberEntity = memberDbPort.getEntity(pk = memberPk)
 
@@ -26,13 +26,13 @@ class InterviewQuestionBookmarkService(
             memberEntity = memberEntity,
             questionEntity = questionEntity,
         )
-        return InterviewQuestionBookmarkResultResponse.bookmarked()
+        return InterviewQuestionBookmarkResponse.bookmarked()
     }
 
     override fun deleteQuestionBookmark(
         memberPk: Member.Pk,
         questionPk: InterviewQuestion.Pk,
-    ): InterviewQuestionBookmarkResultResponse {
+    ): InterviewQuestionBookmarkResponse {
         val questionEntity = interviewQuestionDbPort.getEntityWithOutRelations(pk = questionPk)
         val memberEntity = memberDbPort.getEntity(pk = memberPk)
 
@@ -40,6 +40,6 @@ class InterviewQuestionBookmarkService(
             memberEntity = memberEntity,
             questionEntity = questionEntity,
         )
-        return InterviewQuestionBookmarkResultResponse.unBookmarked()
+        return InterviewQuestionBookmarkResponse.unBookmarked()
     }
 }

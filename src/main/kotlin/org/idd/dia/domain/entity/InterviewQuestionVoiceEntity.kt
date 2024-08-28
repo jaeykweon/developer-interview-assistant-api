@@ -21,7 +21,7 @@ class InterviewQuestionVoiceEntity(
     filePath: InterviewQuestionVoice.FilePath,
     subtitle: InterviewQuestionVoice.SubTitle,
     createdTime: LocalDateTime,
-) {
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -44,8 +44,4 @@ class InterviewQuestionVoiceEntity(
 
     @Column(name = "subtitle", nullable = false)
     val subtitleValue: String = subtitle.value
-
-    // todo: 마이그레이션 후 nullable 삭제
-    @Column
-    val createdTime: LocalDateTime? = createdTime
 }

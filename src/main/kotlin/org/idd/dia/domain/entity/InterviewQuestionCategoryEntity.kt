@@ -7,13 +7,15 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewQuestionCategory
+import java.time.LocalDateTime
 
 @Table(name = "interview_question_categories")
 @Entity
 class InterviewQuestionCategoryEntity(
     pk: InterviewQuestionCategory.Pk,
     title: InterviewQuestionCategory.Title,
-) {
+    createdTime: LocalDateTime,
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)

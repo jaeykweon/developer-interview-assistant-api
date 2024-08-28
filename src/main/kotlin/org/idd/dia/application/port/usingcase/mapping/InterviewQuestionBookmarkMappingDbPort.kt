@@ -20,7 +20,12 @@ interface InterviewQuestionBookmarkMappingDbPort {
 
     fun getMappingsWithQuestion(
         ownerEntity: MemberEntity,
-        categoryEntities: Iterable<InterviewQuestionCategoryEntity>,
+        pageable: Pageable,
+    ): Page<InterviewQuestionBookmarkMappingEntity>
+
+    fun getMappingsWithQuestion(
+        ownerEntity: MemberEntity,
+        categoryEntities: Set<InterviewQuestionCategoryEntity>,
         pageable: Pageable,
     ): Page<InterviewQuestionBookmarkMappingEntity>
 

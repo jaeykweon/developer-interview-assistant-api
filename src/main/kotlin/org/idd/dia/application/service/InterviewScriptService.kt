@@ -10,7 +10,6 @@ import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
 import org.idd.dia.application.port.usingcase.MemberDbPort
 import org.idd.dia.domain.ConflictException
 import org.idd.dia.domain.entity.InterviewScriptEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewScript
 import org.idd.dia.domain.model.Member
@@ -89,24 +88,5 @@ class InterviewScriptService(
             updateTime = updateTime,
         )
         return InterviewScriptResponseV2.from(entity)
-    }
-
-    override fun getScripts(
-        questionPks: Collection<InterviewQuestion.Pk>,
-        memberPk: Member.Pk,
-    ): List<InterviewScriptResponseV2> {
-        val ownerEntity: MemberEntity =
-            memberDbPort
-                .getEntity(memberPk)
-        val questionEntities =
-            interviewQuestionDbPort
-                .getEntitiesWithOutRelations(questionPks)
-        val scriptEntities: List<InterviewScriptEntity> =
-            interviewScriptDbPort
-                .getAllByQuestionsOfMember(questionEntities, ownerEntity)
-
-        return scriptEntities.map {
-            InterviewScriptResponseV2.from(it)
-        }
     }
 }

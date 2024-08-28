@@ -105,7 +105,6 @@ class RealSlackHandler(
 @Profile("!prod&&!stag&&!test")
 @Component
 class FakeSlackHandler : SlackHandler {
-
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun sendErrorMessage(

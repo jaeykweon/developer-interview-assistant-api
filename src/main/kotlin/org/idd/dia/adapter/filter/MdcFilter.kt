@@ -11,12 +11,11 @@ import java.util.UUID
 
 @Order(Int.MIN_VALUE)
 @Component
-class MdcFilter: OncePerRequestFilter() {
-
+class MdcFilter : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         val requestId = request.getHeader("request-id") ?: UUID.randomUUID().toString()
         MDC.put("request-id", requestId)

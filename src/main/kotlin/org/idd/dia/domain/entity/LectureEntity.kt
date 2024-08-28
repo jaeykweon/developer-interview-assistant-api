@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.Lecture
+import java.time.LocalDateTime
 
 @Table(name = "lectures")
 @Entity
@@ -14,7 +15,8 @@ class LectureEntity(
     pk: Lecture.Pk,
     url: Lecture.Url,
     price: Lecture.Price,
-) {
+    createdTime: LocalDateTime,
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)

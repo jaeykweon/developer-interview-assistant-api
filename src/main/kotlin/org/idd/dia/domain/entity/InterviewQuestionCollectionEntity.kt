@@ -22,7 +22,7 @@ class InterviewQuestionCollectionEntity(
     pk: InterviewQuestionCollection.Pk,
     title: InterviewQuestionCollection.Title,
     createdTime: LocalDateTime,
-) {
+) : CommonEntity(createdTime) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
@@ -39,10 +39,6 @@ class InterviewQuestionCollectionEntity(
 
     val questionPkValues: List<Long>
         get() = questionMappings.getQuestionPks().map { it.value }
-
-    // todo: 마이그레이션 후 nullable 삭제
-    @Column
-    val createdTime: LocalDateTime? = createdTime
 
     companion object {
         @JvmStatic

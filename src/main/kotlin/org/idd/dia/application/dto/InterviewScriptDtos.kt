@@ -86,7 +86,7 @@ data class InterviewScriptResponseV2(
                 questionPkValue = entity.question.pkValue,
                 contentValue = entity.contentValue,
                 createdTimeValue = entity.createdTime,
-                lastModifiedTimeValue = entity.lastModifiedTime,
+                lastModifiedTimeValue = entity.updatedTime,
                 lastReadTimeValue = entity.lastReadTime,
             )
         }
