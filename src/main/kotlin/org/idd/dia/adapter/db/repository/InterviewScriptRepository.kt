@@ -4,8 +4,8 @@ import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
 import org.idd.dia.domain.NotFoundException
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.InterviewScriptEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
@@ -16,12 +16,12 @@ class InterviewScriptRepository(
 ) : InterviewScriptDbPort {
     override fun isExists(
         questionEntity: InterviewQuestionEntity,
-        ownerEntity: MemberEntity,
+        ownerPk: Member.Pk,
     ): Boolean {
         return interviewScriptJpaRepository
-            .existsByQuestionAndOwner(
+            .existsByQuestionAndMemberPkValue(
                 question = questionEntity,
-                owner = ownerEntity,
+                memberPkValue = ownerPk.value,
             )
     }
 
@@ -29,55 +29,55 @@ class InterviewScriptRepository(
         return interviewScriptJpaRepository.save(interviewScriptEntity)
     }
 
-    override fun getByPk(pk: InterviewScript.Pk): InterviewScriptEntity {
+    override fun getEntity(pk: InterviewScript.Pk): InterviewScriptEntity {
         return interviewScriptJpaRepository.findByIdOrNull(pk.value)
             ?: throw NotFoundException("스크립트가 존재하지 않습니다 (pk: ${pk.value})")
     }
 
-    override fun getByQuestionPk(questionEntity: InterviewQuestionEntity): InterviewScriptEntity {
+    override fun getEntity(questionEntity: InterviewQuestionEntity): InterviewScriptEntity {
         return interviewScriptJpaRepository.findByQuestion(questionEntity)
             ?: throw NotFoundException("스크립트가 존재하지 않습니다 (questionPk: ${questionEntity.pkValue})")
     }
 
-    override fun getByPkAndOwnerPk(
+    override fun getEntity(
         questionEntity: InterviewQuestionEntity,
-        ownerEntity: MemberEntity,
+        ownerPk: Member.Pk,
     ): InterviewScriptEntity {
         return interviewScriptJpaRepository
-            .findByQuestionAndOwner(
+            .findByQuestionAndMemberPkValue(
                 question = questionEntity,
-                owner = ownerEntity,
+                memberPkValue = ownerPk.value,
             ) ?: throw NotFoundException(
-            "스크립트가 존재하지 않습니다 (questionPk: ${questionEntity.pkValue}, ownerPk: ${ownerEntity.pkValue})",
+            "스크립트가 존재하지 않습니다 (questionPk: ${questionEntity.pkValue}, ownerPk: ${ownerPk.value})",
         )
     }
 
-    override fun getAllByQuestionsOfMember(
+    override fun getEntities(
         questionEntities: List<InterviewQuestionEntity>,
-        ownerEntity: MemberEntity,
+        ownerPk: Member.Pk,
     ): List<InterviewScriptEntity> {
-        return interviewScriptJpaRepository.findAllByQuestionInAndOwner(
+        return interviewScriptJpaRepository.findAllByQuestionInAndMemberPkValue(
             questionEntities = questionEntities,
-            owner = ownerEntity,
+            memberPkValue = ownerPk.value,
         )
     }
 }
 
 interface InterviewScriptJpaRepository : JpaRepository<InterviewScriptEntity, Long> {
-    fun existsByQuestionAndOwner(
+    fun existsByQuestionAndMemberPkValue(
         question: InterviewQuestionEntity,
-        owner: MemberEntity,
+        memberPkValue: Long,
     ): Boolean
 
     fun findByQuestion(questionEntity: InterviewQuestionEntity): InterviewScriptEntity?
 
-    fun findByQuestionAndOwner(
+    fun findByQuestionAndMemberPkValue(
         question: InterviewQuestionEntity,
-        owner: MemberEntity,
+        memberPkValue: Long,
     ): InterviewScriptEntity?
 
-    fun findAllByQuestionInAndOwner(
+    fun findAllByQuestionInAndMemberPkValue(
         questionEntities: List<InterviewQuestionEntity>,
-        owner: MemberEntity,
+        memberPkValue: Long,
     ): List<InterviewScriptEntity>
 }

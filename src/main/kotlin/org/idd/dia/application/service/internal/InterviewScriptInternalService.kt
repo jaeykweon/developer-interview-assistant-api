@@ -4,8 +4,8 @@ import org.idd.dia.application.dto.InterviewScriptResponseV2
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.application.port.usingcase.InterviewScriptDbPort
 import org.idd.dia.domain.entity.InterviewScriptEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.Member
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,7 +14,7 @@ class InterviewScriptInternalService(
     private val interviewScriptDbPort: InterviewScriptDbPort,
 ) {
     fun getScripts(
-        ownerEntity: MemberEntity,
+        ownerPk: Member.Pk,
         questionPks: Collection<InterviewQuestion.Pk>,
     ): List<InterviewScriptResponseV2> {
         val questionEntities =
@@ -22,7 +22,7 @@ class InterviewScriptInternalService(
                 .getEntitiesWithOutRelations(questionPks)
         val scriptEntities: List<InterviewScriptEntity> =
             interviewScriptDbPort
-                .getAllByQuestionsOfMember(questionEntities, ownerEntity)
+                .getEntities(questionEntities, ownerPk)
 
         return scriptEntities.map {
             InterviewScriptResponseV2.from(it)

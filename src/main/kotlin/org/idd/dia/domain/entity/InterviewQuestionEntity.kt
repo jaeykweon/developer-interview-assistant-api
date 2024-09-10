@@ -41,6 +41,8 @@ class InterviewQuestionEntity(
     @Column(name = "title", nullable = false)
     val titleValue: String = title.value
 
+    fun getTitle() = InterviewQuestion.Title(titleValue)
+
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     val categoryMappings: Set<InterviewQuestionCategoryMappingEntity> = categoryMappingEntities
 

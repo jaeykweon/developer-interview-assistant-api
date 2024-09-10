@@ -3,7 +3,6 @@ package org.idd.dia.application.service
 import org.idd.dia.application.dto.InterviewQuestionBookmarkResponse
 import org.idd.dia.application.port.usecase.InterviewQuestionBookmarkServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
-import org.idd.dia.application.port.usingcase.MemberDbPort
 import org.idd.dia.application.port.usingcase.mapping.InterviewQuestionBookmarkMappingDbPort
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service
 @Service
 class InterviewQuestionBookmarkService(
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
-    private val memberDbPort: MemberDbPort,
     private val interviewQuestionBookmarkMappingDbPort: InterviewQuestionBookmarkMappingDbPort,
 ) : InterviewQuestionBookmarkServiceUseCase {
     override fun bookmarkQuestion(
@@ -20,10 +18,9 @@ class InterviewQuestionBookmarkService(
         questionPk: InterviewQuestion.Pk,
     ): InterviewQuestionBookmarkResponse {
         val questionEntity = interviewQuestionDbPort.getEntityWithOutRelations(pk = questionPk)
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
 
         interviewQuestionBookmarkMappingDbPort.addBookmark(
-            memberEntity = memberEntity,
+            memberPk = memberPk,
             questionEntity = questionEntity,
         )
         return InterviewQuestionBookmarkResponse.bookmarked()
@@ -34,11 +31,10 @@ class InterviewQuestionBookmarkService(
         questionPk: InterviewQuestion.Pk,
     ): InterviewQuestionBookmarkResponse {
         val questionEntity = interviewQuestionDbPort.getEntityWithOutRelations(pk = questionPk)
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
 
         interviewQuestionBookmarkMappingDbPort.removeBookmark(
-            memberEntity = memberEntity,
-            questionEntity = questionEntity,
+            memberPk,
+            questionEntity,
         )
         return InterviewQuestionBookmarkResponse.unBookmarked()
     }

@@ -10,8 +10,8 @@ import org.idd.dia.domain.ConflictException
 import org.idd.dia.domain.NotFoundException
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
+import org.idd.dia.domain.model.Member
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -24,29 +24,29 @@ class InterviewQuestionBookmarkMappingRepository(
     private val interviewQuestionBookmarkMappingJpaRepository: InterviewQuestionBookmarkMappingJpaRepository,
 ) : InterviewQuestionBookmarkMappingDbPort {
     override fun getMappings(
-        ownerEntity: MemberEntity,
+        memberPk: Member.Pk,
         questionEntity: InterviewQuestionEntity,
     ): List<InterviewQuestionBookmarkMappingEntity> {
-        return getMappings(ownerEntity, listOf(questionEntity))
+        return getMappings(memberPk, listOf(questionEntity))
     }
 
     override fun getMappings(
-        ownerEntity: MemberEntity,
+        memberPk: Member.Pk,
         interviewQuestionEntities: List<InterviewQuestionEntity>,
     ): List<InterviewQuestionBookmarkMappingEntity> {
         return interviewQuestionBookmarkMappingJpaRepository
-            .findAllByOwnerAndQuestionIn(ownerEntity, interviewQuestionEntities)
+            .findAllByMemberPkValueAndQuestionIn(memberPk.value, interviewQuestionEntities)
     }
 
     override fun getMappingsWithQuestion(
-        ownerEntity: MemberEntity,
+        memberPk: Member.Pk,
         pageable: Pageable,
     ): Page<InterviewQuestionBookmarkMappingEntity> {
-        return getMappingsWithQuestion(ownerEntity, emptySet(), pageable)
+        return getMappingsWithQuestion(memberPk, emptySet(), pageable)
     }
 
     override fun getMappingsWithQuestion(
-        ownerEntity: MemberEntity,
+        memberPk: Member.Pk,
         categoryEntities: Set<InterviewQuestionCategoryEntity>,
         pageable: Pageable,
     ): Page<InterviewQuestionBookmarkMappingEntity> {
@@ -65,7 +65,7 @@ class InterviewQuestionBookmarkMappingRepository(
                     innerJoin(InterviewQuestionBookmarkMappingEntity::question),
                     innerJoin(InterviewQuestionEntity::categoryMappings),
                 ).whereAnd(
-                    path(InterviewQuestionBookmarkMappingEntity::owner).eq(ownerEntity),
+                    path(InterviewQuestionBookmarkMappingEntity::memberPkValue).eq(memberPk.value),
                     categoryClause,
                 ).orderBy(
                     path(InterviewQuestionBookmarkMappingEntity::pkValue).desc(),
@@ -104,57 +104,57 @@ class InterviewQuestionBookmarkMappingRepository(
     }
 
     override fun addBookmark(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         questionEntity: InterviewQuestionEntity,
     ): InterviewQuestionBookmarkMappingEntity {
-        if (isBookmarkExist(memberEntity, questionEntity)) {
+        if (isBookmarkExist(memberPk, questionEntity)) {
             throw ConflictException("Bookmark already exists")
         }
         return interviewQuestionBookmarkMappingJpaRepository.save(
             InterviewQuestionBookmarkMappingEntity.new(
                 question = questionEntity,
-                owner = memberEntity,
+                memberPk = memberPk,
                 createdTime = LocalDateTime.now(),
             ),
         )
     }
 
     override fun removeBookmark(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         questionEntity: InterviewQuestionEntity,
     ): Long {
-        if (!isBookmarkExist(memberEntity, questionEntity)) {
+        if (!isBookmarkExist(memberPk, questionEntity)) {
             // todo: 이것은 bad request, not found, conflict 중 어떤 예외인가
             throw NotFoundException("Bookmark already exists")
         }
-        val old = interviewQuestionBookmarkMappingJpaRepository.findByOwnerAndQuestion(memberEntity, questionEntity)!!
+        val old = interviewQuestionBookmarkMappingJpaRepository.findByMemberPkValueAndQuestion(memberPk.value, questionEntity)!!
         interviewQuestionBookmarkMappingJpaRepository.deleteById(old.pkValue)
         return old.pkValue
     }
 
     private fun isBookmarkExist(
-        memberEntity: MemberEntity,
+        ownerPk: Member.Pk,
         questionEntity: InterviewQuestionEntity,
     ): Boolean {
-        return interviewQuestionBookmarkMappingJpaRepository.existsByQuestionAndOwner(questionEntity, memberEntity)
+        return interviewQuestionBookmarkMappingJpaRepository.existsByQuestionAndMemberPkValue(questionEntity, ownerPk.value)
     }
 }
 
 interface InterviewQuestionBookmarkMappingJpaRepository :
     JpaRepository<InterviewQuestionBookmarkMappingEntity, Long>,
     KotlinJdslJpqlExecutor {
-    fun findByOwnerAndQuestion(
-        owner: MemberEntity,
+    fun findByMemberPkValueAndQuestion(
+        memberPkValue: Long,
         question: InterviewQuestionEntity,
     ): InterviewQuestionBookmarkMappingEntity?
 
-    fun findAllByOwnerAndQuestionIn(
-        owner: MemberEntity,
+    fun findAllByMemberPkValueAndQuestionIn(
+        memberPkValue: Long,
         questions: List<InterviewQuestionEntity>,
     ): List<InterviewQuestionBookmarkMappingEntity>
 
-    fun existsByQuestionAndOwner(
+    fun existsByQuestionAndMemberPkValue(
         question: InterviewQuestionEntity,
-        owner: MemberEntity,
+        ownerPk: Long,
     ): Boolean
 }

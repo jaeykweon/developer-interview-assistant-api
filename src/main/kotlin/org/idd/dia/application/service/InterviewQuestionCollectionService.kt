@@ -50,18 +50,16 @@ class InterviewQuestionCollectionService(
         memberPk: Member.Pk,
         collectionPk: InterviewQuestionCollection.Pk,
     ): InterviewQuestionCollectionDetailViewModel {
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
-
         val collectionEntity: InterviewQuestionCollectionEntity =
             interviewQuestionCollectionDbPort.getEntityWithQuestionMappings(pk = collectionPk)
 
         val questionResponses: List<InterviewQuestionResponse> =
             interviewQuestionInternalService
-                .getQuestionsWithBookmark(memberEntity, collectionEntity.questionPks)
+                .getQuestionsWithBookmark(memberPk, collectionEntity.questionPks)
 
         val scriptResponses: List<InterviewScriptResponseV2> =
             interviewScriptInternalService
-                .getScripts(memberEntity, collectionEntity.questionPks)
+                .getScripts(memberPk, collectionEntity.questionPks)
 
         val scriptForms: List<InterviewScriptFormResponse> =
             InterviewScriptFormResponse

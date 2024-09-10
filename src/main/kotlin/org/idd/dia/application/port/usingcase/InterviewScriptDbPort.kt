@@ -2,28 +2,28 @@ package org.idd.dia.application.port.usingcase
 
 import org.idd.dia.domain.entity.InterviewQuestionEntity
 import org.idd.dia.domain.entity.InterviewScriptEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 
 interface InterviewScriptDbPort {
     fun isExists(
         questionEntity: InterviewQuestionEntity,
-        ownerEntity: MemberEntity,
+        ownerPk: Member.Pk,
     ): Boolean
 
     fun save(interviewScriptEntity: InterviewScriptEntity): InterviewScriptEntity
 
-    fun getByPk(pk: InterviewScript.Pk): InterviewScriptEntity
+    fun getEntity(pk: InterviewScript.Pk): InterviewScriptEntity
 
-    fun getByPkAndOwnerPk(
+    fun getEntity(
         questionEntity: InterviewQuestionEntity,
-        ownerEntity: MemberEntity,
+        ownerPk: Member.Pk,
     ): InterviewScriptEntity
 
-    fun getByQuestionPk(questionEntity: InterviewQuestionEntity): InterviewScriptEntity
+    fun getEntity(questionEntity: InterviewQuestionEntity): InterviewScriptEntity
 
-    fun getAllByQuestionsOfMember(
+    fun getEntities(
         questionEntities: List<InterviewQuestionEntity>,
-        ownerEntity: MemberEntity,
+        ownerPk: Member.Pk,
     ): List<InterviewScriptEntity>
 }

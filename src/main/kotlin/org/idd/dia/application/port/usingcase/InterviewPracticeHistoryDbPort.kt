@@ -2,8 +2,8 @@ package org.idd.dia.application.port.usingcase
 
 import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.idd.dia.domain.model.Member
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 
@@ -11,7 +11,7 @@ interface InterviewPracticeHistoryDbPort {
     fun save(entity: InterviewPracticeHistoryEntity): InterviewPracticeHistoryEntity
 
     fun getScroll(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionEntity: InterviewQuestionEntity?,
         star: Boolean?,
@@ -20,11 +20,6 @@ interface InterviewPracticeHistoryDbPort {
 
     fun getSingleEntity(
         pk: InterviewPracticeHistory.Pk,
-        ownerEntity: MemberEntity,
+        memberPk: Member.Pk,
     ): InterviewPracticeHistoryEntity
-
-    fun deleteSingleEntity(
-        pk: InterviewPracticeHistory.Pk,
-        ownerEntity: MemberEntity,
-    ): InterviewPracticeHistory.Pk
 }

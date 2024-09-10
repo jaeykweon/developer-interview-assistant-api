@@ -7,11 +7,9 @@ import org.idd.dia.application.port.usecase.InterviewPracticeHistoryServiceUseCa
 import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewPracticeHistoryDbPort
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
-import org.idd.dia.application.port.usingcase.MemberDbPort
 import org.idd.dia.application.service.internal.InterviewQuestionInternalService
 import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewPracticeHistory
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.Member
@@ -26,7 +24,6 @@ import java.time.LocalDateTime
 class InterviewPracticeHistoryService(
     private val interviewPracticeHistoryDbPort: InterviewPracticeHistoryDbPort,
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
-    private val memberDbPort: MemberDbPort,
     private val interviewQuestionServiceUseCase: InterviewQuestionServiceUseCase,
     private val interviewQuestionInternalService: InterviewQuestionInternalService,
 ) : InterviewPracticeHistoryServiceUseCase {
@@ -34,11 +31,10 @@ class InterviewPracticeHistoryService(
         memberPk: Member.Pk,
         request: RecordInterviewPracticeRequest,
     ): InterviewPracticeHistory.Pk {
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
         val questionEntity = interviewQuestionDbPort.getEntityWithOutRelations(pk = request.getInterviewQuestionPk())
         val newHistoryEntity =
             InterviewPracticeHistoryEntity.new(
-                ownerEntity = memberEntity,
+                memberPk = memberPk,
                 questionEntity = questionEntity,
                 content = request.getContent(),
                 type = request.getType(),
@@ -57,13 +53,12 @@ class InterviewPracticeHistoryService(
         star: Boolean?,
         pageable: Pageable,
     ): Slice<InterviewPracticeHistoryResponse> {
-        val memberEntity: MemberEntity = memberDbPort.getEntity(pk = memberPk)
         val questionEntity: InterviewQuestionEntity? =
             interviewQuestionPk?.let { interviewQuestionDbPort.getEntityWithRelations(it) }
 
         val entitySlice: Slice<InterviewPracticeHistoryEntity> =
             interviewPracticeHistoryDbPort.getScroll(
-                memberEntity = memberEntity,
+                memberPk = memberPk,
                 previousPk = previousPk,
                 interviewQuestionEntity = questionEntity,
                 star = star,
@@ -72,7 +67,7 @@ class InterviewPracticeHistoryService(
 
         val questionResponses =
             interviewQuestionInternalService.getQuestionsWithBookmark(
-                memberEntity = memberEntity,
+                memberPk,
                 pks = entitySlice.mapToSet { it.getQuestionPk() },
             )
 
@@ -86,9 +81,8 @@ class InterviewPracticeHistoryService(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
     ): InterviewPracticeHistoryResponse {
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
         val entity: InterviewPracticeHistoryEntity =
-            interviewPracticeHistoryDbPort.getSingleEntity(interviewPracticeHistoryPk, memberEntity)
+            interviewPracticeHistoryDbPort.getSingleEntity(interviewPracticeHistoryPk, memberPk)
 
         val questionResponse =
             interviewQuestionServiceUseCase.getQuestion(
@@ -103,7 +97,9 @@ class InterviewPracticeHistoryService(
         memberPk: Member.Pk,
         interviewPracticeHistoryPk: InterviewPracticeHistory.Pk,
     ): InterviewPracticeHistory.Pk {
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
-        return interviewPracticeHistoryDbPort.deleteSingleEntity(interviewPracticeHistoryPk, memberEntity)
+        val entity: InterviewPracticeHistoryEntity =
+            interviewPracticeHistoryDbPort.getSingleEntity(interviewPracticeHistoryPk, memberPk)
+        entity.delete(memberPk)
+        return interviewPracticeHistoryDbPort.save(entity).getPk()
     }
 }

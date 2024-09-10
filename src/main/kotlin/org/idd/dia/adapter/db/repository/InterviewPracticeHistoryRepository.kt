@@ -5,15 +5,13 @@ import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpql
 import org.idd.dia.adapter.config.KotlinJdslHandler
 import org.idd.dia.application.port.usingcase.InterviewPracticeHistoryDbPort
 import org.idd.dia.domain.NotFoundException
-import org.idd.dia.domain.UnAuthorizedException
 import org.idd.dia.domain.entity.InterviewPracticeHistoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.idd.dia.domain.model.Member
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -26,7 +24,7 @@ class InterviewPracticeHistoryRepository(
     }
 
     override fun getScroll(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         previousPk: InterviewPracticeHistory.Pk?,
         interviewQuestionEntity: InterviewQuestionEntity?,
         star: Boolean?,
@@ -39,7 +37,7 @@ class InterviewPracticeHistoryRepository(
                 ).from(
                     entity(InterviewPracticeHistoryEntity::class),
                 ).whereAnd(
-                    path(InterviewPracticeHistoryEntity::owner).eq(memberEntity),
+                    path(InterviewPracticeHistoryEntity::memberPkValue).eq(memberPk.value),
                     previousPk?.let {
                         path(InterviewPracticeHistoryEntity::pkValue).le(it.value)
                     },
@@ -49,6 +47,7 @@ class InterviewPracticeHistoryRepository(
                     star?.let {
                         path(InterviewPracticeHistoryEntity::starValue).eq(it)
                     },
+                    path(InterviewPracticeHistoryEntity::deletedValue).eq(false),
                 ).orderBy(
                     path(InterviewPracticeHistoryEntity::pkValue).desc(),
                 )
@@ -58,30 +57,18 @@ class InterviewPracticeHistoryRepository(
 
     override fun getSingleEntity(
         pk: InterviewPracticeHistory.Pk,
-        ownerEntity: MemberEntity,
+        memberPk: Member.Pk,
     ): InterviewPracticeHistoryEntity {
         val target =
-            interviewPracticeHistoryJpaRepository.findByIdOrNull(pk.value)
-                ?: throw NotFoundException("InterviewPracticeHistory not found. pk: $pk")
-        if (target.owner != ownerEntity) {
-            throw UnAuthorizedException("InterviewPracticeHistory not found. pk: $pk, owner: ${ownerEntity.getPk()}")
-        }
+            interviewPracticeHistoryJpaRepository.findByPkValueAndMemberPkValue(pk.value, memberPk.value)
+                ?: throw NotFoundException("InterviewPracticeHistory not found. pk: $pk memberPk: $memberPk")
         return target
-    }
-
-    override fun deleteSingleEntity(
-        pk: InterviewPracticeHistory.Pk,
-        ownerEntity: MemberEntity,
-    ): InterviewPracticeHistory.Pk {
-        val target =
-            interviewPracticeHistoryJpaRepository.findByIdOrNull(pk.value)
-                ?: throw NotFoundException("InterviewPracticeHistory not found. pk: $pk")
-        if (target.owner != ownerEntity) {
-            throw UnAuthorizedException("InterviewPracticeHistory not found. pk: $pk, owner: ${ownerEntity.getPk()}")
-        }
-        interviewPracticeHistoryJpaRepository.delete(target)
-        return target.getPk()
     }
 }
 
-interface InterviewPracticeHistoryJpaRepository : JpaRepository<InterviewPracticeHistoryEntity, Long>, KotlinJdslJpqlExecutor
+interface InterviewPracticeHistoryJpaRepository : JpaRepository<InterviewPracticeHistoryEntity, Long>, KotlinJdslJpqlExecutor {
+    fun findByPkValueAndMemberPkValue(
+        pkValue: Long,
+        memberPkValue: Long,
+    ): InterviewPracticeHistoryEntity?
+}

@@ -6,12 +6,10 @@ import org.idd.dia.application.dto.RegisterInterviewQuestionRequest
 import org.idd.dia.application.port.usecase.InterviewQuestionServiceUseCase
 import org.idd.dia.application.port.usingcase.InterviewQuestionCategoryDbPort
 import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
-import org.idd.dia.application.port.usingcase.MemberDbPort
 import org.idd.dia.application.port.usingcase.mapping.InterviewQuestionCategoryMappingDbPort
 import org.idd.dia.application.service.internal.InterviewQuestionInternalService
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.entity.getPk
 import org.idd.dia.domain.model.InterviewQuestion
 import org.idd.dia.domain.model.InterviewQuestionCategory
@@ -27,7 +25,6 @@ class InterviewQuestionService(
     private val interviewQuestionDbPort: InterviewQuestionDbPort,
     private val interviewQuestionCategoryDbPort: InterviewQuestionCategoryDbPort,
     private val interviewQuestionCategoryMappingDbPort: InterviewQuestionCategoryMappingDbPort,
-    private val memberDbPort: MemberDbPort,
     private val interviewQuestionInternalService: InterviewQuestionInternalService,
 ) : InterviewQuestionServiceUseCase {
     override fun register(request: RegisterInterviewQuestionRequest): InterviewQuestion.Pk {
@@ -69,12 +66,9 @@ class InterviewQuestionService(
         categories: Set<InterviewQuestionCategory.Title>?,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        val memberEntity: MemberEntity =
-            memberDbPort.getEntity(pk = memberPk)
-
         if (categories.isNullOrEmpty()) {
             return interviewQuestionInternalService.getPage(
-                memberEntity,
+                memberPk,
                 pageable,
             )
         }
@@ -82,7 +76,7 @@ class InterviewQuestionService(
         val categoryEntities = interviewQuestionCategoryDbPort.getEntities(categories)
 
         return interviewQuestionInternalService.getPage(
-            memberEntity,
+            memberPk,
             categoryEntities,
             pageable,
         )
@@ -93,12 +87,9 @@ class InterviewQuestionService(
         categories: Set<InterviewQuestionCategory.Title>?,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
-        val memberEntity: MemberEntity =
-            memberDbPort.getEntity(pk = memberPk)
-
         if (categories.isNullOrEmpty()) {
             return interviewQuestionInternalService.getBookmarkedPage(
-                memberEntity,
+                memberPk,
                 pageable,
             )
         }
@@ -107,7 +98,7 @@ class InterviewQuestionService(
             interviewQuestionCategoryDbPort.getEntities(categories)
 
         return interviewQuestionInternalService.getBookmarkedPage(
-            memberEntity,
+            memberPk,
             categoryEntities,
             pageable,
         )
@@ -123,10 +114,9 @@ class InterviewQuestionService(
             return interviewQuestionInternalService.getSingleResponse(questionEntity)
         }
 
-        val memberEntity = memberDbPort.getEntity(pk = memberPk)
         return interviewQuestionInternalService.getSingleResponse(
             questionEntity,
-            memberEntity,
+            memberPk,
         )
     }
 }

@@ -5,17 +5,16 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewScriptReference
+import org.idd.dia.domain.model.Member
 import java.time.LocalDateTime
 
 @Table(name = "interview_script_references")
 @Entity
 class InterviewScriptReferenceEntity(
     pk: InterviewScriptReference.Pk,
-    ownerEntity: MemberEntity,
+    memberPk: Member.Pk,
     url: InterviewScriptReference.Url,
     clickCount: InterviewScriptReference.ClickCount,
     createdTime: LocalDateTime,
@@ -27,9 +26,8 @@ class InterviewScriptReferenceEntity(
 
     fun getPk() = InterviewScriptReference.Pk(pkValue)
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    val owner: MemberEntity = ownerEntity
+    @Column(name = "member_pk", nullable = false)
+    val memberPkValue: Long = memberPk.value
 
     @Column(name = "url", nullable = false)
     val urlValue: String = url.value

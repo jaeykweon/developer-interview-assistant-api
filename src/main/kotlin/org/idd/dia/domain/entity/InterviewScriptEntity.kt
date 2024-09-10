@@ -7,16 +7,16 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.idd.dia.domain.model.InterviewScript
+import org.idd.dia.domain.model.Member
 import java.time.LocalDateTime
 
 @Table(name = "interview_scripts")
 @Entity
 class InterviewScriptEntity(
     pk: InterviewScript.Pk,
-    ownerEntity: MemberEntity,
+    memberPk: Member.Pk,
     questionEntity: InterviewQuestionEntity,
     content: InterviewScript.Content,
     createdTime: LocalDateTime,
@@ -28,9 +28,10 @@ class InterviewScriptEntity(
 
     fun getPk() = InterviewScript.Pk(pkValue)
 
-    @OneToOne
-    @JoinColumn(nullable = false)
-    val owner: MemberEntity = ownerEntity
+    @Column(name = "member_pk", nullable = false)
+    val memberPkValue: Long = memberPk.value
+
+    fun getOwnerPk() = Member.Pk(memberPkValue)
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -39,6 +40,8 @@ class InterviewScriptEntity(
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     var contentValue: String = content.value
         protected set
+
+    fun getContent() = InterviewScript.Content(contentValue)
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     var lastReadTime: LocalDateTime = createdTime
@@ -57,17 +60,21 @@ class InterviewScriptEntity(
         this.updatedTime = updateTime
     }
 
+    fun validateFeedbackable() {
+        require(this.contentValue.length >= 50) { "최소 50자 이상 작성해야 피드백이 가능합니다" }
+    }
+
     companion object {
         @JvmStatic
         fun new(
-            ownerEntity: MemberEntity,
+            ownerPk: Member.Pk,
             questionEntity: InterviewQuestionEntity,
             content: InterviewScript.Content,
             time: LocalDateTime,
         ): InterviewScriptEntity {
             return InterviewScriptEntity(
                 pk = InterviewScript.Pk(),
-                ownerEntity = ownerEntity,
+                memberPk = ownerPk,
                 questionEntity = questionEntity,
                 content = content,
                 createdTime = time,

@@ -82,7 +82,7 @@ data class InterviewScriptResponseV2(
         fun from(entity: InterviewScriptEntity): InterviewScriptResponseV2 {
             return InterviewScriptResponseV2(
                 pkValue = entity.pkValue,
-                ownerPkValue = entity.owner.pkValue,
+                ownerPkValue = entity.memberPkValue,
                 questionPkValue = entity.question.pkValue,
                 contentValue = entity.contentValue,
                 createdTimeValue = entity.createdTime,

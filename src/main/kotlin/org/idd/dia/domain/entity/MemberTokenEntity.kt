@@ -19,7 +19,7 @@ class MemberTokenEntity(
     pk: MemberToken.Pk,
     accessToken: MemberToken.AccessToken,
     userAgent: MemberToken.UserAgent?,
-    owner: MemberEntity,
+    member: MemberEntity,
     createdTime: LocalDateTime,
 ) : CommonEntity(createdTime) {
     @Id
@@ -36,9 +36,9 @@ class MemberTokenEntity(
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    val owner: MemberEntity = owner
+    val member: MemberEntity = member
 
-    fun getOwnerPk(): Member.Pk = owner.getPk()
+    fun getOwnerPk(): Member.Pk = member.getPk()
 
     // todo: 자기 자신을 반환하는 것은 함수형 프로그래밍인데 패러다임이 혼재해도 되는걸까
 
@@ -71,7 +71,7 @@ class MemberTokenEntity(
                 pk = MemberToken.Pk(0),
                 accessToken = accessToken,
                 userAgent = userAgent,
-                owner = owner,
+                member = owner,
                 createdTime = createdTime,
             )
         }

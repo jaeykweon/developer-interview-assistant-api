@@ -8,14 +8,16 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.idd.dia.domain.UnAuthorizedException
 import org.idd.dia.domain.model.InterviewPracticeHistory
+import org.idd.dia.domain.model.Member
 import java.time.LocalDateTime
 
 @Table(name = "interview_practice_histories")
 @Entity
 class InterviewPracticeHistoryEntity(
     pk: InterviewPracticeHistory.Pk,
-    ownerEntity: MemberEntity,
+    memberPk: Member.Pk,
     questionEntity: InterviewQuestionEntity,
     content: InterviewPracticeHistory.Content,
     type: InterviewPracticeHistory.Type,
@@ -31,9 +33,8 @@ class InterviewPracticeHistoryEntity(
 
     fun getPk(): InterviewPracticeHistory.Pk = InterviewPracticeHistory.Pk(pkValue)
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    val owner: MemberEntity = ownerEntity
+    @Column(name = "member_pk", nullable = false)
+    val memberPkValue: Long = memberPk.value
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -58,6 +59,10 @@ class InterviewPracticeHistoryEntity(
     var starValue: Boolean = star
         protected set
 
+    @Column(name = "deleted")
+    var deletedValue: Boolean = false
+        protected set
+
     fun star() {
         this.starValue = true
     }
@@ -66,10 +71,21 @@ class InterviewPracticeHistoryEntity(
         this.starValue = false
     }
 
+    fun validateOwner(memberPk: Member.Pk) {
+        if (memberPk.value != memberPkValue) {
+            throw UnAuthorizedException("Owner mismatch. memberPk: $memberPk, owner: $memberPkValue")
+        }
+    }
+
+    fun delete(memberPk: Member.Pk) {
+        validateOwner(memberPk)
+        deletedValue = true
+    }
+
     companion object {
         @JvmStatic
         fun new(
-            ownerEntity: MemberEntity,
+            memberPk: Member.Pk,
             questionEntity: InterviewQuestionEntity,
             content: InterviewPracticeHistory.Content,
             type: InterviewPracticeHistory.Type,
@@ -79,7 +95,7 @@ class InterviewPracticeHistoryEntity(
         ): InterviewPracticeHistoryEntity {
             return InterviewPracticeHistoryEntity(
                 pk = InterviewPracticeHistory.Pk(0),
-                ownerEntity = ownerEntity,
+                memberPk = memberPk,
                 questionEntity = questionEntity,
                 content = content,
                 type = type,

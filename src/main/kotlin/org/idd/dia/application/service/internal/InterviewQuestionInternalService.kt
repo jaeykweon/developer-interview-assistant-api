@@ -5,11 +5,11 @@ import org.idd.dia.application.port.usingcase.InterviewQuestionDbPort
 import org.idd.dia.application.port.usingcase.mapping.InterviewQuestionBookmarkMappingDbPort
 import org.idd.dia.domain.entity.InterviewQuestionCategoryEntity
 import org.idd.dia.domain.entity.InterviewQuestionEntity
-import org.idd.dia.domain.entity.MemberEntity
 import org.idd.dia.domain.entity.findPkMatches
 import org.idd.dia.domain.entity.getPk
 import org.idd.dia.domain.entity.mapping.InterviewQuestionBookmarkMappingEntity
 import org.idd.dia.domain.model.InterviewQuestion
+import org.idd.dia.domain.model.Member
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -49,18 +49,18 @@ class InterviewQuestionInternalService(
     }
 
     fun getPage(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
         return this.getPage(
-            memberEntity,
+            memberPk,
             categoryEntities = emptySet(),
             pageable = pageable,
         )
     }
 
     fun getPage(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         categoryEntities: Set<InterviewQuestionCategoryEntity>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
@@ -69,7 +69,7 @@ class InterviewQuestionInternalService(
 
         val questionBookmarkMappings: Iterable<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingDbPort.getMappings(
-                memberEntity,
+                memberPk,
                 questionPage.content,
             )
         return questionPage.map { question ->
@@ -81,12 +81,12 @@ class InterviewQuestionInternalService(
     }
 
     fun getBookmarkedPage(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
         val questionBookmarkMappings: Page<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingDbPort.getMappingsWithQuestion(
-                ownerEntity = memberEntity,
+                memberPk = memberPk,
                 pageable = pageable,
             )
 
@@ -94,13 +94,13 @@ class InterviewQuestionInternalService(
     }
 
     fun getBookmarkedPage(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         categoryEntities: Set<InterviewQuestionCategoryEntity>,
         pageable: Pageable,
     ): Page<InterviewQuestionResponse> {
         val questionBookmarkMappings: Page<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingDbPort.getMappingsWithQuestion(
-                ownerEntity = memberEntity,
+                memberPk = memberPk,
                 categoryEntities = categoryEntities,
                 pageable = pageable,
             )
@@ -131,12 +131,12 @@ class InterviewQuestionInternalService(
 
     fun getSingleResponse(
         questionEntity: InterviewQuestionEntity,
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
     ): InterviewQuestionResponse {
         val interviewQuestionBookmarkMappingEntities: Set<InterviewQuestionBookmarkMappingEntity> =
             interviewQuestionBookmarkMappingDbPort
                 .getMappings(
-                    memberEntity,
+                    memberPk,
                     questionEntity,
                 ).toSet()
 
@@ -144,14 +144,14 @@ class InterviewQuestionInternalService(
     }
 
     fun getQuestionsWithBookmark(
-        memberEntity: MemberEntity,
+        memberPk: Member.Pk,
         pks: Iterable<InterviewQuestion.Pk>,
     ): List<InterviewQuestionResponse> {
         val interviewQuestionEntities: List<InterviewQuestionEntity> =
             interviewQuestionDbPort.getEntitiesWithRelations(pks)
 
         val bookmarkMappings: List<InterviewQuestionBookmarkMappingEntity> =
-            interviewQuestionBookmarkMappingDbPort.getMappings(memberEntity, interviewQuestionEntities)
+            interviewQuestionBookmarkMappingDbPort.getMappings(memberPk, interviewQuestionEntities)
 
         return interviewQuestionEntities.map {
             InterviewQuestionResponse.withCheckingBookmark(
